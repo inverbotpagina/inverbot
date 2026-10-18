@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INVERBOT | Citas en Vivo</title>
+    <style>
+        :root {
+            --bg-main: #0b0e14;
+            --bg-card: #121824;
+            --bg-input: #1a2332;
+            --border-color: #212d40;
+            --accent-green: #0ecb81;
+            --accent-red: #f6465d;
+            --accent-blue: #3861fb;
+            --text-main: #eaecef;
+            --text-muted: #848e9c;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 10px;
+            padding-bottom: 70px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Fondo de Trading con velas dinámicas */
+        .trading-bg-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.12;
+            pointer-events: none;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            padding: 10px;
+        }
+        .candle-stick { width: 5px; background: var(--accent-green); position: relative; border-radius: 2px; }
+        .candle-stick::before { content: ''; position: absolute; left: 2px; width: 1px; height: 160%; top: -30%; background: inherit; }
+        .candle-red { background: var(--accent-red) !important; }
+
+        .terminal-container { width: 100%; max-width: 480px; position: relative; z-index: 1; }
+        
+        .trading-card { 
+            background-color: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+            padding: 18px; 
+            border-radius: 16px; 
+            box-shadow: 0 12px 35px rgba(0,0,0,0.8); 
+            margin-bottom: 14px; 
+        }
+
+        .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .brand-header h1 { font-size: 18px; color: #fff; font-weight: 800; }
+        
+        /* Citas en Vivo */
+        .live-market-box {
+            background: #161f30;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .live-title { font-size: 14px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .coin-icon { width: 22px; height: 22px; border-radius: 50%; object-fit: contain; }
+        .live-badge { background: rgba(14,203,129,0.15); color: var(--accent-green); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        
+        .exchange-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 5px 0; border-bottom: 1px solid #1e2d4a; }
+        .exchange-row:last-child { border-bottom: none; }
+        .ex-name { color: var(--text-muted); font-weight: 600; font-size: 11px; }
+        .ex-price { font-family: monospace; font-weight: 700; color: #fff; }
+        .ex-change-green { color: var(--accent-green); font-weight: 600; font-size: 11px; }
+        .ex-change-red { color: var(--accent-red); font-weight: 600; font-size: 11px; }
+
+        /* Estilo profesional tipo app para Activos */
+        .assets-total-box {
+            background: #161f30;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .assets-title { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .assets-amount { font-size: 28px; font-weight: 800; color: var(--accent-green); font-family: monospace; margin-bottom: 14px; }
+        
+        .assets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        .asset-subcard {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 10px;
+        }
+        .asset-sub-title { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        .asset-sub-amount { font-size: 18px; font-weight: 700; color: #fff; font-family: monospace; }
+
+        .action-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-pro-deposit {
+            background-color: var(--accent-green);
+            color: #051b11;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: 0.2s;
+            box-shadow: 0 4px 15px rgba(14,203,129,0.3);
+        }
+        .btn-pro-withdraw {
+            background-color: transparent;
+            color: var(--accent-green);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+        .btn-pro-withdraw:hover { border-color: var(--accent-green); background: rgba(14,203,129,0.05); }
+
+        /* Estilo de Tarjetas VIP exactamente como en tu foto de referencia[span_1](start_span)[span_1](end_span) */
+        .vip-pro-card {
+            background: #161f30;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .vip-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .vip-title-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: #f0b90b; /* Dorado clásico de niveles VIP */
+        }
+        .vip-status-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+        .vip-grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .vip-grid-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 10px;
+        }
+        .vip-grid-box.full-width {
+            grid-column: span 2;
+        }
+        .vip-box-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .vip-box-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            font-family: monospace;
+        }
+        .vip-box-value.green {
+            color: var(--accent-green);
+        }
+
+        /* Tarjetas de Selección de Redes en Depósito */
+        .network-select-card {
+            background: #161f30;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .network-info { display: flex; align-items: center; gap: 12px; }
+        .net-logo-container { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(14,203,129,0.1); border-radius: 50%; border: 1px solid var(--accent-green); }
+        .net-main-icon { font-size: 18px; font-weight: bold; color: var(--accent-green); }
+        .net-badge-icon { position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; border: 1px solid #121824; }
+        .net-name { font-size: 14px; font-weight: bold; color: #fff; }
+        
+        .btn-select-net {
+            background: rgba(14,203,129,0.12);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        /* Sistema de Alertas con Fondo de Trading y Botón X Circular */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 11, 18, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-card {
+            background: linear-gradient(135deg, #121824, #1a2332);
+            border: 1px solid var(--accent-blue);
+            padding: 24px;
+            border-radius: 16px;
+            width: 100%; max-width: 360px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            position: relative;
+        }
+        .modal-title { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 10px; }
+        .modal-msg { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        
+        .modal-close-btn {
+            background: var(--bg-input);
+            color: #fff;
+            border: 1px solid var(--border-color);
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            font-size: 16px; font-weight: bold;
+            cursor: pointer;
+            display: inline-flex; justify-content: center; align-items: center;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .modal-close-btn:hover { background: var(--accent-red); border-color: var(--accent-red); }
+
+        /* Barra Inferior Estilo App */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #121824; border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-around; padding: 10px 0; z-index: 100;
+        }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer; gap: 3px; }
+        .nav-item.active { color: var(--accent-green); }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+
+        .input-group { margin-bottom: 12px; text-align: left; }
+        .input-group label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
+        .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 13px; }
+        
+        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 4px; }
+        .btn-green { background-color: var(--accent-green); color: #000; }
+        .btn-blue { background-color: var(--accent-blue); color: #fff; }
+        .btn-red { background-color: var(--accent-red); color: #fff; }
+        
+        .crypto-asset-card { background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px; }
+        .auth-switch { text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+        .auth-switch a { color: var(--accent-blue); cursor: pointer; text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <!-- Fondo de Trading con velas dinámicas -->
+    <div class="trading-bg-canvas">
+        <div class="candle-stick" style="height: 50px;"></div>
+        <div class="candle-stick candle-red" style="height: 90px;"></div>
+        <div class="candle-stick" style="height: 75px;"></div>
+        <div class="candle-stick" style="height: 120px;"></div>
+        <div class="candle-stick candle-red" style="height: 40px;"></div>
+        <div class="candle-stick" style="height: 80px;"></div>
+        <div class="candle-stick candle-red" style="height: 110px;"></div>
+        <div class="candle-stick" style="height: 65px;"></div>
+        <div class="candle-stick candle-red" style="height: 140px;"></div>
+        <div class="candle-stick" style="height: 95px;"></div>
+    </div>
+
+    <!-- Contenedor para Notificaciones Personalizadas -->
+    <div id="customModalContainer"></div>
+
+    <div class="terminal-container">
+        
+        <!-- ================= AUTENTICACIÓN ================= -->
+        <div id="authScreen" class="trading-card">
+            <div class="brand-header">
+                <h1>INVERBOT</h1>
+                <p style="font-size:11px; color:var(--text-muted)">Citas en Vivo</p>
+            </div>
+
+            <div class="live-market-box">
+                <div class="live-header">
+                    <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
+                    <span class="live-badge">LIVE</span>
+                </div>
+                <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="loginBtcBin">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
+                <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="loginBtcOkx">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
+            </div>
+
+            <div id="registerView">
+                <form onsubmit="registrarUsuario(event)">
+                    <div class="input-group"><label>Correo Electrónico (Gmail)</label><input type="email" id="regEmail" required placeholder="nombre@gmail.com"></div>
+                    <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" required placeholder="••••••••"></div>
+                    <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="Opcional"></div>
+                    <button type="submit" class="btn btn-green">Registrar Cuenta</button>
+                </form>
+                <div class="auth-switch"><p>¿Ya tienes cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
+            </div>
+
+            <div id="loginView" style="display: none;">
+                <form onsubmit="iniciarSesion(event)">
+                    <div class="input-group"><label>Correo Electrónico (Gmail)</label><input type="email" id="logEmail" required placeholder="nombre@gmail.com"></div>
+                    <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" required placeholder="••••••••"></div>
+                    <button type="submit" class="btn btn-blue">Acceder al Sistema</button>
+                </form>
+                <div class="auth-switch"><p>¿Nuevo? <a onclick="cambiarVistaAuth(false)">Crear cuenta</a></p></div>
+            </div>
+        </div>
+
+        <!-- ================= PANEL PRINCIPAL ================= -->
+        <div id="userDashboard" class="trading-card" style="display: none; border:none; background:transparent; padding:0; box-shadow:none;">
+            
+            <!-- HOGAR (Citas en Vivo) -->
+            <div id="tabHogar" class="tab-content">
+                <div class="brand-header trading-card" style="margin-bottom:12px;">
+                    <div>
+                        <h1 style="font-size: 16px;">INVERBOT Exchange</h1>
+                        <p style="font-size: 11px; color: var(--text-muted);" id="lblUserEmail"></p>
+                    </div>
+                    <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 10px; font-size: 11px; margin:0;">Salir</button>
+                </div>
+
+                <div class="live-market-box">
+                    <div class="live-header">
+                        <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
+                        <span class="live-badge">LIVE</span>
+                    </div>
+                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveBtcBin">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
+                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveBtcOkx">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
+                    <div class="exchange-row"><span class="ex-name">HUOBI</span><span class="ex-price" id="liveBtcHuo">81,602.65</span><span class="ex-change-green">+0.36%</span></div>
+                    <div class="exchange-row"><span class="ex-name">COINBASE</span><span class="ex-price" id="liveBtcCoi">81,602.65</span><span class="ex-change-green">+0.36%</span></div>
+                </div>
+
+                <div class="live-market-box">
+                    <div class="live-header">
+                        <span class="live-title"><img src="https://assets.coingecko.com/coins/images/279/large/ethereum.png" class="coin-icon"> ETH / USDT</span>
+                        <span class="live-badge">LIVE</span>
+                    </div>
+                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveEthBin">2,387.48</span><span class="ex-change-red">-0.27%</span></div>
+                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveEthOkx">2,387.48</span><span class="ex-change-red">-0.27%</span></div>
+                    <div class="exchange-row"><span class="ex-name">HUOBI</span><span class="ex-price" id="liveEthHuo">2,387.34</span><span class="ex-change-red">-0.22%</span></div>
+                    <div class="exchange-row"><span class="ex-name">COINBASE</span><span class="ex-price" id="liveEthCoi">2,387.34</span><span class="ex-change-red">-0.22%</span></div>
+                </div>
+
+                <div class="live-market-box">
+                    <div class="live-header">
+                        <span class="live-title"><img src="https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png" class="coin-icon"> BNB / USDT</span>
+                        <span class="live-badge">LIVE</span>
+                    </div>
+                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveBnbBin">718.00</span><span class="ex-change-green">+0.28%</span></div>
+                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveBnbOkx">718.00</span><span class="ex-change-green">+0.28%</span></div>
+                </div>
+            </div>
+
+            <!-- CUANTIFICAR (ZONA VIP + ESTILO EXACTO DE TU FOTO CON TUS DATOS) -->
+            <div id="tabCuantificar" class="tab-content" style="display: none;">
+                <div class="assets-total-box" style="margin-bottom:14px;">
+                    <div class="assets-title">
+                        <svg style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                        Activos Totales (Cuantificar)
+                    </div>
+                    <div class="assets-amount" id="lblBalanceCuantificar">$0.00</div>
+                </div>
+
+                <!-- VIP 1 -->
+                <div class="vip-pro-card">
+                    <div class="vip-header-row">
+                        <span class="vip-title-name">VIP 1</span>
+                        <span id="vip1StatusText" class="vip-status-label" style="color:var(--text-muted);">Bloqueado</span>
+                    </div>
+                    <div class="vip-grid-container">
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Cuantificar carreras</div>
+                            <div class="vip-box-value">1</div>
+                        </div>
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Cuantificar días</div>
+                            <div class="vip-box-value">35</div>
+                        </div>
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Beneficio diario</div>
+                            <div class="vip-box-value green">1.50 USDT</div>
+                        </div>
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Precio VIP</div>
+                            <div class="vip-box-value">4.00 USDT</div>
+                        </div>
+                        <div class="vip-grid-box full-width">
+                            <div class="vip-box-title">Tarifa de servicio</div>
+                            <div class="vip-box-value">0%</div>
+                        </div>
+                    </div>
+                    <div id="vip1ActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button></div>
+                    <button id="btnClaim1" class="btn btn-blue" onclick="reclamarVip(1)" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
+                </div>
+
+                <!-- VIP MAX -->
+                <div class="vip-pro-card">
+                    <div class="vip-header-row">
+                        <span class="vip-title-name" style="color:#3861fb;">VIP MAX</span>
+                        <span id="vipMaxStatusText" class="vip-status-label" style="color:var(--text-muted);">Bloqueado</span>
+                    </div>
+                    <div class="vip-grid-container">
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Cuantificar carreras</div>
+                            <div class="vip-box-value">1</div>
+                        </div>
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Cuantificar días</div>
+                            <div class="vip-box-value">35</div>
+                        </div>
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Beneficio diario</div>
+                            <div class="vip-box-value green">6.50 USDT</div>
+                        </div>
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Precio VIP</div>
+                            <div class="vip-box-value">16.00 USDT</div>
+                        </div>
+                        <div class="vip-grid-box full-width">
+                            <div class="vip-box-title">Tarifa de servicio</div>
+                            <div class="vip-box-value">0%</div>
+                        </div>
+                    </div>
+                    <div id="vipMaxActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip('Max', 16)">Adquirir VIP Max</button></div>
+                    <button id="btnClaimMax" class="btn btn-blue" onclick="reclamarVip('Max')" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
+                </div>
+            </div>
+
+            <!-- INVITA A TUS AMIGOS (RED) -->
+            <div id="tabRed" class="tab-content" style="display: none;">
+                <div class="trading-card" style="text-align: center;">
+                    <h3 style="font-size: 16px; margin-bottom: 8px;">Sistema de Referidos</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Gana <b>0.20 USDT</b> por cada usuario invitado.</p>
+                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--accent-green); margin: 8px 0; word-break: break-all; background:var(--bg-input); padding:8px; border-radius:6px; border:1px solid var(--border-color);"></code>
+                    <button class="btn btn-green" onclick="copiarEnlaceReferido()">Copiar Enlace de Referido</button>
+                    <p style="font-size: 12px; margin-top: 12px;">Socios en red: <b id="lblRefCount" style="color:#fff;">0</b></p>
+                </div>
+            </div>
+
+            <!-- A MÍ (ESTILO EXACTO DE LA REFERENCIA CON TARJETAS DE ACTIVOS) -->
+            <div id="tabAmi" class="tab-content" style="display: none;">
+                <div class="assets-total-box">
+                    <div class="assets-title">
+                        <svg style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                        Activos totales
+                    </div>
+                    <div class="assets-amount" id="lblBalanceAmi">$0.00</div>
+
+                    <div class="assets-grid">
+                        <div class="asset-subcard">
+                            <div class="asset-sub-title">Cuantificar cuenta</div>
+                            <div class="asset-sub-amount" id="lblCuantificarCuenta">$0.00</div>
+                        </div>
+                        <div class="asset-subcard">
+                            <div class="asset-sub-title">Activos de beneficio</div>
+                            <div class="asset-sub-amount">$0.00</div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons-grid">
+                        <button class="btn-pro-deposit" onclick="mostrarSeccion('dep')">
+                            <span style="font-size:18px;">＋</span> Depósito
+                        </button>
+                        <button class="btn-pro-withdraw" onclick="mostrarSeccion('wit')">
+                            <span style="font-size:16px;">↑</span> Retirar
+                        </button>
+                    </div>
+
+                    <div id="subAccionContainer" style="display: none; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;"></div>
+
+                    <!-- Panel CEO (Exclusivo Lester) -->
+                    <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#1a1215; border:1px solid #572029; padding:12px; border-radius:10px; margin-top:15px;">
+                        <p style="color: var(--accent-red); font-weight: 700; font-size: 11px; margin-bottom: 6px;">🛡️ PANEL CEO EXCLUSIVO</p>
+                        <button class="btn btn-red" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 8px;">Gestionar Depósitos y Retiros</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= PANEL DE ADMINISTRACIÓN CEO ================= -->
+        <div id="adminDashboard" class="trading-card" style="display: none;">
+            <div class="brand-header">
+                <h3>🛡️ Aprobaciones CEO</h3>
+                <button onclick="cerrarPanelAdmin()" class="btn btn-blue" style="width: auto; padding: 3px 8px; font-size: 10px; margin:0;">Volver</button>
+            </div>
+            <h4 style="font-size: 12px; color: var(--accent-green); margin-bottom: 6px;">Depósitos Pendientes</h4>
+            <div id="listaAdminDeps"></div>
+            <h4 style="font-size: 12px; color: var(--accent-red); margin: 12px 0 6px 0;">Retiros Pendientes</h4>
+            <div id="listaAdminWits"></div>
+        </div>
+
+        <!-- ================= BARRA INFERIOR TIPO APP ================= -->
+        <div class="bottom-nav" id="bottomNavBar" style="display: none;">
+            <button class="nav-item active" onclick="cambiarTab('Hogar', this)" id="navHogar">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                Hogar
+            </button>
+            <button class="nav-item" onclick="cambiarTab('Cuantificar', this)" id="navCuantificar">
+                <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+                Cuantificar
+            </button>
+            <button class="nav-item" onclick="cambiarTab('Red', this)" id="navRed">
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                Invita a tus amigos
+            </button>
+            <button class="nav-item" onclick="cambiarTab('Ami', this)" id="navAmi">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                A mí
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
+        const ADMIN_PASS = "lester2010jj";
+
+        let dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
+        let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
+        let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || [];
+        let sessionEmail = localStorage.getItem("inverbot_session") || null;
+
+        if (!dbUsers.some(u => u.email === ADMIN_EMAIL)) {
+            dbUsers.push({
+                email: ADMIN_EMAIL,
+                pass: ADMIN_PASS,
+                balance: 1000.0,
+                code: "CEO-MASTER",
+                refCount: 0,
+                vipActive: null,
+                vipExpiry: 0,
+                lastClaim: 0
+            });
+            localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+        }
+
+        // Sistema de Notificaciones con Fondo Trading y Botón X Circular
+        function mostrarAlertaPro(titulo, mensaje) {
+            let container = document.getElementById('customModalContainer');
+            container.innerHTML = `
+                <div class="modal-overlay">
+                    <div class="modal-card">
+                        <h3 class="modal-title">${titulo}</h3>
+                        <p class="modal-msg">${mensaje}</p>
+                        <button class="modal-close-btn" onclick="cerrarAlertaPro()">✕</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function cerrarAlertaPro() {
+            document.getElementById('customModalContainer').innerHTML = '';
+        }
+
+        window.onload = function() {
+            let params = new URLSearchParams(window.location.search);
+            let refCode = params.get('ref');
+            if(refCode) document.getElementById('regRef').value = refCode;
+
+            if(sessionEmail) {
+                let u = dbUsers.find(x => x.email === sessionEmail);
+                if(u) entrarDashboardDirecto();
+                else cerrarSesion();
+            }
+
+            setInterval(() => {
+                let r1 = (81590 + Math.random() * 20).toFixed(1);
+                let r2 = (2387 + Math.random() * 2).toFixed(2);
+                let r3 = (718 + Math.random() * 0.5).toFixed(2);
+
+                if(document.getElementById('loginBtcBin')) document.getElementById('loginBtcBin').innerText = r1;
+                if(document.getElementById('liveBtcBin')) document.getElementById('liveBtcBin').innerText = r1;
+                if(document.getElementById('liveBtcOkx')) document.getElementById('liveBtcOkx').innerText = r1;
+                if(document.getElementById('liveEthBin')) document.getElementById('liveEthBin').innerText = r2;
+                if(document.getElementById('liveBnbBin')) document.getElementById('liveBnbBin').innerText = r3;
+            }, 1800);
+        }
+
+        function cambiarVistaAuth(isLogin) {
+            document.getElementById('registerView').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('loginView').style.display = isLogin ? 'block' : 'none';
+        }
+
+        function registrarUsuario(e) {
+            e.preventDefault();
+            let email = document.getElementById('regEmail').value.trim().toLowerCase();
+            let pass = document.getElementById('regPass').value.trim();
+            let refCode = document.getElementById('regRef').value.trim();
+
+            if(dbUsers.some(u => u.email === email)) { mostrarAlertaPro("Aviso", "Este correo ya está registrado."); return; }
+
+            let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
+            let nuevo = { email, pass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
+
+            if(refCode) {
+                let refUser = dbUsers.find(u => u.code === refCode);
+                if(refUser) { refUser.balance += 0.20; refUser.refCount += 1; }
+            }
+
+            dbUsers.push(nuevo);
+            localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+            mostrarAlertaPro("Éxito", "¡Registro exitoso! Inicia sesión.");
+            cambiarVistaAuth(true);
+        }
+
+        function iniciarSesion(e) {
+            e.preventDefault();
+            let email = document.getElementById('logEmail').value.trim().toLowerCase();
+            let pass = document.getElementById('logPass').value.trim();
+
+            let u = dbUsers.find(x => x.email === email && x.pass === pass);
+            if(!u) { mostrarAlertaPro("Error", "Credenciales incorrectas."); return; }
+
+            sessionEmail = email;
+            localStorage.setItem("inverbot_session", sessionEmail);
+            entrarDashboardDirecto();
+        }
+
+        function entrarDashboardDirecto() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('userDashboard').style.display = 'block';
+            document.getElementById('bottomNavBar').style.display = 'flex';
+
+            let user = dbUsers.find(u => u.email === sessionEmail);
+            document.getElementById('lblUserEmail').innerText = user.email;
+            let balStr = "$" + user.balance.toFixed(2);
+            document.getElementById('lblBalanceAmi').innerText = balStr;
+            document.getElementById('lblCuantificarCuenta').innerText = balStr;
+            document.getElementById('lblBalanceCuantificar').innerText = balStr;
+            document.getElementById('lblRefCount').innerText = user.refCount;
+            document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + user.code;
+
+            let esAdmin = (sessionEmail === ADMIN_EMAIL);
+            document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
+
+            actualizarInterfazVip(user);
+        }
+
+        function actualizarInterfazVip(user) {
+            let ahora = Date.now();
+            let vip1Activo = (user.vipActive === 1 && user.vipExpiry > ahora);
+            document.getElementById('vip1StatusText').innerText = vip1Activo ? "Desbloqueado" : "Bloqueado";
+            document.getElementById('vip1StatusText').style.color = vip1Activo ? "var(--accent-green)" : "var(--text-muted)";
+            document.getElementById('vip1ActionArea').innerHTML = vip1Activo ? `` : `<button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button>`;
+            document.getElementById('btnClaim1').style.display = vip1Activo ? 'block' : 'none';
+
+            let vipMaxActivo = (user.vipActive === 'Max' && user.vipExpiry > ahora);
+            document.getElementById('vipMaxStatusText').innerText = vipMaxActivo ? "Desbloqueado" : "Bloqueado";
+            document.getElementById('vipMaxStatusText').style.color = vipMaxActivo ? "var(--accent-green)" : "var(--text-muted)";
+            document.getElementById('vipMaxActionArea').innerHTML = vipMaxActivo ? `` : `<button class="btn btn-green" onclick="comprarVip('Max', 16)">Adquirir VIP Max</button>`;
+            document.getElementById('btnClaimMax').style.display = vipMaxActivo ? 'block' : 'none';
+        }
+
+        function cerrarSesion() {
+            sessionEmail = null;
+            localStorage.removeItem("inverbot_session");
+            document.getElementById('userDashboard').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('bottomNavBar').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'block';
+        }
+
+        function cambiarTab(tabName, btnElement) {
+            ['Hogar', 'Cuantificar', 'Red', 'Ami'].forEach(t => {
+                let el = document.getElementById('tab' + t);
+                if(el) el.style.display = (t === tabName) ? 'block' : 'none';
+            });
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+            else {
+                if(tabName === 'Hogar') document.getElementById('navHogar').classList.add('active');
+                if(tabName === 'Cuantificar') document.getElementById('navCuantificar').classList.add('active');
+                if(tabName === 'Red') document.getElementById('navRed').classList.add('active');
+                if(tabName === 'Ami') document.getElementById('navAmi').classList.add('active');
+            }
+        }
+
+        function mostrarSeccion(tipo) {
+            let cont = document.getElementById('subAccionContainer');
+            cont.style.display = 'block';
+
+            if(tipo === 'dep') {
+                cont.innerHTML = `
+                    <h4 style="font-size:13px; color:var(--accent-green); margin-bottom:10px;">🟢 Selecciona la Red (Min 4 USDT)</h4>
+                    
+                    <div class="network-select-card">
+                        <div class="network-info">
+                            <div class="net-logo-container"><span class="net-main-icon">T</span><img src="https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png" class="net-badge-icon"></div>
+                            <div><div class="net-name">BEP20-USDT</div><div style="font-size:10px; color:var(--text-muted);">Binance Smart Chain</div></div>
+                        </div>
+                        <button class="btn-select-net" onclick="abrirFormRed('BEP20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar ></button>
+                    </div>
+
+                    <div class="network-select-card">
+                        <div class="network-info">
+                            <div class="net-logo-container"><span class="net-main-icon">T</span><img src="https://assets.coingecko.com/coins/images/279/large/ethereum.png" class="net-badge-icon"></div>
+                            <div><div class="net-name">ERC20-USDT</div><div style="font-size:10px; color:var(--text-muted);">Ethereum Network</div></div>
+                        </div>
+                        <button class="btn-select-net" onclick="abrirFormRed('ERC20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar ></button>
+                    </div>
+
+                    <div class="network-select-card">
+                        <div class="network-info">
+                            <div class="net-logo-container"><span class="net-main-icon">T</span><img src="https://assets.coingecko.com/coins/images/1094/large/tron-logo.png" class="net-badge-icon"></div>
+                            <div><div class="net-name">TRC20-USDT</div><div style="font-size:10px; color:var(--text-muted);">Tron Network</div></div>
+                        </div>
+                        <button class="btn-select-net" onclick="abrirFormRed('TRC20', 'TYZruyFwd8m5hbQL2mrZJKYnEXhwSo1oSn')">Seleccionar ></button>
+                    </div>
+
+                    <div id="formularioRedSeleccionada" style="margin-top:12px;"></div>
+                `;
+            } else {
+                cont.innerHTML = `
+                    <h4 style="font-size:13px; color:var(--accent-blue); margin-bottom:8px;">📤 Retirar USDT</h4>
+                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Límites: BEP20 (1.5-1k) | ERC20 (20-20k) | TRC20 (30-30k)</p>
+                    <form onsubmit="solicitarRetiro(event)">
+                        <div class="input-group"><label>Red</label><select id="witRed"><option value="BEP20">BEP20</option><option value="ERC20">ERC20</option><option value="TRC20">TRC20</option></select></div>
+                        <div class="input-group"><label>Wallet Destino</label><input type="text" id="witWallet" required placeholder="Dirección"></div>
+                        <div class="input-group"><label>Monto</label><input type="number" id="witMonto" step="0.01" required placeholder="Cantidad"></div>
+                        <div class="input-group"><label>Contraseña</label><input type="password" id="witPass" required placeholder="Contraseña"></div>
+                        <button type="submit" class="btn btn-blue">Solicitar Retiro</button>
+                    </form>
+                `;
+            }
+        }
+
+        function abrirFormRed(redNombre, direccionWallet) {
+            let contenedorForm = document.getElementById('formularioRedSeleccionada');
+            contenedorForm.innerHTML = `
+                <div style="background:var(--bg-input); border:1px solid var(--accent-green); padding:12px; border-radius:8px;">
+                    <p style="font-size:11px; font-weight:bold; color:var(--accent-green); margin-bottom:4px;">Red Seleccionada: ${redNombre}</p>
+                    <code style="font-size:10px; color:#3861fb; word-break:break-all; display:block; background:var(--bg-main); padding:6px; border-radius:4px; margin-bottom:6px;">${direccionWallet}</code>
+                    <button class="btn btn-blue" style="padding:6px; font-size:11px; margin-bottom:10px;" onclick="copiarTexto('${direccionWallet}')">Copiar Dirección</button>
+                    
+                    <form onsubmit="reportarDepositoEspecifico(event, '${redNombre}')">
+                        <div class="input-group"><label>Monto Depositado (Min 4)</label><input type="number" id="depMontoEsp" step="0.01" min="4" required placeholder="Ej: 50"></div>
+                        <div class="input-group"><label>TXID / Hash de Transacción</label><input type="text" id="depHashEsp" required placeholder="Ingresa el Hash"></div>
+                        <button type="submit" class="btn btn-green">Enviar Reporte al CEO</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function copiarTexto(txt) { navigator.clipboard.writeText(txt); mostrarAlertaPro("Portapapeles", "¡Dirección copiada con éxito!"); }
+
+        function copiarEnlaceReferido() { 
+            let u = dbUsers.find(x => x.email === sessionEmail);
+            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code); 
+            mostrarAlertaPro("Referidos", "¡Enlace copiado al portapapeles!"); 
+        }
+
+        function reportarDepositoEspecifico(e, red) {
+            e.preventDefault();
+            let monto = parseFloat(document.getElementById('depMontoEsp').value);
+            let hash = document.getElementById('depHashEsp').value.trim();
+            if(monto < 4) { mostrarAlertaPro("Aviso", "El monto mínimo es 4 USDT"); return; }
+            dbDeps.push({ id: Date.now(), user: sessionEmail, red, monto, hash, status: 'Pendiente' });
+            localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps));
+            mostrarAlertaPro("Éxito", "¡Depósito notificado al CEO correctamente!");
+            document.getElementById('subAccionContainer').style.display = 'none';
+        }
+
+        function solicitarRetiro(e) {
+            e.preventDefault();
+            let red = document.getElementById('witRed').value;
+            let wallet = document.getElementById('witWallet').value.trim();
+            let monto = parseFloat(document.getElementById('witMonto').value);
+            let pass = document.getElementById('witPass').value.trim();
+            let u = dbUsers.find(x => x.email === sessionEmail);
+            if(u.pass !== pass) { mostrarAlertaPro("Error", "Contraseña incorrecta"); return; }
+            if(u.balance < monto) { mostrarAlertaPro("Error", "Saldo insuficiente"); return; }
+            u.balance -= monto;
+            localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+            dbWits.push({ id: Date.now(), user: sessionEmail, red, wallet, monto, status: 'Pendiente' });
+            localStorage.setItem("inverbot_wits", JSON.stringify(dbWits));
+            mostrarAlertaPro("Éxito", "¡Solicitud de retiro enviada!");
+            entrarDashboardDirecto();
+        }
+
+        function comprarVip(nivel, precio) {
+            let u = dbUsers.find(x => x.email === sessionEmail);
+            if(u.balance < precio) { mostrarAlertaPro("Aviso", `Saldo insuficiente. Necesitas ${precio} USDT.`); return; }
+            u.balance -= precio;
+            u.vipActive = nivel;
+            u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
+            u.lastClaim = 0;
+            localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+            mostrarAlertaPro("Éxito", `¡VIP Nivel ${nivel} adquirido exitosamente!`);
+            entrarDashboardDirecto();
+        }
+
+        function reclamarVip(nivel) {
+            let u = dbUsers.find(x => x.email === sessionEmail);
+            if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No tienes activo este VIP."); return; }
+            let ahora = Date.now();
+            let unDia = 24 * 60 * 60 * 1000;
+            if(ahora - u.lastClaim < unDia) { mostrarAlertaPro("Espera", "Debes esperar 24 horas exactas para tu siguiente reclamo."); return; }
+            let btn = document.getElementById((nivel === 1) ? 'btnClaim1' : 'btnClaimMax');
+            btn.disabled = true; btn.innerText = "⏳ Verificando...";
+            setTimeout(() => {
+                let rec = (nivel === 1) ? 1.5 : 6.5;
+                u.balance += rec;
+                u.lastClaim = ahora;
+                localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+                btn.disabled = false; btn.innerText = "Verificar / Reclamar Diario";
+                mostrarAlertaPro("Recompensa", `¡Reclamado con éxito! Se acreditaron ${rec} USDT a tus activos.`);
+                entrarDashboardDirecto();
+            }, 3000);
+        }
+
+        function abrirPanelAdmin() {
+            if(sessionEmail !== ADMIN_EMAIL) return;
+            document.getElementById('userDashboard').style.display = 'none';
+            document.getElementById('bottomNavBar').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            renderAdmin();
+        }
+
+        function cerrarPanelAdmin() {
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('userDashboard').style.display = 'block';
+            document.getElementById('bottomNavBar').style.display = 'flex';
+        }
+
+        function renderAdmin() {
+            dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
+            dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || [];
+            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
+            let depC = document.getElementById('listaAdminDeps');
+            let witC = document.getElementById('listaAdminWits');
+
+            depC.innerHTML = dbDeps.filter(d => d.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin depósitos pendientes.</p>" : "";
+            dbDeps.forEach((d, idx) => {
+                if(d.status === 'Pendiente') {
+                    depC.innerHTML += `<div class="crypto-asset-card" style="margin-bottom:8px;"><p style="font-size:11px;"><b>User:</b> ${d.user}</p><p style="font-size:11px;"><b>Red:</b> ${d.red} | <b>Monto:</b> <span style="color:var(--accent-green);">+$${d.monto}</span></p><p style="font-size:11px; word-break:break-all;"><b>TXID:</b> ${d.hash}</p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarDep(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarDep(${idx})">Rechazar</button></div></div>`;
+                }
+            });
+
+            witC.innerHTML = dbWits.filter(w => w.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin retiros pendientes.</p>" : "";
+            dbWits.forEach((w, idx) => {
+                if(w.status === 'Pendiente') {
+                    witC.innerHTML += `<div class="crypto-asset-card" style="margin-bottom:8px;"><p style="font-size:11px;"><b>User:</b> ${w.user}</p><p style="font-size:11px;"><b>Red:</b> ${w.red} | <b>Monto:</b> <span style="color:var(--accent-red);">-$${w.monto}</span></p><p style="font-size:11px; word-break:break-all;"><b>Wallet:</b> ${w.wallet}</p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarWit(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarWit(${idx})">Rechazar</button></div></div>`;
+                }
+            });
+        }
+
+        function aprobarDep(idx) {
+            dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
+            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
+            let dep = dbDeps[idx]; let u = dbUsers.find(x => x.email === dep.user);
+            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; localStorage.setItem("inverbot_users", JSON.stringify(dbUsers)); localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Depósito aprobado!"); renderAdmin(); }
+        }
+        function rechazarDep(idx) { dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "Depósito rechazado."); renderAdmin(); }
+        function aprobarWit(idx) { dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); mostrarAlertaPro("CEO", "¡Retiro aprobado!"); renderAdmin(); }
+        function rechazarWit(idx) {
+            dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
+            let w = dbWits[idx]; let u = dbUsers.find(x => x.email === w.user);
+            if(u) { u.balance += w.monto; w.status = 'Rechazado'; localStorage.setItem("inverbot_users", JSON.stringify(dbUsers)); localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); mostrarAlertaPro("CEO", "Retiro rechazado y reembolsado."); renderAdmin(); }
+        }
+    </script>
+</body>
+</html>
