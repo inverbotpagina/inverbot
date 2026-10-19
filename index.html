@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INVERBOT | Live Crypto Terminal</title>
+    <title>INVERBOT | Plataforma Financiera Global</title>
     <style>
         :root {
             --bg-main: #000000;
-            --bg-card: #030a07;
-            --bg-input: #07130e;
-            --border-color: #0ecb8144;
+            --bg-card: #050d0a;
+            --bg-input: #091811;
+            --border-color: #0ecb8133;
             --accent-green: #0ecb81;
             --accent-red: #f6465d;
             --text-main: #ffffff;
-            --text-muted: #5e7d6d;
+            --text-muted: #6b8f7d;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -36,14 +36,23 @@
         .trading-card { 
             background-color: var(--bg-card); 
             border: 1px solid var(--border-color); 
-            padding: 20px; 
-            border-radius: 14px; 
-            box-shadow: 0 10px 30px rgba(14,203,129,0.15); 
+            padding: 24px; 
+            border-radius: 16px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 20px rgba(14,203,129,0.08); 
             margin-bottom: 14px; 
         }
 
+        .brand-logo-container { text-align: center; margin-bottom: 20px; }
+        .bot-shield-icon {
+            width: 52px; height: 52px; background: rgba(14,203,129,0.1); border: 1px solid var(--accent-green);
+            border-radius: 14px; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 24px; margin-bottom: 10px; box-shadow: 0 0 15px rgba(14,203,129,0.2);
+        }
+        .brand-logo-container h1 { font-size: 20px; color: var(--accent-green); font-weight: 900; letter-spacing: 1px; }
+        .brand-logo-container p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
         .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .brand-header h1 { font-size: 18px; color: var(--accent-green); font-weight: 800; letter-spacing: 0.5px; }
+        .brand-header h1 { font-size: 16px; color: var(--accent-green); font-weight: 800; }
         
         .promo-banner {
             background: linear-gradient(135deg, #031c10, #06331e);
@@ -136,20 +145,28 @@
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.94); backdrop-filter: blur(8px);
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
         .modal-card {
-            background: #020f09; border: 1px solid var(--accent-green);
-            padding: 22px; border-radius: 14px; width: 100%; max-width: 340px; text-align: center;
-            box-shadow: 0 15px 40px rgba(14,203,129,0.4); position: relative;
+            background: #050d0a; border: 1px solid var(--accent-green);
+            padding: 24px; border-radius: 16px; width: 100%; max-width: 350px; text-align: center;
+            box-shadow: 0 20px 50px rgba(14,203,129,0.3); position: relative;
         }
-        .modal-title { font-size: 15px; font-weight: 700; color: var(--accent-green); margin-bottom: 8px; }
-        .modal-msg { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
+        .modal-title { font-size: 16px; font-weight: 800; color: var(--accent-green); margin-bottom: 8px; }
+        .modal-msg { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .modal-btn-row { display: flex; gap: 10px; }
         .modal-close-btn {
             background: var(--bg-input); color: var(--accent-green); border: 1px solid var(--accent-green);
             width: 32px; height: 32px; border-radius: 50%; font-size: 14px; font-weight: bold; cursor: pointer;
         }
+
+        /* ROMPECABEZAS / SLIDER ANTI-BOT */
+        .puzzle-box { background: #020f09; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 14px; text-align: center; }
+        .puzzle-target { width: 100%; height: 70px; background: #07130e; border: 1px dashed var(--accent-green); border-radius: 8px; position: relative; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .puzzle-piece { width: 40px; height: 40px; background: var(--accent-green); color: #000; font-weight: bold; border-radius: 6px; display: flex; align-items: center; justify-content: center; position: absolute; left: 5px; top: 15px; box-shadow: 0 0 10px rgba(14,203,129,0.5); }
+        .puzzle-track { width: 100%; height: 40px; background: var(--bg-input); border-radius: 20px; position: relative; display: flex; align-items: center; padding: 0 5px; border: 1px solid var(--border-color); }
+        .puzzle-slider-btn { width: 32px; height: 32px; background: var(--accent-green); border-radius: 50%; position: absolute; left: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; transition: transform 0.1s; }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -162,16 +179,16 @@
 
         .input-group { margin-bottom: 12px; text-align: left; }
         .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
-        .input-group input, .input-group select { width: 100%; padding: 10px 12px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 12px; outline: none; }
+        .input-group input, .input-group select { width: 100%; padding: 11px 12px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 12px; outline: none; }
         .input-group input:focus, .input-group select:focus { border-color: var(--accent-green); }
         
-        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 4px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 4px; }
         .btn-green { background-color: var(--accent-green); color: #000; }
         .btn-blue { background-color: var(--accent-green); color: #000; }
         .btn-red { background-color: var(--accent-red); color: #fff; }
         
         .crypto-asset-card { background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; }
-        .auth-switch { text-align: center; margin-top: 12px; font-size: 11px; color: var(--text-muted); }
+        .auth-switch { text-align: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
         .auth-switch a { color: var(--accent-green); cursor: pointer; text-decoration: none; font-weight: 700; }
     </style>
 </head>
@@ -186,32 +203,42 @@
 
     <div class="terminal-container">
         
-        <!-- ================= AUTENTICACIÓN ================= -->
+        <!-- ================= AUTENTICACIÓN PROFESIONAL INVERBOT ================= -->
         <div id="authScreen" class="trading-card">
-            <div class="brand-header">
+            <div class="brand-logo-container">
+                <div class="bot-shield-icon">🤖</div>
                 <h1>INVERBOT</h1>
-                <p style="font-size:10px; color:var(--text-muted)">Secure Terminal</p>
+                <p>Plataforma de Cuantificación y Activos Digitales</p>
             </div>
 
-            <div class="live-market-box">
-                <div class="live-header">
-                    <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
-                    <span class="live-badge">REAL-TIME</span>
-                </div>
-                <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="loginBtcBin">81,598.50</span><span class="ex-change-green">+0.28%</span></div>
-                <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="loginBtcOkx">81,598.50</span><span class="ex-change-green">+0.28%</span></div>
-            </div>
-
+            <!-- VISTA DE REGISTRO -->
             <div id="registerView">
-                <form onsubmit="registrarUsuario(event)">
+                <form onsubmit="iniciarVerificacionPuzzle(event)">
                     <div class="input-group"><label>Correo Electrónico (Gmail)</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
                     <div class="input-group"><label>Contraseña de Acceso</label><input type="password" id="regPass" required placeholder="••••••••"></div>
                     <div class="input-group"><label>Código de Invitación (Opcional)</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
-                    <button type="submit" class="btn btn-green">Crear Cuenta</button>
+                    <button type="submit" class="btn btn-green">Continuar Registro</button>
                 </form>
                 <div class="auth-switch"><p>¿Ya posee una cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
             </div>
 
+            <!-- VISTA DE PUZZLE ANTI-BOT -->
+            <div id="puzzleView" style="display: none;">
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; text-align: center;">Verificación de Seguridad: Deslice la flecha para encajar el bloque.</p>
+                <div class="puzzle-box">
+                    <div class="puzzle-target">
+                        <div style="position: absolute; right: 40px; color: var(--accent-green); font-size: 18px; font-weight: bold;">🎯</div>
+                        <div id="puzzleDraggable" class="puzzle-piece">➔</div>
+                    </div>
+                    <div class="puzzle-track">
+                        <span style="font-size: 9px; color: var(--text-muted); width: 100%; text-align: center;">Deslice hacia la meta</span>
+                        <div id="puzzleSlider" class="puzzle-slider-btn" ontouchstart="iniciarDrag(event)" onmousedown="iniciarDrag(event)">➔</div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-red" onclick="cancelarPuzzle()" style="margin-top: 6px;">Cancelar</button>
+            </div>
+
+            <!-- VISTA DE LOGIN -->
             <div id="loginView" style="display: none;">
                 <form onsubmit="iniciarSesion(event)">
                     <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" required placeholder="trader@gmail.com"></div>
@@ -260,7 +287,7 @@
                 </div>
             </div>
 
-            <!-- CUANTIFICAR -->
+            <!-- CUANTIFICAR (VIPs 1 al 5) -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="assets-total-box" style="margin-bottom:14px;">
                     <div class="assets-title">Activos Totales de Cuantificación</div>
@@ -283,11 +310,11 @@
                     <button id="btnClaim1" class="btn btn-blue" onclick="reclamarVip(1)" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
-                <!-- VIP MAX -->
+                <!-- VIP 2 -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
-                        <span class="vip-title-name" style="color:var(--accent-green);">VIP MAX</span>
-                        <span id="vipMaxStatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
+                        <span class="vip-title-name">VIP 2</span>
+                        <span id="vip2StatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
                         <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
@@ -295,15 +322,15 @@
                         <div class="vip-grid-box"><div class="vip-box-title">Diario</div><div class="vip-box-value green">6.50 USDT</div></div>
                         <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">16.00 USDT</div></div>
                     </div>
-                    <div id="vipMaxActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip('Max', 16)">Adquirir VIP Max</button></div>
-                    <button id="btnClaimMax" class="btn btn-blue" onclick="reclamarVip('Max')" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
+                    <div id="vip2ActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip(2, 16)">Adquirir VIP 2</button></div>
+                    <button id="btnClaim2" class="btn btn-blue" onclick="reclamarVip(2)" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
-                <!-- VIP ULTRA -->
+                <!-- VIP 3 -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
-                        <span class="vip-title-name" style="color:var(--accent-green);">VIP ULTRA</span>
-                        <span id="vipUltraStatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
+                        <span class="vip-title-name">VIP 3</span>
+                        <span id="vip3StatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
                         <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
@@ -311,8 +338,40 @@
                         <div class="vip-grid-box"><div class="vip-box-title">Diario</div><div class="vip-box-value green">42.2 USDT</div></div>
                         <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">65.00 USDT</div></div>
                     </div>
-                    <div id="vipUltraActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip('Ultra', 65)">Adquirir VIP Ultra</button></div>
-                    <button id="btnClaimUltra" class="btn btn-blue" onclick="reclamarVip('Ultra')" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
+                    <div id="vip3ActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip(3, 65)">Adquirir VIP 3</button></div>
+                    <button id="btnClaim3" class="btn btn-blue" onclick="reclamarVip(3)" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
+                </div>
+
+                <!-- VIP 4 (NUEVO) -->
+                <div class="vip-pro-card">
+                    <div class="vip-header-row">
+                        <span class="vip-title-name" style="color:var(--accent-green);">VIP 4</span>
+                        <span id="vip4StatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
+                    </div>
+                    <div class="vip-grid-container">
+                        <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Diario</div><div class="vip-box-value green">88.50 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">180.00 USDT</div></div>
+                    </div>
+                    <div id="vip4ActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip(4, 180)">Adquirir VIP 4</button></div>
+                    <button id="btnClaim4" class="btn btn-blue" onclick="reclamarVip(4)" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
+                </div>
+
+                <!-- VIP 5 (NUEVO) -->
+                <div class="vip-pro-card">
+                    <div class="vip-header-row">
+                        <span class="vip-title-name" style="color:var(--accent-green);">VIP 5</span>
+                        <span id="vip5StatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
+                    </div>
+                    <div class="vip-grid-container">
+                        <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Diario</div><div class="vip-box-value green">1,600.00 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">3,600.00 USDT</div></div>
+                    </div>
+                    <div id="vip5ActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip(5, 3600)">Adquirir VIP 5</button></div>
+                    <button id="btnClaim5" class="btn btn-blue" onclick="reclamarVip(5)" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
             </div>
 
@@ -410,7 +469,11 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const STORAGE_KEY = "inverbot_master_global_db_v6";
+        const STORAGE_KEY = "inverbot_master_global_db_v8";
+
+        let tempEmail = "";
+        let tempPass = "";
+        let tempRef = "";
 
         function obtenerBaseGlobal() {
             let defaultUsers = [
@@ -438,17 +501,26 @@
 
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
 
-        function mostrarAlertaPro(titulo, mensaje) {
+        function mostrarAlertaPro(titulo, mensaje, onAceptarCallback = null) {
             let container = document.getElementById('customModalContainer');
             container.innerHTML = `
                 <div class="modal-overlay">
                     <div class="modal-card">
                         <h3 class="modal-title">${titulo}</h3>
                         <p class="modal-msg">${mensaje}</p>
-                        <button class="modal-close-btn" onclick="cerrarAlertaPro()">✕</button>
+                        <div class="modal-btn-row">
+                            ${onAceptarCallback ? `<button class="btn btn-green" id="modalBtnAceptar">Aceptar</button>` : ``}
+                            <button class="btn btn-blue" onclick="cerrarAlertaPro()" style="margin:0;">${onAceptarCallback ? 'Cancelar' : 'Cerrar'}</button>
+                        </div>
                     </div>
                 </div>
             `;
+            if(onAceptarCallback) {
+                document.getElementById('modalBtnAceptar').onclick = () => {
+                    cerrarAlertaPro();
+                    onAceptarCallback();
+                };
+            }
         }
 
         function cerrarAlertaPro() {
@@ -469,7 +541,6 @@
                 else cerrarSesion();
             }
 
-            // COTIZACIONES EN TIEMPO REAL ULTRA RÁPIDAS (Milisegundos)
             setInterval(() => {
                 let r1 = (81590 + Math.random() * 30).toFixed(2);
                 let r2 = (2387 + Math.random() * 5).toFixed(2);
@@ -484,42 +555,82 @@
 
         function cambiarVistaAuth(isLogin) {
             document.getElementById('registerView').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('puzzleView').style.display = 'none';
             document.getElementById('loginView').style.display = isLogin ? 'block' : 'none';
         }
 
-        function registrarUsuario(e) {
+        function iniciarVerificacionPuzzle(e) {
             e.preventDefault();
-            let email = document.getElementById('regEmail').value.trim().toLowerCase();
-            let pass = document.getElementById('regPass').value.trim();
-            let refCode = document.getElementById('regRef').value.trim();
+            tempEmail = document.getElementById('regEmail').value.trim().toLowerCase();
+            tempPass = document.getElementById('regPass').value.trim();
+            tempRef = document.getElementById('regRef').value.trim();
 
             let users = obtenerBaseGlobal();
-            if(users.some(u => u.email === email)) { 
+            if(users.some(u => u.email === tempEmail)) { 
                 mostrarAlertaPro("Aviso", "Este correo ya se encuentra registrado en el sistema."); 
                 return; 
             }
 
-            let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Creando cuenta..."; }
+            document.getElementById('registerView').style.display = 'none';
+            document.getElementById('puzzleView').style.display = 'block';
+        }
 
-            setTimeout(() => {
-                let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-                let nuevo = { email, pass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
+        function cancelarPuzzle() {
+            document.getElementById('puzzleView').style.display = 'none';
+            document.getElementById('registerView').style.display = 'block';
+        }
 
-                if(refCode) {
-                    let refUser = users.find(u => u.code === refCode);
-                    if(refUser) { refUser.balance += 0.20; refUser.refCount += 1; }
-                }
+        let isDragging = false;
+        let startX = 0;
 
-                users.push(nuevo);
-                guardarBaseGlobal(users);
+        function iniciarDrag(e) {
+            isDragging = true;
+            startX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('touchmove', onDrag);
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchend', stopDrag);
+        }
 
-                if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
+        function onDrag(e) {
+            if (!isDragging) return;
+            let currentX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            let diff = currentX - startX;
+            if (diff < 0) diff = 0;
+            if (diff > 230) diff = 230;
 
-                sessionEmail = email;
-                localStorage.setItem("inverbot_session", sessionEmail);
-                entrarDashboardDirecto();
-            }, 1000);
+            document.getElementById('puzzleSlider').style.transform = `translateX(${diff}px)`;
+            document.getElementById('puzzleDraggable').style.transform = `translateX(${diff}px)`;
+
+            if (diff >= 220) {
+                isDragging = false;
+                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('touchmove', onDrag);
+                completarRegistroDefinitivo();
+            }
+        }
+
+        function stopDrag() {
+            isDragging = false;
+        }
+
+        function completarRegistroDefinitivo() {
+            let users = obtenerBaseGlobal();
+            let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
+            let nuevo = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
+
+            if(tempRef) {
+                let refUser = users.find(u => u.code === tempRef);
+                if(refUser) { refUser.balance += 0.20; refUser.refCount += 1; }
+            }
+
+            users.push(nuevo);
+            guardarBaseGlobal(users);
+
+            sessionEmail = tempEmail;
+            localStorage.setItem("inverbot_session", sessionEmail);
+            entrarDashboardDirecto();
         }
 
         function iniciarSesion(e) {
@@ -531,15 +642,9 @@
             let u = users.find(x => x.email === email && x.pass === pass);
             if(!u) { mostrarAlertaPro("Error de Autenticación", "Credenciales incorrectas o usuario no registrado."); return; }
 
-            let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando..."; }
-
-            setTimeout(() => {
-                if(btn) { btn.disabled = false; btn.innerText = "Autenticar Sesión"; }
-                sessionEmail = email;
-                localStorage.setItem("inverbot_session", sessionEmail);
-                entrarDashboardDirecto();
-            }, 1000);
+            sessionEmail = email;
+            localStorage.setItem("inverbot_session", sessionEmail);
+            entrarDashboardDirecto();
         }
 
         function entrarDashboardDirecto() {
@@ -564,27 +669,54 @@
             document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
 
             actualizarInterfazVip(user);
+
+            // NOTIFICACIÓN PROFESIONAL CON EMOJIS CADA VEZ QUE ENTRAN
+            mostrarAlertaPro(
+                "🚀 INVERBOT | Panel Institucional 🌟", 
+                "💎 ¡INVIERTES Y GANAS! 💰\n\n✨ Descubre el rendimiento de nuestros nuevos planes exclusivos y haz crecer tu capital hoy mismo. 📈\n\n👉 ¡MIRA LOS VIP EN CUANTIFICAR! ⭐", 
+                () => {
+                    cambiarTab('Cuantificar', document.getElementById('navCuantificar'));
+                }
+            );
         }
 
         function actualizarInterfazVip(user) {
             let ahora = Date.now();
-            let vip1Activo = (user.vipActive === 1 && user.vipExpiry > ahora);
-            document.getElementById('vip1StatusText').innerText = vip1Activo ? "Activo" : "Inactivo";
-            document.getElementById('vip1StatusText').style.color = vip1Activo ? "var(--accent-green)" : "var(--text-muted)";
-            document.getElementById('vip1ActionArea').innerHTML = vip1Activo ? `` : `<button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button>`;
-            document.getElementById('btnClaim1').style.display = vip1Activo ? 'block' : 'none';
+            
+            // VIP 1
+            let v1 = (user.vipActive === 1 && user.vipExpiry > ahora);
+            document.getElementById('vip1StatusText').innerText = v1 ? "Activo" : "Inactivo";
+            document.getElementById('vip1StatusText').style.color = v1 ? "var(--accent-green)" : "var(--text-muted)";
+            document.getElementById('vip1ActionArea').innerHTML = v1 ? `` : `<button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button>`;
+            document.getElementById('btnClaim1').style.display = v1 ? 'block' : 'none';
 
-            let vipMaxActivo = (user.vipActive === 'Max' && user.vipExpiry > ahora);
-            document.getElementById('vipMaxStatusText').innerText = vipMaxActivo ? "Activo" : "Inactivo";
-            document.getElementById('vipMaxStatusText').style.color = vipMaxActivo ? "var(--accent-green)" : "var(--text-muted)";
-            document.getElementById('vipMaxActionArea').innerHTML = vipMaxActivo ? `` : `<button class="btn btn-green" onclick="comprarVip('Max', 16)">Adquirir VIP Max</button>`;
-            document.getElementById('btnClaimMax').style.display = vipMaxActivo ? 'block' : 'none';
+            // VIP 2
+            let v2 = (user.vipActive === 2 && user.vipExpiry > ahora);
+            document.getElementById('vip2StatusText').innerText = v2 ? "Activo" : "Inactivo";
+            document.getElementById('vip2StatusText').style.color = v2 ? "var(--accent-green)" : "var(--text-muted)";
+            document.getElementById('vip2ActionArea').innerHTML = v2 ? `` : `<button class="btn btn-green" onclick="comprarVip(2, 16)">Adquirir VIP 2</button>`;
+            document.getElementById('btnClaim2').style.display = v2 ? 'block' : 'none';
 
-            let vipUltraActivo = (user.vipActive === 'Ultra' && user.vipExpiry > ahora);
-            document.getElementById('vipUltraStatusText').innerText = vipUltraActivo ? "Activo" : "Inactivo";
-            document.getElementById('vipUltraStatusText').style.color = vipUltraActivo ? "var(--accent-green)" : "var(--text-muted)";
-            document.getElementById('vipUltraActionArea').innerHTML = vipUltraActivo ? `` : `<button class="btn btn-green" onclick="comprarVip('Ultra', 65)">Adquirir VIP Ultra</button>`;
-            document.getElementById('btnClaimUltra').style.display = vipUltraActivo ? 'block' : 'none';
+            // VIP 3
+            let v3 = (user.vipActive === 3 && user.vipExpiry > ahora);
+            document.getElementById('vip3StatusText').innerText = v3 ? "Activo" : "Inactivo";
+            document.getElementById('vip3StatusText').style.color = v3 ? "var(--accent-green)" : "var(--text-muted)";
+            document.getElementById('vip3ActionArea').innerHTML = v3 ? `` : `<button class="btn btn-green" onclick="comprarVip(3, 65)">Adquirir VIP 3</button>`;
+            document.getElementById('btnClaim3').style.display = v3 ? 'block' : 'none';
+
+            // VIP 4
+            let v4 = (user.vipActive === 4 && user.vipExpiry > ahora);
+            document.getElementById('vip4StatusText').innerText = v4 ? "Activo" : "Inactivo";
+            document.getElementById('vip4StatusText').style.color = v4 ? "var(--accent-green)" : "var(--text-muted)";
+            document.getElementById('vip4ActionArea').innerHTML = v4 ? `` : `<button class="btn btn-green" onclick="comprarVip(4, 180)">Adquirir VIP 4</button>`;
+            document.getElementById('btnClaim4').style.display = v4 ? 'block' : 'none';
+
+            // VIP 5
+            let v5 = (user.vipActive === 5 && user.vipExpiry > ahora);
+            document.getElementById('vip5StatusText').innerText = v5 ? "Activo" : "Inactivo";
+            document.getElementById('vip5StatusText').style.color = v5 ? "var(--accent-green)" : "var(--text-muted)";
+            document.getElementById('vip5ActionArea').innerHTML = v5 ? `` : `<button class="btn btn-green" onclick="comprarVip(5, 3600)">Adquirir VIP 5</button>`;
+            document.getElementById('btnClaim5').style.display = v5 ? 'block' : 'none';
         }
 
         function cerrarSesion() {
@@ -594,6 +726,7 @@
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('authScreen').style.display = 'block';
+            cambiarVistaAuth(false);
         }
 
         function cambiarTab(tabName, btnElement) {
@@ -734,7 +867,7 @@
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
                 guardarBaseGlobal(users);
-                mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
+                mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado con éxito!`);
                 entrarDashboardDirecto();
             }, 1000);
         }
@@ -742,21 +875,27 @@
         function reclamarVip(nivel) {
             let users = obtenerBaseGlobal();
             let u = users.find(x => x.email === sessionEmail);
-            if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No cuenta con un VIP activo."); return; }
+            if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No cuenta con este VIP activo."); return; }
             let ahora = Date.now();
-            if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) { mostrarAlertaPro("Espera", "Debe esperar el ciclo de 24 horas."); return; }
+            if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) { mostrarAlertaPro("Espera", "Debe esperar el ciclo de 24 horas para su próxima recompensa."); return; }
             
-            let btnId = (nivel === 1) ? 'btnClaim1' : (nivel === 'Max' ? 'btnClaimMax' : 'btnClaimUltra');
+            let btnId = 'btnClaim' + nivel;
             let btn = document.getElementById(btnId);
             if(btn) { btn.disabled = true; btn.innerText = "⏳ Cuantificando..."; }
             
             setTimeout(() => {
-                let rec = (nivel === 1) ? 1.5 : (nivel === 'Max' ? 6.5 : 42.2);
+                let rec = 0;
+                if(nivel === 1) rec = 1.5;
+                else if(nivel === 2) rec = 6.5;
+                else if(nivel === 3) rec = 42.2;
+                else if(nivel === 4) rec = 88.5;
+                else if(nivel === 5) rec = 1600.0;
+
                 u.balance += rec;
                 u.lastClaim = ahora;
                 guardarBaseGlobal(users);
                 if(btn) { btn.disabled = false; btn.innerText = "Reclamar Rendimiento Diario"; }
-                mostrarAlertaPro("Rendimiento Acreditado", `¡+${rec} USDT acreditados!`);
+                mostrarAlertaPro("Rendimiento Acreditado", `¡+${rec} USDT acreditados correctamente a su balance!`);
                 entrarDashboardDirecto();
             }, 1000);
         }
