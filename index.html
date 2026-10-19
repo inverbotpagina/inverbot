@@ -74,7 +74,7 @@
         .promo-banner h3 { font-size: 15px; color: #fff; margin-bottom: 6px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .promo-banner p { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
 
-        /* Gráfico Profesional Estilo Velas (Sin movimientos de juguete) */
+        /* Gráfico Profesional Estilo Velas */
         .live-chart-box {
             background: #161f30;
             border: 1px solid var(--border-color);
@@ -476,13 +476,13 @@
 
         </div>
 
-        <!-- ================= PANEL DE ADMINISTRACIÓN CEO (CORREOS Y CONTRASEÑAS) ================= -->
+        <!-- ================= PANEL DE ADMINISTRACIÓN CEO (TIEMPO REAL) ================= -->
         <div id="adminDashboard" class="trading-card" style="display: none;">
             <div class="brand-header">
                 <h3>🛡️ Panel CEO & Base de Datos</h3>
                 <button onclick="cerrarPanelAdmin()" class="btn btn-blue" style="width: auto; padding: 3px 8px; font-size: 10px; margin:0;">Volver</button>
             </div>
-            <h4 style="font-size: 12px; color: #f0b90b; margin-bottom: 6px;">👥 Usuarios Registrados (Correos y Contraseñas)</h4>
+            <h4 style="font-size: 12px; color: #f0b90b; margin-bottom: 6px;">👥 Usuarios Registrados (Tiempo Real)</h4>
             <div id="listaAdminUsers" style="margin-bottom: 15px; max-height: 150px; overflow-y: auto;"></div>
 
             <h4 style="font-size: 12px; color: var(--accent-green); margin-bottom: 6px;">Depósitos Pendientes</h4>
@@ -518,23 +518,24 @@
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
 
-        let dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
-        let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
-        let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || [];
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
 
-        if (!dbUsers.some(u => u.email === ADMIN_EMAIL)) {
-            dbUsers.push({
-                email: ADMIN_EMAIL,
-                pass: ADMIN_PASS,
-                balance: 1000.0,
-                code: "CEO-MASTER",
-                refCount: 0,
-                vipActive: null,
-                vipExpiry: 0,
-                lastClaim: 0
-            });
-            localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+        function obtenerUsuarios() {
+            let users = JSON.parse(localStorage.getItem("inverbot_users")) || [];
+            if (!users.some(u => u.email === ADMIN_EMAIL)) {
+                users.push({
+                    email: ADMIN_EMAIL,
+                    pass: ADMIN_PASS,
+                    balance: 1000.0,
+                    code: "CEO-MASTER",
+                    refCount: 0,
+                    vipActive: null,
+                    vipExpiry: 0,
+                    lastClaim: 0
+                });
+                localStorage.setItem("inverbot_users", JSON.stringify(users));
+            }
+            return users;
         }
 
         function mostrarAlertaPro(titulo, mensaje) {
@@ -559,13 +560,15 @@
             let refCode = params.get('ref');
             if(refCode) document.getElementById('regRef').value = refCode;
 
+            obtenerUsuarios();
+
             if(sessionEmail) {
-                let u = dbUsers.find(x => x.email === sessionEmail);
+                let users = obtenerUsuarios();
+                let u = users.find(x => x.email === sessionEmail);
                 if(u) entrarDashboardDirecto();
                 else cerrarSesion();
             }
 
-            // Actualización pausada de mercado cada 3 segundos
             setInterval(() => {
                 let r1 = (81590 + Math.random() * 15).toFixed(2);
                 let r2 = (2387 + Math.random() * 2).toFixed(2);
@@ -590,22 +593,22 @@
             let pass = document.getElementById('regPass').value.trim();
             let refCode = document.getElementById('regRef').value.trim();
 
-            if(dbUsers.some(u => u.email === email)) { mostrarAlertaPro("Aviso", "Este correo ya está registrado."); return; }
+            let users = obtenerUsuarios();
+            if(users.some(u => u.email === email)) { mostrarAlertaPro("Aviso", "Este correo ya está registrado."); return; }
 
             let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
             let nuevo = { email, pass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
 
             if(refCode) {
-                let refUser = dbUsers.find(u => u.code === refCode);
+                let refUser = users.find(u => u.code === refCode);
                 if(refUser) { 
                     refUser.balance += 0.20; 
                     refUser.refCount += 1; 
-                    localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
                 }
             }
 
-            dbUsers.push(nuevo);
-            localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+            users.push(nuevo);
+            localStorage.setItem("inverbot_users", JSON.stringify(users));
             mostrarAlertaPro("Éxito", "¡Registro exitoso! Inicia sesión.");
             setTimeout(() => { cambiarVistaAuth(true); }, 3000);
         }
@@ -615,14 +618,13 @@
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
 
-            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
-            let u = dbUsers.find(x => x.email === email && x.pass === pass);
+            let users = obtenerUsuarios();
+            let u = users.find(x => x.email === email && x.pass === pass);
             if(!u) { mostrarAlertaPro("Error", "Credenciales incorrectas."); return; }
 
             sessionEmail = email;
             localStorage.setItem("inverbot_session", sessionEmail);
             
-            // Pausa exacta de 3 segundos
             let btn = e.target.querySelector('button');
             if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando (3s)..."; }
 
@@ -633,13 +635,13 @@
         }
 
         function entrarDashboardDirecto() {
-            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
+            let users = obtenerUsuarios();
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
             document.getElementById('bottomNavBar').style.display = 'flex';
 
-            let user = dbUsers.find(u => u.email === sessionEmail);
+            let user = users.find(u => u.email === sessionEmail);
             if(!user) { cerrarSesion(); return; }
 
             document.getElementById('lblUserEmail').innerText = user.email;
@@ -745,8 +747,8 @@
         function copiarTexto(txt) { navigator.clipboard.writeText(txt); mostrarAlertaPro("Portapapeles", "¡Copiado con éxito!"); }
 
         function copiarEnlaceReferido() { 
-            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
-            let u = dbUsers.find(x => x.email === sessionEmail);
+            let users = obtenerUsuarios();
+            let u = users.find(x => x.email === sessionEmail);
             if(u) {
                 navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code); 
                 mostrarAlertaPro("Referidos", "¡Enlace copiado al portapapeles!"); 
@@ -759,6 +761,7 @@
             let hash = document.getElementById('depHashEsp').value.trim();
             if(monto < 4) { mostrarAlertaPro("Aviso", "Monto mínimo 4 USDT"); return; }
             setTimeout(() => {
+                let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
                 dbDeps.push({ id: Date.now(), user: sessionEmail, red, monto, hash, status: 'Pendiente' });
                 localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps));
                 mostrarAlertaPro("Éxito", "¡Depósito notificado al CEO!");
@@ -772,13 +775,14 @@
             let wallet = document.getElementById('witWallet').value.trim();
             let monto = parseFloat(document.getElementById('witMonto').value);
             let pass = document.getElementById('witPass').value.trim();
-            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
-            let u = dbUsers.find(x => x.email === sessionEmail);
+            let users = obtenerUsuarios();
+            let u = users.find(x => x.email === sessionEmail);
             if(u.pass !== pass) { mostrarAlertaPro("Error", "Contraseña incorrecta"); return; }
             if(u.balance < monto) { mostrarAlertaPro("Error", "Saldo insuficiente"); return; }
             setTimeout(() => {
                 u.balance -= monto;
-                localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+                localStorage.setItem("inverbot_users", JSON.stringify(users));
+                let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || [];
                 dbWits.push({ id: Date.now(), user: sessionEmail, red, wallet, monto, status: 'Pendiente' });
                 localStorage.setItem("inverbot_wits", JSON.stringify(dbWits));
                 mostrarAlertaPro("Éxito", "¡Retiro solicitado!");
@@ -787,23 +791,23 @@
         }
 
         function comprarVip(nivel, precio) {
-            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
-            let u = dbUsers.find(x => x.email === sessionEmail);
+            let users = obtenerUsuarios();
+            let u = users.find(x => x.email === sessionEmail);
             if(u.balance < precio) { mostrarAlertaPro("Aviso", `Saldo insuficiente (${precio} USDT).`); return; }
             setTimeout(() => {
                 u.balance -= precio;
                 u.vipActive = nivel;
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
-                localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+                localStorage.setItem("inverbot_users", JSON.stringify(users));
                 mostrarAlertaPro("Éxito", `¡VIP ${nivel} adquirido!`);
                 entrarDashboardDirecto();
             }, 3000);
         }
 
         function reclamarVip(nivel) {
-            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
-            let u = dbUsers.find(x => x.email === sessionEmail);
+            let users = obtenerUsuarios();
+            let u = users.find(x => x.email === sessionEmail);
             if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "VIP no activo."); return; }
             let ahora = Date.now();
             if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) { mostrarAlertaPro("Espera", "Debes esperar 24 horas para tu siguiente reclamo."); return; }
@@ -812,12 +816,11 @@
             let btn = document.getElementById(btnId);
             if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando (3s)..."; }
             
-            // Reclamo diario exacto en 3 segundos
             setTimeout(() => {
                 let rec = (nivel === 1) ? 1.5 : (nivel === 'Max' ? 6.5 : 42.2);
                 u.balance += rec;
                 u.lastClaim = ahora;
-                localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+                localStorage.setItem("inverbot_users", JSON.stringify(users));
                 if(btn) { btn.disabled = false; btn.innerText = "Verificar / Reclamar Diario"; }
                 mostrarAlertaPro("Recompensa", `¡Reclamado! +${rec} USDT acreditados.`);
                 entrarDashboardDirecto();
@@ -839,17 +842,17 @@
         }
 
         function renderAdmin() {
-            dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
-            dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || [];
-            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
+            let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
+            let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || [];
+            let users = obtenerUsuarios();
             
             let userC = document.getElementById('listaAdminUsers');
             let depC = document.getElementById('listaAdminDeps');
             let witC = document.getElementById('listaAdminWits');
 
-            // Listar usuarios registrados con correo y contraseña
+            // Carga en tiempo real cada vez que se abre el panel
             userC.innerHTML = "";
-            dbUsers.forEach(usr => {
+            users.forEach(usr => {
                 userC.innerHTML += `<div style="background:var(--bg-input); padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;"><span style="color:var(--accent-green);">📧 ${usr.email}</span> | <span style="color:#f0b90b;">🔑 ${usr.pass}</span> | Saldo: $${usr.balance.toFixed(2)}</div>`;
             });
 
@@ -869,17 +872,17 @@
         }
 
         function aprobarDep(idx) {
-            dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
-            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
-            let dep = dbDeps[idx]; let u = dbUsers.find(x => x.email === dep.user);
-            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; localStorage.setItem("inverbot_users", JSON.stringify(dbUsers)); localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Aprobado!"); renderAdmin(); }
+            let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
+            let users = obtenerUsuarios();
+            let dep = dbDeps[idx]; let u = users.find(x => x.email === dep.user);
+            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; localStorage.setItem("inverbot_users", JSON.stringify(users)); localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Aprobado!"); renderAdmin(); }
         }
-        function rechazarDep(idx) { dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); renderAdmin(); }
-        function aprobarWit(idx) { dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
+        function rechazarDep(idx) { let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); renderAdmin(); }
+        function aprobarWit(idx) { let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
         function rechazarWit(idx) {
-            dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
-            let w = dbWits[idx]; let u = dbUsers.find(x => x.email === w.user);
-            if(u) { u.balance += w.monto; w.status = 'Rechazado'; localStorage.setItem("inverbot_users", JSON.stringify(dbUsers)); localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
+            let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; let users = obtenerUsuarios();
+            let w = dbWits[idx]; let u = users.find(x => x.email === w.user);
+            if(u) { u.balance += w.monto; w.status = 'Rechazado'; localStorage.setItem("inverbot_users", JSON.stringify(users)); localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
         }
     </script>
 </body>
