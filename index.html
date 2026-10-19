@@ -32,7 +32,6 @@
             overflow-x: hidden;
         }
 
-        /* Fondo de Trading elegante */
         .trading-bg-canvas {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -57,13 +56,12 @@
             border-radius: 16px; 
             box-shadow: 0 12px 35px rgba(0,0,0,0.8); 
             margin-bottom: 14px; 
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.5s ease;
         }
 
         .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .brand-header h1 { font-size: 18px; color: #fff; font-weight: 800; }
         
-        /* Banner Profesional de Referidos en Hogar */
         .promo-banner {
             background: linear-gradient(135deg, #162238, #1a2332);
             border: 1px solid var(--accent-blue);
@@ -76,7 +74,7 @@
         .promo-banner h3 { font-size: 15px; color: #fff; margin-bottom: 6px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .promo-banner p { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
 
-        /* Gráfico Profesional y Serio (Sin movimientos de juguete) */
+        /* Gráfico Profesional Estilo Velas (Sin movimientos de juguete) */
         .live-chart-box {
             background: #161f30;
             border: 1px solid var(--border-color);
@@ -87,15 +85,14 @@
         .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: #fff; }
         .pro-chart-visual {
             width: 100%;
-            height: 65px;
+            height: 70px;
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            background: rgba(11, 14, 20, 0.5);
+            background: rgba(11, 14, 20, 0.6);
             border-radius: 8px;
-            padding: 8px 10px;
+            padding: 8px 12px;
             border: 1px solid #1e2d4a;
-            position: relative;
         }
         .pro-candle {
             width: 6px;
@@ -109,12 +106,11 @@
             position: absolute;
             left: 2.5px;
             width: 1px;
-            height: 140%;
-            top: -20%;
+            height: 150%;
+            top: -25%;
             background: inherit;
         }
 
-        /* Citas en Vivo */
         .live-market-box {
             background: #161f30;
             border: 1px solid var(--border-color);
@@ -134,7 +130,6 @@
         .ex-change-green { color: var(--accent-green); font-weight: 600; font-size: 11px; }
         .ex-change-red { color: var(--accent-red); font-weight: 600; font-size: 11px; }
 
-        /* Activos */
         .assets-total-box {
             background: #161f30;
             border: 1px solid var(--border-color);
@@ -146,56 +141,25 @@
         .assets-amount { font-size: 28px; font-weight: 800; color: var(--accent-green); font-family: monospace; margin-bottom: 14px; }
         
         .assets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-        .asset-subcard {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 10px;
-        }
+        .asset-subcard { background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; }
         .asset-sub-title { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
         .asset-sub-amount { font-size: 18px; font-weight: 700; color: #fff; font-family: monospace; }
 
         .action-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-pro-deposit {
-            background-color: var(--accent-green);
-            color: #051b11;
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            box-shadow: 0 4px 15px rgba(14,203,129,0.3);
-            transition: 0.3s;
+            background-color: var(--accent-green); color: #051b11; border: none; padding: 14px;
+            border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            box-shadow: 0 4px 15px rgba(14,203,129,0.3); transition: 0.3s;
         }
-        .btn-pro-deposit:hover { opacity: 0.9; }
         .btn-pro-withdraw {
-            background-color: transparent;
-            color: var(--accent-green);
-            border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: 0.3s;
+            background-color: transparent; color: var(--accent-green); border: 1px solid var(--border-color);
+            padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.3s;
         }
 
-        /* Tarjetas VIP */
         .vip-pro-card {
-            background: #161f30;
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 14px;
+            background: #161f30; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-bottom: 14px;
         }
         .vip-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
         .vip-title-name { font-size: 18px; font-weight: 800; color: #f0b90b; }
@@ -207,16 +171,9 @@
         .vip-box-value { font-size: 16px; font-weight: 700; color: #fff; font-family: monospace; }
         .vip-box-value.green { color: var(--accent-green); }
 
-        /* Redes Depósito */
         .network-select-card {
-            background: #161f30;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
+            background: #161f30; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
         }
         .network-info { display: flex; align-items: center; gap: 12px; }
         .net-logo-container { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(14,203,129,0.1); border-radius: 50%; border: 1px solid var(--accent-green); }
@@ -224,7 +181,6 @@
         .net-name { font-size: 14px; font-weight: bold; color: #fff; }
         .btn-select-net { background: rgba(14,203,129,0.12); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        /* Botón Flotante Redondo INVERBOT */
         .floating-support-btn {
             position: fixed; bottom: 75px; right: 20px;
             background: linear-gradient(135deg, var(--accent-green), #0a935f);
@@ -237,7 +193,6 @@
         .floating-support-logo { font-weight: 900; font-size: 13px; line-height: 1; }
         .floating-support-text { font-size: 8px; font-weight: 800; text-transform: uppercase; margin-top: 2px; }
 
-        /* Alertas Pro */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(7, 11, 18, 0.85); backdrop-filter: blur(8px);
@@ -252,11 +207,9 @@
         .modal-msg { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
         .modal-close-btn {
             background: var(--bg-input); color: #fff; border: 1px solid var(--border-color);
-            width: 36px; height: 36px; border-radius: 50%; font-size: 16px; font-weight: bold;
-            cursor: pointer; display: inline-flex; justify-content: center; align-items: center;
+            width: 36px; height: 36px; border-radius: 50%; font-size: 16px; font-weight: bold; cursor: pointer;
         }
 
-        /* Barra Inferior */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: #121824; border-top: 1px solid var(--border-color);
@@ -355,14 +308,13 @@
                     <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 10px; font-size: 11px; margin:0;">Salir</button>
                 </div>
 
-                <!-- Banner Profesional Invitas y Ganas -->
                 <div class="promo-banner">
                     <h3>🚀 ¡Invita Amigos y Gana 0.20 USDT!</h3>
                     <p>Comparte tu enlace único con tu red, suma referidos y haz crecer tus ganancias al instante.</p>
                     <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="margin:0; font-size:12px; padding:8px;">Ver Mi Enlace y Red</button>
                 </div>
 
-                <!-- Gráfico Profesional Estilo Trading (Serio y Estable) -->
+                <!-- Gráfico Profesional Estilo Velas -->
                 <div class="live-chart-box">
                     <div class="chart-header">
                         <span>📈 Mercado Global & Velas</span>
@@ -409,7 +361,7 @@
                 </div>
             </div>
 
-            <!-- CUANTIFICAR (ZONA VIP) -->
+            <!-- CUANTIFICAR -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="assets-total-box" style="margin-bottom:14px;">
                     <div class="assets-title">
@@ -613,7 +565,7 @@
                 else cerrarSesion();
             }
 
-            // Movimiento suave y profesional (más pausado, 3s de actualización de mercado)
+            // Actualización pausada de mercado cada 3 segundos
             setInterval(() => {
                 let r1 = (81590 + Math.random() * 15).toFixed(2);
                 let r2 = (2387 + Math.random() * 2).toFixed(2);
@@ -655,7 +607,7 @@
             dbUsers.push(nuevo);
             localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
             mostrarAlertaPro("Éxito", "¡Registro exitoso! Inicia sesión.");
-            setTimeout(() => { cambiarVistaAuth(true); }, 1500);
+            setTimeout(() => { cambiarVistaAuth(true); }, 3000);
         }
 
         function iniciarSesion(e) {
@@ -670,9 +622,9 @@
             sessionEmail = email;
             localStorage.setItem("inverbot_session", sessionEmail);
             
-            // Pausa elegante de 3 segundos para dar sensación sólida
+            // Pausa exacta de 3 segundos
             let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando credenciales..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando (3s)..."; }
 
             setTimeout(() => {
                 if(btn) { btn.disabled = false; btn.innerText = "Acceder al Sistema"; }
@@ -811,7 +763,7 @@
                 localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps));
                 mostrarAlertaPro("Éxito", "¡Depósito notificado al CEO!");
                 document.getElementById('subAccionContainer').style.display = 'none';
-            }, 1500);
+            }, 3000);
         }
 
         function solicitarRetiro(e) {
@@ -831,7 +783,7 @@
                 localStorage.setItem("inverbot_wits", JSON.stringify(dbWits));
                 mostrarAlertaPro("Éxito", "¡Retiro solicitado!");
                 entrarDashboardDirecto();
-            }, 1500);
+            }, 3000);
         }
 
         function comprarVip(nivel, precio) {
@@ -846,7 +798,7 @@
                 localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
                 mostrarAlertaPro("Éxito", `¡VIP ${nivel} adquirido!`);
                 entrarDashboardDirecto();
-            }, 1500);
+            }, 3000);
         }
 
         function reclamarVip(nivel) {
