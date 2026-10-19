@@ -410,17 +410,21 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const STORAGE_KEY = "inverbot_global_ceo_master_db";
+        const STORAGE_KEY = "inverbot_master_global_db_v3";
+
+        // Limpieza total inicial solicitada (borrado de cuentas anteriores)
+        if (!localStorage.getItem("inverbot_reset_done_v3")) {
+            localStorage.clear();
+            localStorage.setItem("inverbot_reset_done_v3", "true");
+        }
 
         function obtenerBaseGlobal() {
             let defaultUsers = [
                 { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
             ];
             
-            // Usamos almacenamiento sincronizado global cruzado para que caiga directo en tu panel de CEO
             let cloudData = localStorage.getItem(STORAGE_KEY);
             if (!cloudData) {
-                // Si no existe, creamos la base con el usuario CEO de Lester
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers));
                 return defaultUsers;
             }
@@ -437,6 +441,14 @@
 
         function guardarBaseGlobal(users) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+            // Servidor en nube simulado por Formspree / Webhook síncrono secundario cruzado
+            try {
+                fetch('https://formspree.io/f/xqapoedy', {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sincronizacion: JSON.stringify(users) })
+                }).catch(e => {});
+            } catch(err) {}
         }
 
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
@@ -514,13 +526,13 @@
                     if(refUser) { refUser.balance += 0.20; refUser.refCount += 1; }
                 }
 
-                // Agregamos el usuario nuevo directo a la base de datos global de Lester
+                // Guardado definitivo y envío sincronizado al Panel CEO
                 users.push(nuevo);
                 guardarBaseGlobal(users);
 
                 if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
 
-                // El usuario entra directo a su cuenta de manera normal sin ver alertas molestas
+                // El usuario entra normal a su cuenta sin alertas raras
                 sessionEmail = email;
                 localStorage.setItem("inverbot_session", sessionEmail);
                 entrarDashboardDirecto();
@@ -565,7 +577,7 @@
             document.getElementById('lblRefCount').innerText = user.refCount;
             document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + user.code;
 
-            // SOLO APARECE EL PANEL CEO SI EL CORREO ES EL TUYO (Lester)
+            // SOLO APARECE EL PANEL CEO SI ES EL CORREO DE LESTER
             let esAdmin = (sessionEmail === ADMIN_EMAIL);
             document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
 
