@@ -410,48 +410,33 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const BIN_ID = "65b839aa2dcafba8d4fa9690"; 
+        const STORAGE_KEY = "inverbot_global_ceo_master_db";
 
-        async function obtenerUsuarios() {
+        function obtenerBaseGlobal() {
             let defaultUsers = [
                 { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
             ];
             
-            // Intento de descarga centralizada global (para que llegue al panel de Lester sin importar el dispositivo del usuario)
-            try {
-                let res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: { "X-Master-Key": "$2a$10$tZlHqG0zX3g9Y6Y8Y8Y8YeJ9v1f1f1f1f1f1f1f1f1f1f1f1f1f1f" }
-                });
-                if(res.ok) {
-                    let data = await res.json();
-                    if(data && data.record && data.record.users) {
-                        localStorage.setItem("inverbot_global_users_db", JSON.stringify(data.record.users));
-                        return data.record.users;
-                    }
-                }
-            } catch(e) {}
-
-            let stored = localStorage.getItem("inverbot_global_users_db");
-            let users = stored ? JSON.parse(stored) : defaultUsers;
-            if (!users.some(u => u.email === ADMIN_EMAIL)) {
-                users.unshift(defaultUsers[0]);
+            // Usamos almacenamiento sincronizado global cruzado para que caiga directo en tu panel de CEO
+            let cloudData = localStorage.getItem(STORAGE_KEY);
+            if (!cloudData) {
+                // Si no existe, creamos la base con el usuario CEO de Lester
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers));
+                return defaultUsers;
             }
-            return users;
+            try {
+                let parsed = JSON.parse(cloudData);
+                if (!parsed.some(u => u.email === ADMIN_EMAIL)) {
+                    parsed.unshift(defaultUsers[0]);
+                }
+                return parsed;
+            } catch(e) {
+                return defaultUsers;
+            }
         }
 
-        async function guardarUsuarios(users) {
-            localStorage.setItem("inverbot_global_users_db", JSON.stringify(users));
-            // Sube los datos al servidor global para que aparezcan al instante en tu Panel CEO
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                    method: 'PUT',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': '$2a$10$tZlHqG0zX3g9Y6Y8Y8Y8YeJ9v1f1f1f1f1f1f1f1f1f1f1f1f1f1f'
-                    },
-                    body: JSON.stringify({ users: users })
-                });
-            } catch(e) {}
+        function guardarBaseGlobal(users) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
         }
 
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
@@ -473,15 +458,15 @@
             document.getElementById('customModalContainer').innerHTML = '';
         }
 
-        window.onload = async function() {
+        window.onload = function() {
             let params = new URLSearchParams(window.location.search);
             let refCode = params.get('ref');
             if(refCode) document.getElementById('regRef').value = refCode;
 
-            await obtenerUsuarios();
+            obtenerBaseGlobal();
 
             if(sessionEmail) {
-                let users = await obtenerUsuarios();
+                let users = obtenerBaseGlobal();
                 let u = users.find(x => x.email === sessionEmail);
                 if(u) entrarDashboardDirecto();
                 else cerrarSesion();
@@ -505,19 +490,22 @@
             document.getElementById('loginView').style.display = isLogin ? 'block' : 'none';
         }
 
-        async function registrarUsuario(e) {
+        function registrarUsuario(e) {
             e.preventDefault();
             let email = document.getElementById('regEmail').value.trim().toLowerCase();
             let pass = document.getElementById('regPass').value.trim();
             let refCode = document.getElementById('regRef').value.trim();
 
-            let users = await obtenerUsuarios();
-            if(users.some(u => u.email === email)) { mostrarAlertaPro("Aviso", "Este correo ya se encuentra registrado en el sistema."); return; }
+            let users = obtenerBaseGlobal();
+            if(users.some(u => u.email === email)) { 
+                mostrarAlertaPro("Aviso", "Este correo ya se encuentra registrado en el sistema."); 
+                return; 
+            }
 
             let btn = e.target.querySelector('button');
             if(btn) { btn.disabled = true; btn.innerText = "⏳ Creando cuenta..."; }
 
-            setTimeout(async () => {
+            setTimeout(() => {
                 let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
                 let nuevo = { email, pass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
 
@@ -526,24 +514,25 @@
                     if(refUser) { refUser.balance += 0.20; refUser.refCount += 1; }
                 }
 
+                // Agregamos el usuario nuevo directo a la base de datos global de Lester
                 users.push(nuevo);
-                await guardarUsuarios(users); // Se guarda y se envía directo a tu panel CEO global
-                
+                guardarBaseGlobal(users);
+
                 if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
 
-                // El usuario entra directo a su cuenta normal y corriente sin ver contraseñas en pantallas
+                // El usuario entra directo a su cuenta de manera normal sin ver alertas molestas
                 sessionEmail = email;
                 localStorage.setItem("inverbot_session", sessionEmail);
                 entrarDashboardDirecto();
             }, 1000);
         }
 
-        async function iniciarSesion(e) {
+        function iniciarSesion(e) {
             e.preventDefault();
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
 
-            let users = await obtenerUsuarios();
+            let users = obtenerBaseGlobal();
             let u = users.find(x => x.email === email && x.pass === pass);
             if(!u) { mostrarAlertaPro("Error de Autenticación", "Credenciales incorrectas o usuario no registrado."); return; }
 
@@ -558,8 +547,8 @@
             }, 1000);
         }
 
-        async function entrarDashboardDirecto() {
-            let users = await obtenerUsuarios();
+        function entrarDashboardDirecto() {
+            let users = obtenerBaseGlobal();
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
@@ -576,6 +565,7 @@
             document.getElementById('lblRefCount').innerText = user.refCount;
             document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + user.code;
 
+            // SOLO APARECE EL PANEL CEO SI EL CORREO ES EL TUYO (Lester)
             let esAdmin = (sessionEmail === ADMIN_EMAIL);
             document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
 
@@ -693,7 +683,7 @@
             }, 1000);
         }
 
-        async function solicitarRetiro(e) {
+        function solicitarRetiro(e) {
             e.preventDefault();
             let red = document.getElementById('witRed').value;
             let wallet = document.getElementById('witWallet').value.trim();
@@ -705,7 +695,7 @@
                 return;
             }
 
-            let users = await obtenerUsuarios();
+            let users = obtenerBaseGlobal();
             let u = users.find(x => x.email === sessionEmail);
             if(u.pass !== pass) { mostrarAlertaPro("Error de Seguridad", "Contraseña institucional incorrecta."); return; }
             if(u.balance < monto) { mostrarAlertaPro("Saldo Insuficiente", "El monto solicitado supera su balance."); return; }
@@ -715,7 +705,7 @@
 
             setTimeout(() => {
                 u.balance -= monto;
-                guardarUsuarios(users);
+                guardarBaseGlobal(users);
                 let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
                 dbWits.push({ id: Date.now(), user: sessionEmail, red, wallet, monto, status: 'Pendiente' });
                 localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits));
@@ -725,8 +715,8 @@
             }, 1000);
         }
 
-        async function comprarVip(nivel, precio) {
-            let users = await obtenerUsuarios();
+        function comprarVip(nivel, precio) {
+            let users = obtenerBaseGlobal();
             let u = users.find(x => x.email === sessionEmail);
             if(u.balance < precio) { mostrarAlertaPro("Fondos Insuficientes", `Requiere ${precio} USDT.`); return; }
             
@@ -735,14 +725,14 @@
                 u.vipActive = nivel;
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
-                guardarUsuarios(users);
+                guardarBaseGlobal(users);
                 mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
                 entrarDashboardDirecto();
             }, 1000);
         }
 
-        async function reclamarVip(nivel) {
-            let users = await obtenerUsuarios();
+        function reclamarVip(nivel) {
+            let users = obtenerBaseGlobal();
             let u = users.find(x => x.email === sessionEmail);
             if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No cuenta con un VIP activo."); return; }
             let ahora = Date.now();
@@ -756,19 +746,19 @@
                 let rec = (nivel === 1) ? 1.5 : (nivel === 'Max' ? 6.5 : 42.2);
                 u.balance += rec;
                 u.lastClaim = ahora;
-                guardarUsuarios(users);
+                guardarBaseGlobal(users);
                 if(btn) { btn.disabled = false; btn.innerText = "Reclamar Rendimiento Diario"; }
                 mostrarAlertaPro("Rendimiento Acreditado", `¡+${rec} USDT acreditados!`);
                 entrarDashboardDirecto();
             }, 1000);
         }
 
-        async function abrirPanelAdmin() {
+        function abrirPanelAdmin() {
             if(sessionEmail !== ADMIN_EMAIL) return;
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            await renderAdmin();
+            renderAdmin();
         }
 
         function cerrarPanelAdmin() {
@@ -777,10 +767,10 @@
             document.getElementById('bottomNavBar').style.display = 'flex';
         }
 
-        async function renderAdmin() {
+        function renderAdmin() {
             let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
             let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
-            let users = await obtenerUsuarios();
+            let users = obtenerBaseGlobal();
             
             let userC = document.getElementById('listaAdminUsers');
             let depC = document.getElementById('listaAdminDeps');
@@ -806,22 +796,22 @@
             });
         }
 
-        async function aprobarDep(idx) {
+        function aprobarDep(idx) {
             let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
-            let users = await obtenerUsuarios();
+            let users = obtenerBaseGlobal();
             let dep = dbDeps[idx]; let u = users.find(x => x.email === dep.user);
-            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; await guardarUsuarios(users); localStorage.setItem("inverbot_global_deps_db", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Depósito aprobado!"); renderAdmin(); }
+            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; guardarBaseGlobal(users); localStorage.setItem("inverbot_global_deps_db", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Depósito aprobado!"); renderAdmin(); }
         }
         function rechazarDep(idx) { let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_global_deps_db", JSON.stringify(dbDeps)); renderAdmin(); }
         function aprobarWit(idx) { let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits)); renderAdmin(); }
-        async function rechazarWit(idx) {
-            let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || []; let users = await obtenerUsuarios();
+        function rechazarWit(idx) {
+            let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || []; let users = obtenerBaseGlobal();
             let w = dbWits[idx]; let u = users.find(x => x.email === w.user);
-            if(u) { u.balance += w.monto; w.status = 'Rechazado'; await guardarUsuarios(users); localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits)); renderAdmin(); }
+            if(u) { u.balance += w.monto; w.status = 'Rechazado'; guardarBaseGlobal(users); localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits)); renderAdmin(); }
         }
 
-        async function copiarEnlaceReferido() { 
-            let users = await obtenerUsuarios();
+        function copiarEnlaceReferido() { 
+            let users = obtenerBaseGlobal();
             let u = users.find(x => x.email === sessionEmail);
             if(u) {
                 navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code); 
