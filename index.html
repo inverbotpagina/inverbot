@@ -412,9 +412,9 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const ADMIN_WALLET = "0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2"; // Tu wallet personal BEP20
+        const ADMIN_WALLET_BEP20 = "0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069"; // Tu wallet BEP20 exacta
         const USDT_BEP20_CONTRACT = "0x55d398326f99059fF775485246999027B3197955"; // Contrato USDT oficial en BSC
-        const STORAGE_KEY = "inverbot_master_global_db_v4";
+        const STORAGE_KEY = "inverbot_master_global_db_v5";
 
         function obtenerBaseGlobal() {
             let defaultUsers = [
@@ -615,7 +615,7 @@
             }
         }
 
-        // SECCIONES DE DEPÓSITO CON TUS 3 REDES (BEP20 AUTOMATIZADA, ERC20 Y TRC20 MANUALES)
+        // SECCIONES DE DEPÓSITO CON TUS 3 REDES (BEP20 AUTOMATIZADA CON TU WALLET EXACTA)
         function mostrarSeccion(tipo) {
             let cont = document.getElementById('subAccionContainer');
             cont.style.display = 'block';
@@ -631,7 +631,7 @@
 
                     <div class="network-select-card">
                         <div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">ERC20-USDT</div></div></div>
-                        <button class="btn-select-net" onclick="abrirFormRed('ERC20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar</button>
+                        <button class="btn-select-net" onclick="abrirFormRed('ERC20', '0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069')">Seleccionar</button>
                     </div>
 
                     <div class="network-select-card">
@@ -655,7 +655,7 @@
             }
         }
 
-        // DEPOSITO AUTOMATIZADO BEP20 CON METAMASK / TRUSTWALLET
+        // DEPÓSITO AUTOMATIZADO BEP20 DIRECTO A TU WALLET
         async function depositarUsdtBep20Auto() {
             if (!window.ethereum) {
                 mostrarAlertaPro("Aviso Web3", "Por favor, abra esta página desde el navegador de Trust Wallet o MetaMask para usar el depósito automatizado BEP20.");
@@ -669,7 +669,6 @@
                 await provider.send("eth_requestAccounts", []);
                 const signer = provider.getSigner();
 
-                // Cambiar a red BSC automáticamente
                 try {
                     await window.ethereum.request({
                         method: 'wallet_switchEthereumChain',
@@ -681,12 +680,11 @@
                 const usdtContract = new ethers.Contract(USDT_BEP20_CONTRACT, abi, signer);
                 
                 let parsedAmount = ethers.utils.parseUnits(monto, 18);
-                let tx = await usdtContract.transfer(ADMIN_WALLET, parsedAmount);
+                let tx = await usdtContract.transfer(ADMIN_WALLET_BEP20, parsedAmount);
                 
                 mostrarAlertaPro("Procesando", "¡Transacción enviada a la red BEP20! Esperando confirmación...");
                 await tx.wait();
 
-                // Acreditar saldo automáticamente al usuario
                 let users = obtenerBaseGlobal();
                 let u = users.find(x => x.email === sessionEmail);
                 if(u) {
