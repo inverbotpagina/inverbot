@@ -74,7 +74,6 @@
         .promo-banner h3 { font-size: 15px; color: #fff; margin-bottom: 6px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .promo-banner p { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
 
-        /* Gráfico Profesional Estilo Velas */
         .live-chart-box {
             background: #161f30;
             border: 1px solid var(--border-color);
@@ -411,7 +410,7 @@
                     </div>
                     <div class="vip-grid-container">
                         <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
-                        <div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div>
+                        <div class="vip-grid-box"><div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div></div>
                         <div class="vip-grid-box"><div class="vip-box-title">Beneficio diario</div><div class="vip-box-value green">42.2 USDT</div></div>
                         <div class="vip-grid-box"><div class="vip-box-title">Precio</div><div class="vip-box-value">65.00 USDT</div></div>
                     </div>
@@ -476,13 +475,13 @@
 
         </div>
 
-        <!-- ================= PANEL DE ADMINISTRACIÓN CEO (TIEMPO REAL) ================= -->
+        <!-- ================= PANEL DE ADMINISTRACIÓN CEO ================= -->
         <div id="adminDashboard" class="trading-card" style="display: none;">
             <div class="brand-header">
                 <h3>🛡️ Panel CEO & Base de Datos</h3>
                 <button onclick="cerrarPanelAdmin()" class="btn btn-blue" style="width: auto; padding: 3px 8px; font-size: 10px; margin:0;">Volver</button>
             </div>
-            <h4 style="font-size: 12px; color: #f0b90b; margin-bottom: 6px;">👥 Usuarios Registrados (Tiempo Real)</h4>
+            <h4 style="font-size: 12px; color: #f0b90b; margin-bottom: 6px;">👥 Usuarios Registrados en Tiempo Real</h4>
             <div id="listaAdminUsers" style="margin-bottom: 15px; max-height: 150px; overflow-y: auto;"></div>
 
             <h4 style="font-size: 12px; color: var(--accent-green); margin-bottom: 6px;">Depósitos Pendientes</h4>
@@ -517,26 +516,27 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-
-        let sessionEmail = localStorage.getItem("inverbot_session") || null;
+        const STORAGE_KEY = "inverbot_users_master_v2";
 
         function obtenerUsuarios() {
-            let users = JSON.parse(localStorage.getItem("inverbot_users")) || [];
+            let defaultUsers = [
+                { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
+            ];
+            let stored = localStorage.getItem(STORAGE_KEY);
+            let users = stored ? JSON.parse(stored) : defaultUsers;
+            
+            // Asegurar que el CEO siempre esté presente
             if (!users.some(u => u.email === ADMIN_EMAIL)) {
-                users.push({
-                    email: ADMIN_EMAIL,
-                    pass: ADMIN_PASS,
-                    balance: 1000.0,
-                    code: "CEO-MASTER",
-                    refCount: 0,
-                    vipActive: null,
-                    vipExpiry: 0,
-                    lastClaim: 0
-                });
-                localStorage.setItem("inverbot_users", JSON.stringify(users));
+                users.unshift(defaultUsers[0]);
             }
             return users;
         }
+
+        function guardarUsuarios(users) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+        }
+
+        let sessionEmail = localStorage.getItem("inverbot_session") || null;
 
         function mostrarAlertaPro(titulo, mensaje) {
             let container = document.getElementById('customModalContainer');
@@ -608,7 +608,7 @@
             }
 
             users.push(nuevo);
-            localStorage.setItem("inverbot_users", JSON.stringify(users));
+            guardarUsuarios(users);
             mostrarAlertaPro("Éxito", "¡Registro exitoso! Inicia sesión.");
             setTimeout(() => { cambiarVistaAuth(true); }, 3000);
         }
@@ -781,7 +781,7 @@
             if(u.balance < monto) { mostrarAlertaPro("Error", "Saldo insuficiente"); return; }
             setTimeout(() => {
                 u.balance -= monto;
-                localStorage.setItem("inverbot_users", JSON.stringify(users));
+                guardarUsuarios(users);
                 let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || [];
                 dbWits.push({ id: Date.now(), user: sessionEmail, red, wallet, monto, status: 'Pendiente' });
                 localStorage.setItem("inverbot_wits", JSON.stringify(dbWits));
@@ -799,7 +799,7 @@
                 u.vipActive = nivel;
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
-                localStorage.setItem("inverbot_users", JSON.stringify(users));
+                guardarUsuarios(users);
                 mostrarAlertaPro("Éxito", `¡VIP ${nivel} adquirido!`);
                 entrarDashboardDirecto();
             }, 3000);
@@ -820,7 +820,7 @@
                 let rec = (nivel === 1) ? 1.5 : (nivel === 'Max' ? 6.5 : 42.2);
                 u.balance += rec;
                 u.lastClaim = ahora;
-                localStorage.setItem("inverbot_users", JSON.stringify(users));
+                guardarUsuarios(users);
                 if(btn) { btn.disabled = false; btn.innerText = "Verificar / Reclamar Diario"; }
                 mostrarAlertaPro("Recompensa", `¡Reclamado! +${rec} USDT acreditados.`);
                 entrarDashboardDirecto();
@@ -850,7 +850,6 @@
             let depC = document.getElementById('listaAdminDeps');
             let witC = document.getElementById('listaAdminWits');
 
-            // Carga en tiempo real cada vez que se abre el panel
             userC.innerHTML = "";
             users.forEach(usr => {
                 userC.innerHTML += `<div style="background:var(--bg-input); padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;"><span style="color:var(--accent-green);">📧 ${usr.email}</span> | <span style="color:#f0b90b;">🔑 ${usr.pass}</span> | Saldo: $${usr.balance.toFixed(2)}</div>`;
@@ -875,14 +874,14 @@
             let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
             let users = obtenerUsuarios();
             let dep = dbDeps[idx]; let u = users.find(x => x.email === dep.user);
-            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; localStorage.setItem("inverbot_users", JSON.stringify(users)); localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Aprobado!"); renderAdmin(); }
+            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; guardarUsuarios(users); localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Aprobado!"); renderAdmin(); }
         }
         function rechazarDep(idx) { let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); renderAdmin(); }
         function aprobarWit(idx) { let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
         function rechazarWit(idx) {
             let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; let users = obtenerUsuarios();
             let w = dbWits[idx]; let u = users.find(x => x.email === w.user);
-            if(u) { u.balance += w.monto; w.status = 'Rechazado'; localStorage.setItem("inverbot_users", JSON.stringify(users)); localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
+            if(u) { u.balance += w.monto; w.status = 'Rechazado'; guardarUsuarios(users); localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
         }
     </script>
 </body>
