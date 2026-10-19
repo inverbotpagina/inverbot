@@ -154,12 +154,8 @@
             box-shadow: 0 20px 50px rgba(14,203,129,0.3); position: relative;
         }
         .modal-title { font-size: 16px; font-weight: 800; color: var(--accent-green); margin-bottom: 8px; }
-        .modal-msg { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .modal-msg { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; white-space: pre-line; }
         .modal-btn-row { display: flex; gap: 10px; }
-        .modal-close-btn {
-            background: var(--bg-input); color: var(--accent-green); border: 1px solid var(--accent-green);
-            width: 32px; height: 32px; border-radius: 50%; font-size: 14px; font-weight: bold; cursor: pointer;
-        }
 
         /* ROMPECABEZAS / SLIDER ANTI-BOT */
         .puzzle-box { background: #020f09; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 14px; text-align: center; }
@@ -203,7 +199,7 @@
 
     <div class="terminal-container">
         
-        <!-- ================= AUTENTICACIÓN PROFESIONAL INVERBOT ================= -->
+        <!-- ================= AUTENTICACIÓN ================= -->
         <div id="authScreen" class="trading-card">
             <div class="brand-logo-container">
                 <div class="bot-shield-icon">🤖</div>
@@ -268,26 +264,45 @@
                     <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="margin:0; font-size:11px; padding:7px;">Gestionar Red</button>
                 </div>
 
+                <!-- MERCADOS EN VIVO (MÁS CRIPTOMEDAS CON MOVIMIENTO REAL) -->
                 <div class="live-market-box">
                     <div class="live-header">
                         <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
-                        <span class="live-badge">FEED</span>
+                        <span class="live-badge" id="badgeBtc">LIVE</span>
                     </div>
-                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveBtcBin">81,598.50</span><span class="ex-change-green">+0.28%</span></div>
-                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveBtcOkx">81,598.50</span><span class="ex-change-green">+0.28%</span></div>
+                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="mktBtcBin">81,598.50</span><span class="ex-change-green" id="mktBtcPct">+0.28%</span></div>
+                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="mktBtcOkx">81,598.50</span><span class="ex-change-green">+0.28%</span></div>
                 </div>
 
                 <div class="live-market-box">
                     <div class="live-header">
                         <span class="live-title"><img src="https://assets.coingecko.com/coins/images/279/large/ethereum.png" class="coin-icon"> ETH / USDT</span>
-                        <span class="live-badge">FEED</span>
+                        <span class="live-badge">LIVE</span>
                     </div>
-                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveEthBin">2,387.48</span><span class="ex-change-red">-0.27%</span></div>
-                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveEthOkx">2,387.48</span><span class="ex-change-red">-0.27%</span></div>
+                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="mktEthBin">2,387.48</span><span class="ex-change-red" id="mktEthPct">-0.27%</span></div>
+                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="mktEthOkx">2,387.48</span><span class="ex-change-red">-0.27%</span></div>
+                </div>
+
+                <div class="live-market-box">
+                    <div class="live-header">
+                        <span class="live-title"><img src="https://assets.coingecko.com/coins/images/4128/large/solana.png" class="coin-icon"> SOL / USDT</span>
+                        <span class="live-badge">LIVE</span>
+                    </div>
+                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="mktSolBin">194.20</span><span class="ex-change-green" id="mktSolPct">+1.42%</span></div>
+                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="mktSolOkx">194.20</span><span class="ex-change-green">+1.42%</span></div>
+                </div>
+
+                <div class="live-market-box">
+                    <div class="live-header">
+                        <span class="live-title"><img src="https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png" class="coin-icon"> XRP / USDT</span>
+                        <span class="live-badge">LIVE</span>
+                    </div>
+                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="mktXrpBin">1.1240</span><span class="ex-change-green" id="mktXrpPct">+0.85%</span></div>
+                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="mktXrpOkx">1.1240</span><span class="ex-change-green">+0.85%</span></div>
                 </div>
             </div>
 
-            <!-- CUANTIFICAR (VIPs 1 al 5) -->
+            <!-- CUANTIFICAR -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="assets-total-box" style="margin-bottom:14px;">
                     <div class="assets-title">Activos Totales de Cuantificación</div>
@@ -342,7 +357,7 @@
                     <button id="btnClaim3" class="btn btn-blue" onclick="reclamarVip(3)" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
-                <!-- VIP 4 (NUEVO) -->
+                <!-- VIP 4 -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
                         <span class="vip-title-name" style="color:var(--accent-green);">VIP 4</span>
@@ -358,7 +373,7 @@
                     <button id="btnClaim4" class="btn btn-blue" onclick="reclamarVip(4)" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
-                <!-- VIP 5 (NUEVO) -->
+                <!-- VIP 5 -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
                         <span class="vip-title-name" style="color:var(--accent-green);">VIP 5</span>
@@ -469,7 +484,7 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const STORAGE_KEY = "inverbot_master_global_db_v8";
+        const STORAGE_KEY = "inverbot_master_global_db_v9";
 
         let tempEmail = "";
         let tempPass = "";
@@ -477,7 +492,7 @@
 
         function obtenerBaseGlobal() {
             let defaultUsers = [
-                { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
+                { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
             ];
             let stored = localStorage.getItem(STORAGE_KEY);
             if (!stored) {
@@ -541,16 +556,40 @@
                 else cerrarSesion();
             }
 
+            // MERCADOS EN MOVIMIENTO REAL CONSTANTE (Criptomonedas)
             setInterval(() => {
-                let r1 = (81590 + Math.random() * 30).toFixed(2);
-                let r2 = (2387 + Math.random() * 5).toFixed(2);
-                if(document.getElementById('loginBtcBin')) document.getElementById('loginBtcBin').innerText = r1;
-                if(document.getElementById('loginBtcOkx')) document.getElementById('loginBtcOkx').innerText = r1;
-                if(document.getElementById('liveBtcBin')) document.getElementById('liveBtcBin').innerText = r1;
-                if(document.getElementById('liveBtcOkx')) document.getElementById('liveBtcOkx').innerText = r1;
-                if(document.getElementById('liveEthBin')) document.getElementById('liveEthBin').innerText = r2;
-                if(document.getElementById('liveEthOkx')) document.getElementById('liveEthOkx').innerText = r2;
-            }, 200);
+                let btcP = (81590 + Math.sin(Date.now() / 1000) * 120).toFixed(2);
+                let ethP = (2387 + Math.cos(Date.now() / 1000) * 15).toFixed(2);
+                let solP = (194.20 + Math.sin(Date.now() / 800) * 2.5).toFixed(2);
+                let xrpP = (1.1240 + Math.cos(Date.now() / 900) * 0.015).toFixed(4);
+
+                let btcPct = (0.28 + Math.sin(Date.now() / 2000) * 0.1).toFixed(2) + "%";
+                let ethPct = (-0.27 + Math.cos(Date.now() / 2000) * 0.1).toFixed(2) + "%";
+                let solPct = (1.42 + Math.sin(Date.now() / 2000) * 0.2).toFixed(2) + "%";
+                let xrpPct = (0.85 + Math.cos(Date.now() / 2000) * 0.15).toFixed(2) + "%";
+
+                if(document.getElementById('mktBtcBin')) {
+                    document.getElementById('mktBtcBin').innerText = btcP;
+                    document.getElementById('mktBtcOkx').innerText = btcP;
+                    document.getElementById('mktBtcPct').innerText = (btcPct.startsWith("-") ? "" : "+") + btcPct;
+                    document.getElementById('mktBtcPct').className = btcPct.startsWith("-") ? "ex-change-red" : "ex-change-green";
+
+                    document.getElementById('mktEthBin').innerText = ethP;
+                    document.getElementById('mktEthOkx').innerText = ethP;
+                    document.getElementById('mktEthPct').innerText = ethPct;
+                    document.getElementById('mktEthPct').className = ethPct.startsWith("-") ? "ex-change-red" : "ex-change-green";
+
+                    document.getElementById('mktSolBin').innerText = solP;
+                    document.getElementById('mktSolOkx').innerText = solP;
+                    document.getElementById('mktSolPct').innerText = (solPct.startsWith("-") ? "" : "+") + solPct;
+                    document.getElementById('mktSolPct').className = solPct.startsWith("-") ? "ex-change-red" : "ex-change-green";
+
+                    document.getElementById('mktXrpBin').innerText = xrpP;
+                    document.getElementById('mktXrpOkx').innerText = xrpP;
+                    document.getElementById('mktXrpPct').innerText = (xrpPct.startsWith("-") ? "" : "+") + xrpPct;
+                    document.getElementById('mktXrpPct').className = xrpPct.startsWith("-") ? "ex-change-red" : "ex-change-green";
+                }
+            }, 500);
         }
 
         function cambiarVistaAuth(isLogin) {
@@ -618,11 +657,15 @@
         function completarRegistroDefinitivo() {
             let users = obtenerBaseGlobal();
             let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-            let nuevo = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
+            let nuevo = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refBy: null, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
 
             if(tempRef) {
                 let refUser = users.find(u => u.code === tempRef);
-                if(refUser) { refUser.balance += 0.20; refUser.refCount += 1; }
+                if(refUser) {
+                    refUser.balance += 0.20; // 0.20 USDT para el invitador
+                    refUser.refCount += 1;
+                    nuevo.refBy = refUser.email;
+                }
             }
 
             users.push(nuevo);
@@ -670,7 +713,6 @@
 
             actualizarInterfazVip(user);
 
-            // NOTIFICACIÓN PROFESIONAL CON EMOJIS CADA VEZ QUE ENTRAN
             mostrarAlertaPro(
                 "🚀 INVERBOT | Panel Institucional 🌟", 
                 "💎 ¡INVIERTES Y GANAS! 💰\n\n✨ Descubre el rendimiento de nuestros nuevos planes exclusivos y haz crecer tu capital hoy mismo. 📈\n\n👉 ¡MIRA LOS VIP EN CUANTIFICAR! ⭐", 
@@ -682,41 +724,21 @@
 
         function actualizarInterfazVip(user) {
             let ahora = Date.now();
-            
-            // VIP 1
-            let v1 = (user.vipActive === 1 && user.vipExpiry > ahora);
-            document.getElementById('vip1StatusText').innerText = v1 ? "Activo" : "Inactivo";
-            document.getElementById('vip1StatusText').style.color = v1 ? "var(--accent-green)" : "var(--text-muted)";
-            document.getElementById('vip1ActionArea').innerHTML = v1 ? `` : `<button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button>`;
-            document.getElementById('btnClaim1').style.display = v1 ? 'block' : 'none';
-
-            // VIP 2
-            let v2 = (user.vipActive === 2 && user.vipExpiry > ahora);
-            document.getElementById('vip2StatusText').innerText = v2 ? "Activo" : "Inactivo";
-            document.getElementById('vip2StatusText').style.color = v2 ? "var(--accent-green)" : "var(--text-muted)";
-            document.getElementById('vip2ActionArea').innerHTML = v2 ? `` : `<button class="btn btn-green" onclick="comprarVip(2, 16)">Adquirir VIP 2</button>`;
-            document.getElementById('btnClaim2').style.display = v2 ? 'block' : 'none';
-
-            // VIP 3
-            let v3 = (user.vipActive === 3 && user.vipExpiry > ahora);
-            document.getElementById('vip3StatusText').innerText = v3 ? "Activo" : "Inactivo";
-            document.getElementById('vip3StatusText').style.color = v3 ? "var(--accent-green)" : "var(--text-muted)";
-            document.getElementById('vip3ActionArea').innerHTML = v3 ? `` : `<button class="btn btn-green" onclick="comprarVip(3, 65)">Adquirir VIP 3</button>`;
-            document.getElementById('btnClaim3').style.display = v3 ? 'block' : 'none';
-
-            // VIP 4
-            let v4 = (user.vipActive === 4 && user.vipExpiry > ahora);
-            document.getElementById('vip4StatusText').innerText = v4 ? "Activo" : "Inactivo";
-            document.getElementById('vip4StatusText').style.color = v4 ? "var(--accent-green)" : "var(--text-muted)";
-            document.getElementById('vip4ActionArea').innerHTML = v4 ? `` : `<button class="btn btn-green" onclick="comprarVip(4, 180)">Adquirir VIP 4</button>`;
-            document.getElementById('btnClaim4').style.display = v4 ? 'block' : 'none';
-
-            // VIP 5
-            let v5 = (user.vipActive === 5 && user.vipExpiry > ahora);
-            document.getElementById('vip5StatusText').innerText = v5 ? "Activo" : "Inactivo";
-            document.getElementById('vip5StatusText').style.color = v5 ? "var(--accent-green)" : "var(--text-muted)";
-            document.getElementById('vip5ActionArea').innerHTML = v5 ? `` : `<button class="btn btn-green" onclick="comprarVip(5, 3600)">Adquirir VIP 5</button>`;
-            document.getElementById('btnClaim5').style.display = v5 ? 'block' : 'none';
+            for(let i=1; i<=5; i++) {
+                let activo = (user.vipActive === i && user.vipExpiry > ahora);
+                let stEl = document.getElementById('vip' + i + 'StatusText');
+                if(stEl) {
+                    stEl.innerText = activo ? "Activo" : "Inactivo";
+                    stEl.style.color = activo ? "var(--accent-green)" : "var(--text-muted)";
+                }
+                let actEl = document.getElementById('vip' + i + 'ActionArea');
+                let cost = i===1?4:(i===2?16:(i===3?65:(i===4?180:3600)));
+                if(actEl) {
+                    actEl.innerHTML = activo ? `` : `<button class="btn btn-green" onclick="comprarVip(${i}, ${cost})">Adquirir VIP ${i}</button>`;
+                }
+                let clmEl = document.getElementById('btnClaim' + i);
+                if(clmEl) clmEl.style.display = activo ? 'block' : 'none';
+            }
         }
 
         function cerrarSesion() {
@@ -744,7 +766,6 @@
             }
         }
 
-        // REDES MANUALES CON TU WALLET EXACTA BEP20 (0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069)
         function mostrarSeccion(tipo) {
             let cont = document.getElementById('subAccionContainer');
             cont.style.display = 'block';
@@ -866,6 +887,22 @@
                 u.vipActive = nivel;
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
+
+                // COMISIÓN DE REFERIDO POR COMPRA DE VIP EN LA RED
+                if (u.refBy) {
+                    let upline = users.find(x => x.email === u.refBy);
+                    if (upline) {
+                        let comision = 0;
+                        if (nivel === 1) comision = 1.00;
+                        else if (nivel === 2) comision = 2.00;
+                        else if (nivel === 3) comision = 10.00;
+                        else if (nivel === 4) comision = 30.00;
+                        else if (nivel === 5) comision = 600.00;
+
+                        upline.balance += comision;
+                    }
+                }
+
                 guardarBaseGlobal(users);
                 mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado con éxito!`);
                 entrarDashboardDirecto();
