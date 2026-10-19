@@ -7,14 +7,13 @@
     <style>
         :root {
             --bg-main: #000000;
-            --bg-card: #080d0b;
-            --bg-input: #0d1612;
-            --border-color: #0ff29233;
+            --bg-card: #030a07;
+            --bg-input: #07130e;
+            --border-color: #0ecb8144;
             --accent-green: #0ecb81;
             --accent-red: #f6465d;
-            --accent-blue: #0ecb81;
-            --text-main: #eaecef;
-            --text-muted: #6b8277;
+            --text-main: #ffffff;
+            --text-muted: #5e7d6d;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -32,21 +31,6 @@
             overflow-x: hidden;
         }
 
-        .trading-bg-canvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0;
-            opacity: 0.08;
-            pointer-events: none;
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            padding: 10px;
-        }
-        .candle-stick { width: 4px; background: var(--accent-green); position: relative; border-radius: 1px; }
-        .candle-stick::before { content: ''; position: absolute; left: 1.5px; width: 1px; height: 180%; top: -40%; background: inherit; }
-        .candle-red { background: var(--accent-red) !important; }
-
         .terminal-container { width: 100%; max-width: 460px; position: relative; z-index: 1; }
         
         .trading-card { 
@@ -54,7 +38,7 @@
             border: 1px solid var(--border-color); 
             padding: 20px; 
             border-radius: 14px; 
-            box-shadow: 0 10px 30px rgba(0,203,129,0.1); 
+            box-shadow: 0 10px 30px rgba(14,203,129,0.15); 
             margin-bottom: 14px; 
         }
 
@@ -62,7 +46,7 @@
         .brand-header h1 { font-size: 18px; color: var(--accent-green); font-weight: 800; letter-spacing: 0.5px; }
         
         .promo-banner {
-            background: linear-gradient(135deg, #05160e, #09261a);
+            background: linear-gradient(135deg, #031c10, #06331e);
             border: 1px solid var(--accent-green);
             border-radius: 12px;
             padding: 16px;
@@ -72,44 +56,8 @@
         .promo-banner h3 { font-size: 14px; color: #fff; margin-bottom: 6px; font-weight: 700; }
         .promo-banner p { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
 
-        .live-chart-box {
-            background: #050f0b;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 12px;
-        }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
-        .pro-chart-visual {
-            width: 100%;
-            height: 65px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            background: #000;
-            border-radius: 6px;
-            padding: 8px 12px;
-            border: 1px solid #0a261a;
-        }
-        .pro-candle {
-            width: 5px;
-            background: var(--accent-green);
-            border-radius: 1px;
-            position: relative;
-        }
-        .pro-candle.red { background: var(--accent-red); }
-        .pro-candle::after {
-            content: '';
-            position: absolute;
-            left: 2px;
-            width: 1px;
-            height: 160%;
-            top: -30%;
-            background: inherit;
-        }
-
         .live-market-box {
-            background: #050f0b;
+            background: #020f09;
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 12px;
@@ -120,7 +68,7 @@
         .coin-icon { width: 20px; height: 20px; border-radius: 50%; object-fit: contain; }
         .live-badge { background: rgba(14,203,129,0.2); color: var(--accent-green); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
         
-        .exchange-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #0a261a; }
+        .exchange-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #072115; }
         .exchange-row:last-child { border-bottom: none; }
         .ex-name { color: var(--text-muted); font-weight: 500; font-size: 11px; }
         .ex-price { font-family: monospace; font-weight: 700; color: var(--accent-green); }
@@ -128,13 +76,13 @@
         .ex-change-red { color: var(--accent-red); font-weight: 600; font-size: 11px; }
 
         .assets-total-box {
-            background: #050f0b;
+            background: #020f09;
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 14px;
         }
-        .assets-title { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .assets-title { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
         .assets-amount { font-size: 26px; font-weight: 700; color: var(--accent-green); font-family: monospace; margin-bottom: 14px; }
         
         .assets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
@@ -146,19 +94,19 @@
         .btn-pro-deposit {
             background-color: var(--accent-green); color: #000; border: none; padding: 12px;
             border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
         .btn-pro-withdraw {
             background-color: transparent; color: var(--accent-green); border: 1px solid var(--accent-green);
             padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
 
         .vip-pro-card {
-            background: #050f0b; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 14px;
+            background: #020f09; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 14px;
         }
         .vip-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .vip-title-name { font-size: 16px; font-weight: 700; color: #0ecb81; }
+        .vip-title-name { font-size: 16px; font-weight: 700; color: var(--accent-green); }
         .vip-status-label { font-size: 11px; font-weight: 600; color: var(--accent-green); }
         .vip-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .vip-grid-box { background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; }
@@ -167,7 +115,7 @@
         .vip-box-value.green { color: var(--accent-green); }
 
         .network-select-card {
-            background: #050f0b; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;
+            background: #020f09; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;
             display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
         }
         .network-info { display: flex; align-items: center; gap: 10px; }
@@ -181,21 +129,20 @@
             background: var(--accent-green); color: #000; width: 54px; height: 54px; border-radius: 50%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             box-shadow: 0 4px 20px rgba(14,203,129,0.6); cursor: pointer; z-index: 999;
-            text-decoration: none; border: 2px solid #fff; transition: transform 0.2s;
+            text-decoration: none; border: 2px solid #fff;
         }
-        .floating-support-btn:hover { transform: scale(1.05); }
         .floating-support-logo { font-weight: 900; font-size: 12px; line-height: 1; }
         .floating-support-text { font-size: 7px; font-weight: 800; text-transform: uppercase; margin-top: 1px; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.92); backdrop-filter: blur(5px);
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
         .modal-card {
-            background: #050f0b; border: 1px solid var(--accent-green);
+            background: #020f09; border: 1px solid var(--accent-green);
             padding: 22px; border-radius: 14px; width: 100%; max-width: 340px; text-align: center;
-            box-shadow: 0 15px 40px rgba(14,203,129,0.3); position: relative;
+            box-shadow: 0 15px 40px rgba(14,203,129,0.4); position: relative;
         }
         .modal-title { font-size: 15px; font-weight: 700; color: var(--accent-green); margin-bottom: 8px; }
         .modal-msg { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
@@ -206,7 +153,7 @@
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #050f0b; border-top: 1px solid var(--border-color);
+            background: #020f09; border-top: 1px solid var(--border-color);
             display: flex; justify-content: space-around; padding: 8px 0; z-index: 100;
         }
         .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 500; cursor: pointer; gap: 3px; }
@@ -214,12 +161,11 @@
         .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
 
         .input-group { margin-bottom: 12px; text-align: left; }
-        .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .input-group input, .input-group select { width: 100%; padding: 10px 12px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 12px; outline: none; transition: 0.2s; }
+        .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
+        .input-group input, .input-group select { width: 100%; padding: 10px 12px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 12px; outline: none; }
         .input-group input:focus, .input-group select:focus { border-color: var(--accent-green); }
         
-        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: 0.2s; }
-        .btn:hover { opacity: 0.92; }
+        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 4px; }
         .btn-green { background-color: var(--accent-green); color: #000; }
         .btn-blue { background-color: var(--accent-green); color: #000; }
         .btn-red { background-color: var(--accent-red); color: #fff; }
@@ -231,20 +177,7 @@
 </head>
 <body>
 
-    <div class="trading-bg-canvas">
-        <div class="candle-stick" style="height: 50px;"></div>
-        <div class="candle-stick candle-red" style="height: 90px;"></div>
-        <div class="candle-stick" style="height: 75px;"></div>
-        <div class="candle-stick" style="height: 120px;"></div>
-        <div class="candle-stick candle-red" style="height: 40px;"></div>
-        <div class="candle-stick" style="height: 80px;"></div>
-        <div class="candle-stick candle-red" style="height: 110px;"></div>
-        <div class="candle-stick" style="height: 65px;"></div>
-        <div class="candle-stick candle-red" style="height: 140px;"></div>
-        <div class="candle-stick" style="height: 95px;"></div>
-    </div>
-
-    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Institucional%20INVERBOT" class="floating-support-btn" title="Soporte soporteinverbot@gmail.com">
+    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Institucional%20INVERBOT" class="floating-support-btn" title="Soporte">
         <span class="floating-support-logo">INV</span>
         <span class="floating-support-text">SOPORTE</span>
     </a>
@@ -308,25 +241,6 @@
                     <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="margin:0; font-size:11px; padding:7px;">Gestionar Red</button>
                 </div>
 
-                <div class="live-chart-box">
-                    <div class="chart-header">
-                        <span>📈 Volatilidad y Velas en Vivo</span>
-                        <span style="color:var(--accent-green); font-size:10px;">● Sincronizado</span>
-                    </div>
-                    <div class="pro-chart-visual">
-                        <div class="pro-candle" style="height: 35px;"></div>
-                        <div class="pro-candle red" style="height: 50px;"></div>
-                        <div class="pro-candle" style="height: 25px;"></div>
-                        <div class="pro-candle" style="height: 55px;"></div>
-                        <div class="pro-candle red" style="height: 20px;"></div>
-                        <div class="pro-candle" style="height: 45px;"></div>
-                        <div class="pro-candle" style="height: 60px;"></div>
-                        <div class="pro-candle red" style="height: 30px;"></div>
-                        <div class="pro-candle" style="height: 50px;"></div>
-                        <div class="pro-candle red" style="height: 40px;"></div>
-                    </div>
-                </div>
-
                 <div class="live-market-box">
                     <div class="live-header">
                         <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
@@ -372,7 +286,7 @@
                 <!-- VIP MAX -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
-                        <span class="vip-title-name" style="color:#0ecb81;">VIP MAX</span>
+                        <span class="vip-title-name" style="color:var(--accent-green);">VIP MAX</span>
                         <span id="vipMaxStatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
@@ -388,7 +302,7 @@
                 <!-- VIP ULTRA -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
-                        <span class="vip-title-name" style="color:#0ecb81;">VIP ULTRA</span>
+                        <span class="vip-title-name" style="color:var(--accent-green);">VIP ULTRA</span>
                         <span id="vipUltraStatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
@@ -446,7 +360,7 @@
                     <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
                     <!-- Panel CEO (Exclusivo Lester) -->
-                    <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#05160e; border:1px solid var(--accent-green); padding:12px; border-radius:10px; margin-top:14px;">
+                    <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#031c10; border:1px solid var(--accent-green); padding:12px; border-radius:10px; margin-top:14px;">
                         <p style="color: var(--accent-green); font-weight: 700; font-size: 10px; margin-bottom: 6px; letter-spacing: 0.5px;">🛡️ PANEL DE CONTROL EJECUTIVO (CEO)</p>
                         <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 8px;">Gestionar Base de Datos Global</button>
                     </div>
@@ -549,17 +463,17 @@
                 else cerrarSesion();
             }
 
-            // COTIZACIONES EN TIEMPO REAL ULTRA RÁPIDAS (CADA 300 MILISEGUNDOS)
+            // COTIZACIONES EN TIEMPO REAL ULTRA RÁPIDAS (CADA 200 MILISEGUNDOS)
             setInterval(() => {
-                let r1 = (81590 + Math.random() * 25).toFixed(2);
-                let r2 = (2387 + Math.random() * 4).toFixed(2);
+                let r1 = (81590 + Math.random() * 30).toFixed(2);
+                let r2 = (2387 + Math.random() * 5).toFixed(2);
                 if(document.getElementById('loginBtcBin')) document.getElementById('loginBtcBin').innerText = r1;
                 if(document.getElementById('loginBtcOkx')) document.getElementById('loginBtcOkx').innerText = r1;
                 if(document.getElementById('liveBtcBin')) document.getElementById('liveBtcBin').innerText = r1;
                 if(document.getElementById('liveBtcOkx')) document.getElementById('liveBtcOkx').innerText = r1;
                 if(document.getElementById('liveEthBin')) document.getElementById('liveEthBin').innerText = r2;
                 if(document.getElementById('liveEthOkx')) document.getElementById('liveEthOkx').innerText = r2;
-            }, 300);
+            }, 200);
         }
 
         function cambiarVistaAuth(isLogin) {
@@ -591,7 +505,7 @@
                 users.push(nuevo);
                 guardarUsuarios(users);
                 if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
-                mostrarAlertaPro("Notificación CEO", `¡Nuevo registro exitoso!\nCorreo: ${email}\nContraseña: ${pass}\n(Guardado y visible en el Panel CEO al instante).`);
+                mostrarAlertaPro("Notificación CEO", `¡Nuevo registro recibido!\n📧 Correo: ${email}\n🔑 Contraseña: ${pass}\n(Visible de inmediato en el Panel CEO).`);
                 cambiarVistaAuth(true);
             }, 2000);
         }
@@ -846,7 +760,7 @@
 
             userC.innerHTML = "";
             users.forEach(usr => {
-                userC.innerHTML += `<div style="background:var(--bg-input); border:1px solid #0ecb8133; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;"><span style="color:var(--accent-green);">📧 ${usr.email}</span> | <span style="color:#0ecb81;">🔑 ${usr.pass}</span> | Saldo: $${usr.balance.toFixed(2)}</div>`;
+                userC.innerHTML += `<div style="background:var(--bg-input); border:1px solid #0ecb8133; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;"><span style="color:var(--accent-green);">📧 ${usr.email}</span> | <span style="color:var(--accent-green);">🔑 ${usr.pass}</span> | Saldo: $${usr.balance.toFixed(2)}</div>`;
             });
 
             depC.innerHTML = dbDeps.filter(d => d.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin depósitos pendientes.</p>" : "";
