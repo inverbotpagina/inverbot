@@ -137,7 +137,7 @@
         }
         .btn-pro-withdraw:hover { border-color: var(--accent-green); background: rgba(14,203,129,0.05); }
 
-        /* Estilo de Tarjetas VIP exactamente como en tu foto de referencia[span_1](start_span)[span_1](end_span) */
+        /* Estilo de Tarjetas VIP */
         .vip-pro-card {
             background: #161f30;
             border: 1px solid var(--border-color);
@@ -154,7 +154,7 @@
         .vip-title-name {
             font-size: 18px;
             font-weight: 800;
-            color: #f0b90b; /* Dorado clásico de niveles VIP */
+            color: #f0b90b;
         }
         .vip-status-label {
             font-size: 12px;
@@ -382,7 +382,7 @@
                 </div>
             </div>
 
-            <!-- CUANTIFICAR (ZONA VIP + ESTILO EXACTO DE TU FOTO CON TUS DATOS) -->
+            <!-- CUANTIFICAR (ZONA VIP) -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="assets-total-box" style="margin-bottom:14px;">
                     <div class="assets-title">
@@ -455,6 +455,38 @@
                     <div id="vipMaxActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip('Max', 16)">Adquirir VIP Max</button></div>
                     <button id="btnClaimMax" class="btn btn-blue" onclick="reclamarVip('Max')" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
                 </div>
+
+                <!-- VIP ULTRA (NUEVO) -->
+                <div class="vip-pro-card">
+                    <div class="vip-header-row">
+                        <span class="vip-title-name" style="color:#9b51e0;">VIP ULTRA</span>
+                        <span id="vipUltraStatusText" class="vip-status-label" style="color:var(--text-muted);">Bloqueado</span>
+                    </div>
+                    <div class="vip-grid-container">
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Cuantificar carreras</div>
+                            <div class="vip-box-value">1</div>
+                        </div>
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Cuantificar días</div>
+                            <div class="vip-box-value">35</div>
+                        </div>
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Beneficio diario</div>
+                            <div class="vip-box-value green">42.2 USDT</div>
+                        </div>
+                        <div class="vip-grid-box">
+                            <div class="vip-box-title">Precio VIP</div>
+                            <div class="vip-box-value">65.00 USDT</div>
+                        </div>
+                        <div class="vip-grid-box full-width">
+                            <div class="vip-box-title">Tarifa de servicio</div>
+                            <div class="vip-box-value">0%</div>
+                        </div>
+                    </div>
+                    <div id="vipUltraActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip('Ultra', 65)">Adquirir VIP Ultra</button></div>
+                    <button id="btnClaimUltra" class="btn btn-blue" onclick="reclamarVip('Ultra')" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
+                </div>
             </div>
 
             <!-- INVITA A TUS AMIGOS (RED) -->
@@ -468,7 +500,7 @@
                 </div>
             </div>
 
-            <!-- A MÍ (ESTILO EXACTO DE LA REFERENCIA CON TARJETAS DE ACTIVOS) -->
+            <!-- A MÍ -->
             <div id="tabAmi" class="tab-content" style="display: none;">
                 <div class="assets-total-box">
                     <div class="assets-title">
@@ -566,7 +598,6 @@
             localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
         }
 
-        // Sistema de Notificaciones con Fondo Trading y Botón X Circular
         function mostrarAlertaPro(titulo, mensaje) {
             let container = document.getElementById('customModalContainer');
             container.innerHTML = `
@@ -626,7 +657,12 @@
 
             if(refCode) {
                 let refUser = dbUsers.find(u => u.code === refCode);
-                if(refUser) { refUser.balance += 0.20; refUser.refCount += 1; }
+                if(refUser) { 
+                    refUser.balance += 0.20; 
+                    refUser.refCount += 1; 
+                    // Guardamos de inmediato los cambios del usuario referente en la base de datos global
+                    localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
+                }
             }
 
             dbUsers.push(nuevo);
@@ -640,6 +676,8 @@
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
 
+            // Recargamos los datos de usuarios desde localStorage para asegurar que reconozca los referidos actualizados
+            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             let u = dbUsers.find(x => x.email === email && x.pass === pass);
             if(!u) { mostrarAlertaPro("Error", "Credenciales incorrectas."); return; }
 
@@ -649,12 +687,15 @@
         }
 
         function entrarDashboardDirecto() {
+            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
             document.getElementById('bottomNavBar').style.display = 'flex';
 
             let user = dbUsers.find(u => u.email === sessionEmail);
+            if(!user) { cerrarSesion(); return; }
+
             document.getElementById('lblUserEmail').innerText = user.email;
             let balStr = "$" + user.balance.toFixed(2);
             document.getElementById('lblBalanceAmi').innerText = balStr;
@@ -682,6 +723,12 @@
             document.getElementById('vipMaxStatusText').style.color = vipMaxActivo ? "var(--accent-green)" : "var(--text-muted)";
             document.getElementById('vipMaxActionArea').innerHTML = vipMaxActivo ? `` : `<button class="btn btn-green" onclick="comprarVip('Max', 16)">Adquirir VIP Max</button>`;
             document.getElementById('btnClaimMax').style.display = vipMaxActivo ? 'block' : 'none';
+
+            let vipUltraActivo = (user.vipActive === 'Ultra' && user.vipExpiry > ahora);
+            document.getElementById('vipUltraStatusText').innerText = vipUltraActivo ? "Desbloqueado" : "Bloqueado";
+            document.getElementById('vipUltraStatusText').style.color = vipUltraActivo ? "var(--accent-green)" : "var(--text-muted)";
+            document.getElementById('vipUltraActionArea').innerHTML = vipUltraActivo ? `` : `<button class="btn btn-green" onclick="comprarVip('Ultra', 65)">Adquirir VIP Ultra</button>`;
+            document.getElementById('btnClaimUltra').style.display = vipUltraActivo ? 'block' : 'none';
         }
 
         function cerrarSesion() {
@@ -777,9 +824,12 @@
         function copiarTexto(txt) { navigator.clipboard.writeText(txt); mostrarAlertaPro("Portapapeles", "¡Dirección copiada con éxito!"); }
 
         function copiarEnlaceReferido() { 
+            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             let u = dbUsers.find(x => x.email === sessionEmail);
-            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code); 
-            mostrarAlertaPro("Referidos", "¡Enlace copiado al portapapeles!"); 
+            if(u) {
+                navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code); 
+                mostrarAlertaPro("Referidos", "¡Enlace copiado al portapapeles!"); 
+            }
         }
 
         function reportarDepositoEspecifico(e, red) {
@@ -799,6 +849,7 @@
             let wallet = document.getElementById('witWallet').value.trim();
             let monto = parseFloat(document.getElementById('witMonto').value);
             let pass = document.getElementById('witPass').value.trim();
+            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             let u = dbUsers.find(x => x.email === sessionEmail);
             if(u.pass !== pass) { mostrarAlertaPro("Error", "Contraseña incorrecta"); return; }
             if(u.balance < monto) { mostrarAlertaPro("Error", "Saldo insuficiente"); return; }
@@ -811,6 +862,7 @@
         }
 
         function comprarVip(nivel, precio) {
+            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             let u = dbUsers.find(x => x.email === sessionEmail);
             if(u.balance < precio) { mostrarAlertaPro("Aviso", `Saldo insuficiente. Necesitas ${precio} USDT.`); return; }
             u.balance -= precio;
@@ -823,19 +875,30 @@
         }
 
         function reclamarVip(nivel) {
+            dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             let u = dbUsers.find(x => x.email === sessionEmail);
             if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No tienes activo este VIP."); return; }
             let ahora = Date.now();
             let unDia = 24 * 60 * 60 * 1000;
             if(ahora - u.lastClaim < unDia) { mostrarAlertaPro("Espera", "Debes esperar 24 horas exactas para tu siguiente reclamo."); return; }
-            let btn = document.getElementById((nivel === 1) ? 'btnClaim1' : 'btnClaimMax');
-            btn.disabled = true; btn.innerText = "⏳ Verificando...";
+            
+            let btnId = 'btnClaim1';
+            if(nivel === 'Max') btnId = 'btnClaimMax';
+            if(nivel === 'Ultra') btnId = 'btnClaimUltra';
+            
+            let btn = document.getElementById(btnId);
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando..."; }
+            
             setTimeout(() => {
-                let rec = (nivel === 1) ? 1.5 : 6.5;
+                let rec = 1.5;
+                if(nivel === 'Max') rec = 6.5;
+                if(nivel === 'Ultra') rec = 42.2;
+
                 u.balance += rec;
                 u.lastClaim = ahora;
                 localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
-                btn.disabled = false; btn.innerText = "Verificar / Reclamar Diario";
+                
+                if(btn) { btn.disabled = false; btn.innerText = "Verificar / Reclamar Diario"; }
                 mostrarAlertaPro("Recompensa", `¡Reclamado con éxito! Se acreditaron ${rec} USDT a tus activos.`);
                 entrarDashboardDirecto();
             }, 3000);
