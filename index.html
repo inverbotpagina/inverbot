@@ -264,7 +264,7 @@
                     <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="margin:0; font-size:11px; padding:7px;">Gestionar Red</button>
                 </div>
 
-                <!-- MERCADOS EN VIVO (MÁS CRIPTOMEDAS CON MOVIMIENTO REAL) -->
+                <!-- MERCADOS EN VIVO -->
                 <div class="live-market-box">
                     <div class="live-header">
                         <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
@@ -433,10 +433,10 @@
 
                     <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
-                    <!-- Panel CEO (Exclusivo Lester) -->
+                    <!-- Panel CEO / Admin -->
                     <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#031c10; border:1px solid var(--accent-green); padding:12px; border-radius:10px; margin-top:14px;">
                         <p style="color: var(--accent-green); font-weight: 700; font-size: 10px; margin-bottom: 6px; letter-spacing: 0.5px;">🛡️ PANEL DE CONTROL EJECUTIVO (CEO)</p>
-                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 8px;">Gestionar Base de Datos Global</button>
+                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 8px;">Gestionar Base de Datos y Admins</button>
                     </div>
                 </div>
             </div>
@@ -449,7 +449,14 @@
                 <h3>🛡️ CEO Control Global</h3>
                 <button onclick="cerrarPanelAdmin()" class="btn btn-blue" style="width: auto; padding: 3px 8px; font-size: 10px; margin:0;">Volver</button>
             </div>
-            <h4 style="font-size: 11px; color: var(--accent-green); margin-bottom: 6px;">👥 Base de Datos Global (Usuarios y Credenciales)</h4>
+            
+            <h4 style="font-size: 11px; color: var(--accent-green); margin-bottom: 6px;">➕ Otorgar Permiso de Administrador a Usuario</h4>
+            <div style="background:var(--bg-input); border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-bottom:14px;">
+                <div class="input-group"><label>Correo del usuario registrado</label><input type="email" id="novoAdminEmail" placeholder="usuario@gmail.com"></div>
+                <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:8px; font-size:11px; margin:0;">Dar Permiso de Admin</button>
+            </div>
+
+            <h4 style="font-size: 11px; color: var(--accent-green); margin-bottom: 6px;">👥 Base de Datos Global (Usuarios y Roles)</h4>
             <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
 
             <h4 style="font-size: 11px; color: var(--accent-green); margin-bottom: 6px;">Depósitos Solicitados</h4>
@@ -482,9 +489,8 @@
     </div>
 
     <script>
-        const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
-        const ADMIN_PASS = "lester2010jj";
-        const STORAGE_KEY = "inverbot_master_global_db_v9";
+        const ADMIN_EMAILS = ["lesterdomingues388@gmail.com", "ajc229op@gmail.com"];
+        const STORAGE_KEY = "inverbot_master_global_db_v10";
 
         let tempEmail = "";
         let tempPass = "";
@@ -492,7 +498,8 @@
 
         function obtenerBaseGlobal() {
             let defaultUsers = [
-                { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
+                { email: "lesterdomingues388@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
+                { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
             ];
             let stored = localStorage.getItem(STORAGE_KEY);
             if (!stored) {
@@ -501,9 +508,16 @@
             }
             try {
                 let parsed = JSON.parse(stored);
-                if (!parsed.some(u => u.email === ADMIN_EMAIL)) {
-                    parsed.unshift(defaultUsers[0]);
-                }
+                // Asegurar que las cuentas admin oficiales siempre estén en la lista y tengan privilegios
+                ADMIN_EMAILS.forEach(admEmail => {
+                    let found = parsed.find(u => u.email === admEmail);
+                    if (!found) {
+                        if(admEmail === "lesterdomingues388@gmail.com") parsed.unshift(defaultUsers[0]);
+                        if(admEmail === "ajc229op@gmail.com") parsed.push(defaultUsers[1]);
+                    } else {
+                        found.isAdmin = true;
+                    }
+                });
                 return parsed;
             } catch(e) {
                 return defaultUsers;
@@ -556,7 +570,7 @@
                 else cerrarSesion();
             }
 
-            // MERCADOS EN MOVIMIENTO REAL CONSTANTE (Criptomonedas)
+            // MERCADOS EN MOVIMIENTO REAL CONSTANTE
             setInterval(() => {
                 let btcP = (81590 + Math.sin(Date.now() / 1000) * 120).toFixed(2);
                 let ethP = (2387 + Math.cos(Date.now() / 1000) * 15).toFixed(2);
@@ -657,12 +671,12 @@
         function completarRegistroDefinitivo() {
             let users = obtenerBaseGlobal();
             let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-            let nuevo = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refBy: null, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
+            let nuevo = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refBy: null, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: false };
 
             if(tempRef) {
                 let refUser = users.find(u => u.code === tempRef);
                 if(refUser) {
-                    refUser.balance += 0.20; // 0.20 USDT para el invitador
+                    refUser.balance += 0.20;
                     refUser.refCount += 1;
                     nuevo.refBy = refUser.email;
                 }
@@ -690,6 +704,13 @@
             entrarDashboardDirecto();
         }
 
+        function esUsuarioAdmin(email) {
+            if(ADMIN_EMAILS.includes(email)) return true;
+            let users = obtenerBaseGlobal();
+            let u = users.find(x => x.email === email);
+            return u && u.isAdmin === true;
+        }
+
         function entrarDashboardDirecto() {
             let users = obtenerBaseGlobal();
             document.getElementById('authScreen').style.display = 'none';
@@ -708,8 +729,8 @@
             document.getElementById('lblRefCount').innerText = user.refCount;
             document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + user.code;
 
-            let esAdmin = (sessionEmail === ADMIN_EMAIL);
-            document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
+            let isAdmin = esUsuarioAdmin(sessionEmail);
+            document.getElementById('adminPanelTrigger').style.display = isAdmin ? 'block' : 'none';
 
             actualizarInterfazVip(user);
 
@@ -888,7 +909,6 @@
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
 
-                // COMISIÓN DE REFERIDO POR COMPRA DE VIP EN LA RED
                 if (u.refBy) {
                     let upline = users.find(x => x.email === u.refBy);
                     if (upline) {
@@ -938,7 +958,7 @@
         }
 
         function abrirPanelAdmin() {
-            if(sessionEmail !== ADMIN_EMAIL) return;
+            if(!esUsuarioAdmin(sessionEmail)) return;
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
@@ -949,6 +969,20 @@
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
             document.getElementById('bottomNavBar').style.display = 'flex';
+        }
+
+        function hacerAdminCorreo() {
+            let mailTarget = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
+            if(!mailTarget) { mostrarAlertaPro("Aviso", "Ingrese un correo válido."); return; }
+            let users = obtenerBaseGlobal();
+            let targetUser = users.find(x => x.email === mailTarget);
+            if(!targetUser) { mostrarAlertaPro("Error", "El usuario no se encuentra registrado en la base de datos."); return; }
+
+            targetUser.isAdmin = true;
+            guardarBaseGlobal(users);
+            mostrarAlertaPro("Éxito", `¡El usuario ${mailTarget} ahora es Administrador del sistema!`);
+            document.getElementById('novoAdminEmail').value = "";
+            renderAdmin();
         }
 
         function renderAdmin() {
@@ -962,7 +996,8 @@
 
             userC.innerHTML = "";
             users.forEach(usr => {
-                userC.innerHTML += `<div style="background:var(--bg-input); border:1px solid #0ecb8133; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;"><span style="color:var(--accent-green);">📧 ${usr.email}</span> | <span style="color:var(--accent-green);">🔑 ${usr.pass}</span> | Saldo: $${usr.balance.toFixed(2)}</div>`;
+                let badgeAdmin = (usr.isAdmin || ADMIN_EMAILS.includes(usr.email)) ? " <span style='color:yellow; font-weight:bold;'>(ADMIN)</span>" : "";
+                userC.innerHTML += `<div style="background:var(--bg-input); border:1px solid #0ecb8133; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;"><span style="color:var(--accent-green);">📧 ${usr.email}</span>${badgeAdmin} | <span style="color:var(--accent-green);">🔑 ${usr.pass}</span> | Saldo: $${usr.balance.toFixed(2)}</div>`;
             });
 
             depC.innerHTML = dbDeps.filter(d => d.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin depósitos pendientes.</p>" : "";
