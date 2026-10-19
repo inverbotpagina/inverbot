@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INVERBOT | Citas en Vivo</title>
+    <title>INVERBOT | Institutional Trading & Quant</title>
     <style>
         :root {
-            --bg-main: #0b0e14;
-            --bg-card: #121824;
-            --bg-input: #1a2332;
-            --border-color: #212d40;
+            --bg-main: #07090e;
+            --bg-card: #0f141d;
+            --bg-input: #151c28;
+            --border-color: #202b3d;
             --accent-green: #0ecb81;
             --accent-red: #f6465d;
-            --accent-blue: #3861fb;
-            --text-main: #eaecef;
-            --text-muted: #848e9c;
+            --accent-blue: #2962ff;
+            --text-main: #f0f3f6;
+            --text-muted: #78829d;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -26,8 +26,8 @@
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
-            padding: 10px;
-            padding-bottom: 70px;
+            padding: 12px;
+            padding-bottom: 75px;
             position: relative;
             overflow-x: hidden;
         }
@@ -36,199 +36,196 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0;
-            opacity: 0.10;
+            opacity: 0.05;
             pointer-events: none;
             display: flex;
             justify-content: space-around;
             align-items: flex-end;
             padding: 10px;
         }
-        .candle-stick { width: 5px; background: var(--accent-green); position: relative; border-radius: 2px; }
-        .candle-stick::before { content: ''; position: absolute; left: 2px; width: 1px; height: 160%; top: -30%; background: inherit; }
+        .candle-stick { width: 4px; background: var(--accent-green); position: relative; border-radius: 1px; }
+        .candle-stick::before { content: ''; position: absolute; left: 1.5px; width: 1px; height: 180%; top: -40%; background: inherit; }
         .candle-red { background: var(--accent-red) !important; }
 
-        .terminal-container { width: 100%; max-width: 480px; position: relative; z-index: 1; }
+        .terminal-container { width: 100%; max-width: 460px; position: relative; z-index: 1; }
         
         .trading-card { 
             background-color: var(--bg-card); 
             border: 1px solid var(--border-color); 
-            padding: 18px; 
-            border-radius: 16px; 
-            box-shadow: 0 12px 35px rgba(0,0,0,0.8); 
+            padding: 20px; 
+            border-radius: 14px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
             margin-bottom: 14px; 
-            transition: all 0.5s ease;
         }
 
-        .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .brand-header h1 { font-size: 18px; color: #fff; font-weight: 800; }
+        .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .brand-header h1 { font-size: 17px; color: #fff; font-weight: 700; letter-spacing: 0.5px; }
         
         .promo-banner {
-            background: linear-gradient(135deg, #162238, #1a2332);
-            border: 1px solid var(--accent-blue);
-            border-radius: 14px;
+            background: linear-gradient(135deg, #101826, #162235);
+            border: 1px solid rgba(41, 98, 255, 0.4);
+            border-radius: 12px;
             padding: 16px;
             margin-bottom: 14px;
             text-align: center;
-            box-shadow: 0 8px 25px rgba(56, 97, 251, 0.2);
         }
-        .promo-banner h3 { font-size: 15px; color: #fff; margin-bottom: 6px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .promo-banner h3 { font-size: 14px; color: #fff; margin-bottom: 6px; font-weight: 700; }
         .promo-banner p { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
 
         .live-chart-box {
-            background: #161f30;
+            background: #111722;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 14px;
             margin-bottom: 12px;
         }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: #fff; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
         .pro-chart-visual {
             width: 100%;
-            height: 70px;
+            height: 65px;
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            background: rgba(11, 14, 20, 0.6);
-            border-radius: 8px;
+            background: #090d14;
+            border-radius: 6px;
             padding: 8px 12px;
-            border: 1px solid #1e2d4a;
+            border: 1px solid #1a2333;
         }
         .pro-candle {
-            width: 6px;
+            width: 5px;
             background: var(--accent-green);
-            border-radius: 2px;
+            border-radius: 1px;
             position: relative;
         }
         .pro-candle.red { background: var(--accent-red); }
         .pro-candle::after {
             content: '';
             position: absolute;
-            left: 2.5px;
+            left: 2px;
             width: 1px;
-            height: 150%;
-            top: -25%;
+            height: 160%;
+            top: -30%;
             background: inherit;
         }
 
         .live-market-box {
-            background: #161f30;
+            background: #111722;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 12px;
             margin-bottom: 12px;
         }
         .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .live-title { font-size: 14px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
-        .coin-icon { width: 22px; height: 22px; border-radius: 50%; object-fit: contain; }
-        .live-badge { background: rgba(14,203,129,0.15); color: var(--accent-green); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .live-title { font-size: 13px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .coin-icon { width: 20px; height: 20px; border-radius: 50%; object-fit: contain; }
+        .live-badge { background: rgba(14,203,129,0.1); color: var(--accent-green); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
         
-        .exchange-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 5px 0; border-bottom: 1px solid #1e2d4a; }
+        .exchange-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #182232; }
         .exchange-row:last-child { border-bottom: none; }
-        .ex-name { color: var(--text-muted); font-weight: 600; font-size: 11px; }
-        .ex-price { font-family: monospace; font-weight: 700; color: #fff; }
+        .ex-name { color: var(--text-muted); font-weight: 500; font-size: 11px; }
+        .ex-price { font-family: monospace; font-weight: 600; color: #fff; }
         .ex-change-green { color: var(--accent-green); font-weight: 600; font-size: 11px; }
         .ex-change-red { color: var(--accent-red); font-weight: 600; font-size: 11px; }
 
         .assets-total-box {
-            background: #161f30;
+            background: #111722;
             border: 1px solid var(--border-color);
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 16px;
             margin-bottom: 14px;
         }
-        .assets-title { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-        .assets-amount { font-size: 28px; font-weight: 800; color: var(--accent-green); font-family: monospace; margin-bottom: 14px; }
+        .assets-title { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .assets-amount { font-size: 26px; font-weight: 700; color: var(--accent-green); font-family: monospace; margin-bottom: 14px; }
         
         .assets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-        .asset-subcard { background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; }
-        .asset-sub-title { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-        .asset-sub-amount { font-size: 18px; font-weight: 700; color: #fff; font-family: monospace; }
+        .asset-subcard { background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; }
+        .asset-sub-title { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
+        .asset-sub-amount { font-size: 16px; font-weight: 600; color: #fff; font-family: monospace; }
 
         .action-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-pro-deposit {
-            background-color: var(--accent-green); color: #051b11; border: none; padding: 14px;
-            border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            box-shadow: 0 4px 15px rgba(14,203,129,0.3); transition: 0.3s;
+            background-color: var(--accent-green); color: #07090e; border: none; padding: 12px;
+            border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
         }
         .btn-pro-withdraw {
             background-color: transparent; color: var(--accent-green); border: 1px solid var(--border-color);
-            padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.3s;
+            padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
         }
 
         .vip-pro-card {
-            background: #161f30; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-bottom: 14px;
+            background: #111722; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 14px;
         }
-        .vip-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .vip-title-name { font-size: 18px; font-weight: 800; color: #f0b90b; }
-        .vip-status-label { font-size: 12px; font-weight: 700; color: var(--accent-green); }
-        .vip-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .vip-grid-box { background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; }
-        .vip-box-title { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-        .vip-box-value { font-size: 16px; font-weight: 700; color: #fff; font-family: monospace; }
+        .vip-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .vip-title-name { font-size: 16px; font-weight: 700; color: #f0b90b; }
+        .vip-status-label { font-size: 11px; font-weight: 600; color: var(--accent-green); }
+        .vip-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .vip-grid-box { background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; }
+        .vip-box-title { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; text-transform: uppercase; }
+        .vip-box-value { font-size: 14px; font-weight: 600; color: #fff; font-family: monospace; }
         .vip-box-value.green { color: var(--accent-green); }
 
         .network-select-card {
-            background: #161f30; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;
-            display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+            background: #111722; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
         }
-        .network-info { display: flex; align-items: center; gap: 12px; }
-        .net-logo-container { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(14,203,129,0.1); border-radius: 50%; border: 1px solid var(--accent-green); }
-        .net-main-icon { font-size: 18px; font-weight: bold; color: var(--accent-green); }
-        .net-name { font-size: 14px; font-weight: bold; color: #fff; }
-        .btn-select-net { background: rgba(14,203,129,0.12); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .network-info { display: flex; align-items: center; gap: 10px; }
+        .net-logo-container { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(14,203,129,0.08); border-radius: 50%; border: 1px solid rgba(14,203,129,0.3); }
+        .net-main-icon { font-size: 14px; font-weight: bold; color: var(--accent-green); }
+        .net-name { font-size: 13px; font-weight: 600; color: #fff; }
+        .btn-select-net { background: rgba(14,203,129,0.1); color: var(--accent-green); border: 1px solid rgba(14,203,129,0.3); padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
         .floating-support-btn {
-            position: fixed; bottom: 75px; right: 20px;
-            background: linear-gradient(135deg, var(--accent-green), #0a935f);
-            color: #0b0e14; width: 60px; height: 60px; border-radius: 50%;
+            position: fixed; bottom: 70px; right: 16px;
+            background: var(--accent-green); color: #07090e; width: 54px; height: 54px; border-radius: 50%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            box-shadow: 0 6px 20px rgba(14,203,129,0.5); cursor: pointer; z-index: 999;
-            text-decoration: none; border: 2px solid #fff; transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(14,203,129,0.4); cursor: pointer; z-index: 999;
+            text-decoration: none; border: 2px solid #fff; transition: transform 0.2s;
         }
-        .floating-support-btn:hover { transform: scale(1.1); }
-        .floating-support-logo { font-weight: 900; font-size: 13px; line-height: 1; }
-        .floating-support-text { font-size: 8px; font-weight: 800; text-transform: uppercase; margin-top: 2px; }
+        .floating-support-btn:hover { transform: scale(1.05); }
+        .floating-support-logo { font-weight: 800; font-size: 12px; line-height: 1; }
+        .floating-support-text { font-size: 7px; font-weight: 700; text-transform: uppercase; margin-top: 1px; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(7, 11, 18, 0.85); backdrop-filter: blur(8px);
+            background: rgba(5, 7, 11, 0.85); backdrop-filter: blur(5px);
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
         .modal-card {
-            background: linear-gradient(135deg, #121824, #1a2332); border: 1px solid var(--accent-blue);
-            padding: 24px; border-radius: 16px; width: 100%; max-width: 360px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9); position: relative;
+            background: #111722; border: 1px solid var(--border-color);
+            padding: 22px; border-radius: 14px; width: 100%; max-width: 340px; text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8); position: relative;
         }
-        .modal-title { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 10px; }
-        .modal-msg { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .modal-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .modal-msg { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
         .modal-close-btn {
             background: var(--bg-input); color: #fff; border: 1px solid var(--border-color);
-            width: 36px; height: 36px; border-radius: 50%; font-size: 16px; font-weight: bold; cursor: pointer;
+            width: 32px; height: 32px; border-radius: 50%; font-size: 14px; font-weight: bold; cursor: pointer;
         }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #121824; border-top: 1px solid var(--border-color);
-            display: flex; justify-content: space-around; padding: 10px 0; z-index: 100;
+            background: #0f141d; border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-around; padding: 8px 0; z-index: 100;
         }
-        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer; gap: 3px; }
-        .nav-item.active { color: var(--accent-green); }
-        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 500; cursor: pointer; gap: 3px; }
+        .nav-item.active { color: var(--accent-green); font-weight: 600; }
+        .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
 
         .input-group { margin-bottom: 12px; text-align: left; }
-        .input-group label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
-        .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 13px; }
+        .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group input, .input-group select { width: 100%; padding: 10px 12px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 12px; outline: none; transition: 0.2s; }
+        .input-group input:focus, .input-group select:focus { border-color: var(--accent-blue); }
         
-        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: 0.3s; }
-        .btn:hover { opacity: 0.9; }
-        .btn-green { background-color: var(--accent-green); color: #000; }
+        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 4px; transition: 0.2s; }
+        .btn:hover { opacity: 0.92; }
+        .btn-green { background-color: var(--accent-green); color: #07090e; }
         .btn-blue { background-color: var(--accent-blue); color: #fff; }
         .btn-red { background-color: var(--accent-red); color: #fff; }
         
-        .crypto-asset-card { background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px; }
-        .auth-switch { text-align: center; margin-top: 12px; font-size: 12px; color: var(--text-muted); }
+        .crypto-asset-card { background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; }
+        .auth-switch { text-align: center; margin-top: 12px; font-size: 11px; color: var(--text-muted); }
         .auth-switch a { color: var(--accent-blue); cursor: pointer; text-decoration: none; font-weight: 600; }
     </style>
 </head>
@@ -247,8 +244,8 @@
         <div class="candle-stick" style="height: 95px;"></div>
     </div>
 
-    <!-- Botón Flotante Redondo INVERBOT -->
-    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Técnico%20INVERBOT" class="floating-support-btn" title="Soporte soporteinverbot@gmail.com">
+    <!-- Botón Soporte Flotante -->
+    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Institucional%20INVERBOT" class="floating-support-btn" title="Soporte soporteinverbot@gmail.com">
         <span class="floating-support-logo">INV</span>
         <span class="floating-support-text">SOPORTE</span>
     </a>
@@ -261,13 +258,13 @@
         <div id="authScreen" class="trading-card">
             <div class="brand-header">
                 <h1>INVERBOT</h1>
-                <p style="font-size:11px; color:var(--text-muted)">Citas en Vivo</p>
+                <p style="font-size:10px; color:var(--text-muted)">Secure Terminal</p>
             </div>
 
             <div class="live-market-box">
                 <div class="live-header">
                     <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
-                    <span class="live-badge">LIVE</span>
+                    <span class="live-badge">REAL-TIME</span>
                 </div>
                 <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="loginBtcBin">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
                 <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="loginBtcOkx">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
@@ -275,21 +272,21 @@
 
             <div id="registerView">
                 <form onsubmit="registrarUsuario(event)">
-                    <div class="input-group"><label>Correo Electrónico (Gmail)</label><input type="email" id="regEmail" required placeholder="nombre@gmail.com"></div>
-                    <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" required placeholder="••••••••"></div>
-                    <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="Opcional"></div>
-                    <button type="submit" class="btn btn-green">Registrar Cuenta</button>
+                    <div class="input-group"><label>Correo Electrónico Institucional</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
+                    <div class="input-group"><label>Contraseña de Acceso</label><input type="password" id="regPass" required placeholder="••••••••"></div>
+                    <div class="input-group"><label>Código de Invitación (Opcional)</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
+                    <button type="submit" class="btn btn-green">Crear Cuenta</button>
                 </form>
-                <div class="auth-switch"><p>¿Ya tienes cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
+                <div class="auth-switch"><p>¿Ya posee una cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
             </div>
 
             <div id="loginView" style="display: none;">
                 <form onsubmit="iniciarSesion(event)">
-                    <div class="input-group"><label>Correo Electrónico (Gmail)</label><input type="email" id="logEmail" required placeholder="nombre@gmail.com"></div>
+                    <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" required placeholder="trader@gmail.com"></div>
                     <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" required placeholder="••••••••"></div>
-                    <button type="submit" class="btn btn-blue">Acceder al Sistema</button>
+                    <button type="submit" class="btn btn-blue">Autenticar Sesión</button>
                 </form>
-                <div class="auth-switch"><p>¿Nuevo? <a onclick="cambiarVistaAuth(false)">Crear cuenta</a></p></div>
+                <div class="auth-switch"><p>¿Nuevo usuario? <a onclick="cambiarVistaAuth(false)">Registrarse</a></p></div>
             </div>
         </div>
 
@@ -300,22 +297,22 @@
             <div id="tabHogar" class="tab-content">
                 <div class="brand-header trading-card" style="margin-bottom:12px;">
                     <div>
-                        <h1 style="font-size: 16px;">INVERBOT Exchange</h1>
-                        <p style="font-size: 11px; color: var(--text-muted);">Mercado Financiero en Directo</p>
+                        <h1 style="font-size: 15px;">INVERBOT Terminal</h1>
+                        <p style="font-size: 10px; color: var(--text-muted);">Mercados Financieros Globales</p>
                     </div>
-                    <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 10px; font-size: 11px; margin:0;">Salir</button>
+                    <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 10px; font-size: 10px; margin:0;">Salir</button>
                 </div>
 
                 <div class="promo-banner">
-                    <h3>🚀 ¡Invita Amigos y Gana 0.20 USDT!</h3>
-                    <p>Comparte tu enlace único con tu red, suma referidos y haz crecer tus ganancias al instante.</p>
-                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="margin:0; font-size:12px; padding:8px;">Ver Mi Enlace y Red</button>
+                    <h3>🚀 Programa de Afiliados y Red</h3>
+                    <p>Obtenga recompensas inmediatas de 0.20 USDT por cada socio invitado a la red de cuantificación.</p>
+                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="margin:0; font-size:11px; padding:7px;">Gestionar Red</button>
                 </div>
 
                 <div class="live-chart-box">
                     <div class="chart-header">
-                        <span>📈 Mercado Global & Velas</span>
-                        <span style="color:var(--accent-green); font-size:10px;">🟢 Conectado</span>
+                        <span>📈 Volatilidad y Velas en Vivo</span>
+                        <span style="color:var(--accent-green); font-size:10px;">● Sincronizado</span>
                     </div>
                     <div class="pro-chart-visual">
                         <div class="pro-candle" style="height: 35px;"></div>
@@ -334,7 +331,7 @@
                 <div class="live-market-box">
                     <div class="live-header">
                         <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
-                        <span class="live-badge">LIVE</span>
+                        <span class="live-badge">FEED</span>
                     </div>
                     <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveBtcBin">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
                     <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveBtcOkx">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
@@ -343,28 +340,17 @@
                 <div class="live-market-box">
                     <div class="live-header">
                         <span class="live-title"><img src="https://assets.coingecko.com/coins/images/279/large/ethereum.png" class="coin-icon"> ETH / USDT</span>
-                        <span class="live-badge">LIVE</span>
+                        <span class="live-badge">FEED</span>
                     </div>
                     <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveEthBin">2,387.48</span><span class="ex-change-red">-0.27%</span></div>
                     <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveEthOkx">2,387.48</span><span class="ex-change-red">-0.27%</span></div>
-                </div>
-
-                <div class="live-market-box">
-                    <div class="live-header">
-                        <span class="live-title"><img src="https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png" class="coin-icon"> BNB / USDT</span>
-                        <span class="live-badge">LIVE</span>
-                    </div>
-                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveBnbBin">718.00</span><span class="ex-change-green">+0.28%</span></div>
                 </div>
             </div>
 
             <!-- CUANTIFICAR -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="assets-total-box" style="margin-bottom:14px;">
-                    <div class="assets-title">
-                        <svg style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-                        Activos Totales (Cuantificar)
-                    </div>
+                    <div class="assets-title">Activos Totales de Cuantificación</div>
                     <div class="assets-amount" id="lblBalanceCuantificar">$0.00</div>
                 </div>
 
@@ -372,59 +358,59 @@
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
                         <span class="vip-title-name">VIP 1</span>
-                        <span id="vip1StatusText" class="vip-status-label" style="color:var(--text-muted);">Bloqueado</span>
+                        <span id="vip1StatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
                         <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
                         <div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div>
-                        <div class="vip-grid-box"><div class="vip-box-title">Beneficio diario</div><div class="vip-box-value green">1.50 USDT</div></div>
-                        <div class="vip-grid-box"><div class="vip-box-title">Precio</div><div class="vip-box-value">4.00 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Diario</div><div class="vip-box-value green">1.50 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">4.00 USDT</div></div>
                     </div>
                     <div id="vip1ActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button></div>
-                    <button id="btnClaim1" class="btn btn-blue" onclick="reclamarVip(1)" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
+                    <button id="btnClaim1" class="btn btn-blue" onclick="reclamarVip(1)" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
                 <!-- VIP MAX -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
-                        <span class="vip-title-name" style="color:#3861fb;">VIP MAX</span>
-                        <span id="vipMaxStatusText" class="vip-status-label" style="color:var(--text-muted);">Bloqueado</span>
+                        <span class="vip-title-name" style="color:#2962ff;">VIP MAX</span>
+                        <span id="vipMaxStatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
                         <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
                         <div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div>
-                        <div class="vip-grid-box"><div class="vip-box-title">Beneficio diario</div><div class="vip-box-value green">6.50 USDT</div></div>
-                        <div class="vip-grid-box"><div class="vip-box-title">Precio</div><div class="vip-box-value">16.00 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Diario</div><div class="vip-box-value green">6.50 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">16.00 USDT</div></div>
                     </div>
                     <div id="vipMaxActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip('Max', 16)">Adquirir VIP Max</button></div>
-                    <button id="btnClaimMax" class="btn btn-blue" onclick="reclamarVip('Max')" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
+                    <button id="btnClaimMax" class="btn btn-blue" onclick="reclamarVip('Max')" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
                 <!-- VIP ULTRA -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
                         <span class="vip-title-name" style="color:#9b51e0;">VIP ULTRA</span>
-                        <span id="vipUltraStatusText" class="vip-status-label" style="color:var(--text-muted);">Bloqueado</span>
+                        <span id="vipUltraStatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
                         <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
                         <div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div>
-                        <div class="vip-grid-box"><div class="vip-box-title">Beneficio diario</div><div class="vip-box-value green">42.2 USDT</div></div>
-                        <div class="vip-grid-box"><div class="vip-box-title">Precio</div><div class="vip-box-value">65.00 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Diario</div><div class="vip-box-value green">42.2 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">65.00 USDT</div></div>
                     </div>
                     <div id="vipUltraActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip('Ultra', 65)">Adquirir VIP Ultra</button></div>
-                    <button id="btnClaimUltra" class="btn btn-blue" onclick="reclamarVip('Ultra')" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
+                    <button id="btnClaimUltra" class="btn btn-blue" onclick="reclamarVip('Ultra')" style="margin-top: 8px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
             </div>
 
             <!-- RED -->
             <div id="tabRed" class="tab-content" style="display: none;">
                 <div class="trading-card" style="text-align: center;">
-                    <h3 style="font-size: 16px; margin-bottom: 8px;">Sistema de Referidos</h3>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Gana <b>0.20 USDT</b> por cada usuario invitado.</p>
+                    <h3 style="font-size: 15px; margin-bottom: 6px;">Red de Afiliados</h3>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Comparte tu enlace institucional de referido.</p>
                     <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--accent-green); margin: 8px 0; word-break: break-all; background:var(--bg-input); padding:8px; border-radius:6px; border:1px solid var(--border-color);"></code>
-                    <button class="btn btn-green" onclick="copiarEnlaceReferido()">Copiar Enlace de Referido</button>
-                    <p style="font-size: 12px; margin-top: 12px;">Socios en red: <b id="lblRefCount" style="color:#fff;">0</b></p>
+                    <button class="btn btn-green" onclick="copiarEnlaceReferido()">Copiar Enlace</button>
+                    <p style="font-size: 11px; margin-top: 12px;">Socios en red: <b id="lblRefCount" style="color:#fff;">0</b></p>
                 </div>
             </div>
 
@@ -433,59 +419,56 @@
                 <div class="assets-total-box">
                     <div class="brand-header" style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                         <div>
-                            <div style="font-size:11px; color:var(--text-muted);">Cuenta Conectada</div>
-                            <div style="font-size: 13px; font-weight:700; color:var(--accent-green);" id="lblUserEmail"></div>
+                            <div style="font-size:10px; color:var(--text-muted);">Sesión Activa</div>
+                            <div style="font-size: 12px; font-weight:600; color:var(--accent-green);" id="lblUserEmail"></div>
                         </div>
-                        <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 10px; font-size: 11px; margin:0;">Salir</button>
+                        <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 10px; font-size: 10px; margin:0;">Salir</button>
                     </div>
 
-                    <div class="assets-title">
-                        <svg style="width:14px;height:14px;fill:currentColor;" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-                        Activos totales
-                    </div>
+                    <div class="assets-title">Balance Disponible</div>
                     <div class="assets-amount" id="lblBalanceAmi">$0.00</div>
 
                     <div class="assets-grid">
                         <div class="asset-subcard">
-                            <div class="asset-sub-title">Cuantificar cuenta</div>
+                            <div class="asset-sub-title">Capital Cuantificado</div>
                             <div class="asset-sub-amount" id="lblCuantificarCuenta">$0.00</div>
                         </div>
                         <div class="asset-subcard">
-                            <div class="asset-sub-title">Activos de beneficio</div>
+                            <div class="asset-sub-title">Beneficios Acumulados</div>
                             <div class="asset-sub-amount">$0.00</div>
                         </div>
                     </div>
 
                     <div class="action-buttons-grid">
-                        <button class="btn-pro-deposit" onclick="mostrarSeccion('dep')"><span style="font-size:18px;">＋</span> Depósito</button>
-                        <button class="btn-pro-withdraw" onclick="mostrarSeccion('wit')"><span style="font-size:16px;">↑</span> Retirar</button>
+                        <button class="btn-pro-deposit" onclick="mostrarSeccion('dep')"><span style="font-size:16px;">＋</span> Depositar</button>
+                        <button class="btn-pro-withdraw" onclick="mostrarSeccion('wit')"><span style="font-size:14px;">↑</span> Retirar</button>
                     </div>
 
-                    <div id="subAccionContainer" style="display: none; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;"></div>
+                    <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
                     <!-- Panel CEO (Exclusivo Lester) -->
-                    <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#1a1215; border:1px solid #572029; padding:12px; border-radius:10px; margin-top:15px;">
-                        <p style="color: var(--accent-red); font-weight: 700; font-size: 11px; margin-bottom: 6px;">🛡️ PANEL CEO EXCLUSIVO</p>
-                        <button class="btn btn-red" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 8px;">Gestionar Usuarios, Depósitos y Retiros</button>
+                    <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#181014; border:1px solid #572029; padding:12px; border-radius:10px; margin-top:14px;">
+                        <p style="color: var(--accent-red); font-weight: 700; font-size: 10px; margin-bottom: 6px; letter-spacing: 0.5px;">🛡️ PANEL DE CONTROL EJECUTIVO (CEO)</p>
+                        <button class="btn btn-red" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 8px;">Gestionar Base de Datos Global</button>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- ================= PANEL DE ADMINISTRACIÓN CEO ================= -->
+        <!-- ================= PANEL ADMINISTRATIVO CEO ================= -->
         <div id="adminDashboard" class="trading-card" style="display: none;">
             <div class="brand-header">
-                <h3>🛡️ Panel CEO & Cloud Base</h3>
+                <h3>🛡️ CEO Control Global</h3>
                 <button onclick="cerrarPanelAdmin()" class="btn btn-blue" style="width: auto; padding: 3px 8px; font-size: 10px; margin:0;">Volver</button>
             </div>
-            <h4 style="font-size: 12px; color: #f0b90b; margin-bottom: 6px;">👥 Todos los Usuarios Registrados en Tiempo Real</h4>
-            <div id="listaAdminUsers" style="margin-bottom: 15px; max-height: 150px; overflow-y: auto;"></div>
+            <h4 style="font-size: 11px; color: #f0b90b; margin-bottom: 6px;">👥 Base de Datos Global (Usuarios y Credenciales)</h4>
+            <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
 
-            <h4 style="font-size: 12px; color: var(--accent-green); margin-bottom: 6px;">Depósitos Pendientes</h4>
+            <h4 style="font-size: 11px; color: var(--accent-green); margin-bottom: 6px;">Depósitos Solicitados</h4>
             <div id="listaAdminDeps"></div>
 
-            <h4 style="font-size: 12px; color: var(--accent-red); margin: 12px 0 6px 0;">Retiros Pendientes</h4>
+            <h4 style="font-size: 11px; color: var(--accent-red); margin: 12px 0 6px 0;">Retiros Solicitados</h4>
             <div id="listaAdminWits"></div>
         </div>
 
@@ -501,7 +484,7 @@
             </button>
             <button class="nav-item" onclick="cambiarTab('Red', this)" id="navRed">
                 <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                Invita a tus amigos
+                Red
             </button>
             <button class="nav-item" onclick="cambiarTab('Ami', this)" id="navAmi">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
@@ -514,12 +497,15 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        
+        const STORAGE_USERS = "inverbot_global_users_db";
+        const STORAGE_DEPS = "inverbot_global_deps_db";
+        const STORAGE_WITS = "inverbot_global_wits_db";
+
         function obtenerUsuarios() {
             let defaultUsers = [
                 { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
             ];
-            let stored = localStorage.getItem("inverbot_global_users");
+            let stored = localStorage.getItem(STORAGE_USERS);
             let users = stored ? JSON.parse(stored) : defaultUsers;
             if (!users.some(u => u.email === ADMIN_EMAIL)) {
                 users.unshift(defaultUsers[0]);
@@ -528,7 +514,7 @@
         }
 
         function guardarUsuarios(users) {
-            localStorage.setItem("inverbot_global_users", JSON.stringify(users));
+            localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
         }
 
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
@@ -567,13 +553,10 @@
             setInterval(() => {
                 let r1 = (81590 + Math.random() * 15).toFixed(2);
                 let r2 = (2387 + Math.random() * 2).toFixed(2);
-                let r3 = (718 + Math.random() * 0.5).toFixed(2);
-
                 if(document.getElementById('loginBtcBin')) document.getElementById('loginBtcBin').innerText = r1;
                 if(document.getElementById('liveBtcBin')) document.getElementById('liveBtcBin').innerText = r1;
                 if(document.getElementById('liveBtcOkx')) document.getElementById('liveBtcOkx').innerText = r1;
                 if(document.getElementById('liveEthBin')) document.getElementById('liveEthBin').innerText = r2;
-                if(document.getElementById('liveBnbBin')) document.getElementById('liveBnbBin').innerText = r3;
             }, 3000);
         }
 
@@ -589,25 +572,26 @@
             let refCode = document.getElementById('regRef').value.trim();
 
             let users = obtenerUsuarios();
-            if(users.some(u => u.email === email)) { mostrarAlertaPro("Aviso", "Este correo ya está registrado."); return; }
+            if(users.some(u => u.email === email)) { mostrarAlertaPro("Aviso", "Este correo ya se encuentra registrado en el sistema."); return; }
 
-            let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-            let nuevo = { email, pass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
+            let btn = e.target.querySelector('button');
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Procesando registro (2s)..."; }
 
-            if(refCode) {
-                let refUser = users.find(u => u.code === refCode);
-                if(refUser) { 
-                    refUser.balance += 0.20; 
-                    refUser.refCount += 1; 
+            setTimeout(() => {
+                let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
+                let nuevo = { email, pass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
+
+                if(refCode) {
+                    let refUser = users.find(u => u.code === refCode);
+                    if(refUser) { refUser.balance += 0.20; refUser.refCount += 1; }
                 }
-            }
 
-            users.push(nuevo);
-            guardarUsuarios(users);
-            
-            // Envío automático al sistema global de correo por alerta de respaldo
-            mostrarAlertaPro("Éxito", "¡Registro exitoso! Ya puedes iniciar sesión.");
-            setTimeout(() => { cambiarVistaAuth(true); }, 3000);
+                users.push(nuevo);
+                guardarUsuarios(users);
+                if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
+                mostrarAlertaPro("Éxito", "¡Cuenta creada correctamente! Ya puede iniciar sesión.");
+                cambiarVistaAuth(true);
+            }, 2000);
         }
 
         function iniciarSesion(e) {
@@ -617,18 +601,17 @@
 
             let users = obtenerUsuarios();
             let u = users.find(x => x.email === email && x.pass === pass);
-            if(!u) { mostrarAlertaPro("Error", "Credenciales incorrectas."); return; }
+            if(!u) { mostrarAlertaPro("Error de Autenticación", "Credenciales incorrectas o usuario no registrado."); return; }
 
-            sessionEmail = email;
-            localStorage.setItem("inverbot_session", sessionEmail);
-            
             let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando (3s)..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando credenciales (2s)..."; }
 
             setTimeout(() => {
-                if(btn) { btn.disabled = false; btn.innerText = "Acceder al Sistema"; }
+                if(btn) { btn.disabled = false; btn.innerText = "Autenticar Sesión"; }
+                sessionEmail = email;
+                localStorage.setItem("inverbot_session", sessionEmail);
                 entrarDashboardDirecto();
-            }, 3000);
+            }, 2000);
         }
 
         function entrarDashboardDirecto() {
@@ -658,19 +641,19 @@
         function actualizarInterfazVip(user) {
             let ahora = Date.now();
             let vip1Activo = (user.vipActive === 1 && user.vipExpiry > ahora);
-            document.getElementById('vip1StatusText').innerText = vip1Activo ? "Desbloqueado" : "Bloqueado";
+            document.getElementById('vip1StatusText').innerText = vip1Activo ? "Activo" : "Inactivo";
             document.getElementById('vip1StatusText').style.color = vip1Activo ? "var(--accent-green)" : "var(--text-muted)";
             document.getElementById('vip1ActionArea').innerHTML = vip1Activo ? `` : `<button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button>`;
             document.getElementById('btnClaim1').style.display = vip1Activo ? 'block' : 'none';
 
             let vipMaxActivo = (user.vipActive === 'Max' && user.vipExpiry > ahora);
-            document.getElementById('vipMaxStatusText').innerText = vipMaxActivo ? "Desbloqueado" : "Bloqueado";
+            document.getElementById('vipMaxStatusText').innerText = vipMaxActivo ? "Activo" : "Inactivo";
             document.getElementById('vipMaxStatusText').style.color = vipMaxActivo ? "var(--accent-green)" : "var(--text-muted)";
             document.getElementById('vipMaxActionArea').innerHTML = vipMaxActivo ? `` : `<button class="btn btn-green" onclick="comprarVip('Max', 16)">Adquirir VIP Max</button>`;
             document.getElementById('btnClaimMax').style.display = vipMaxActivo ? 'block' : 'none';
 
             let vipUltraActivo = (user.vipActive === 'Ultra' && user.vipExpiry > ahora);
-            document.getElementById('vipUltraStatusText').innerText = vipUltraActivo ? "Desbloqueado" : "Bloqueado";
+            document.getElementById('vipUltraStatusText').innerText = vipUltraActivo ? "Activo" : "Inactivo";
             document.getElementById('vipUltraStatusText').style.color = vipUltraActivo ? "var(--accent-green)" : "var(--text-muted)";
             document.getElementById('vipUltraActionArea').innerHTML = vipUltraActivo ? `` : `<button class="btn btn-green" onclick="comprarVip('Ultra', 65)">Adquirir VIP Ultra</button>`;
             document.getElementById('btnClaimUltra').style.display = vipUltraActivo ? 'block' : 'none';
@@ -706,21 +689,21 @@
 
             if(tipo === 'dep') {
                 cont.innerHTML = `
-                    <h4 style="font-size:13px; color:var(--accent-green); margin-bottom:10px;">🟢 Selecciona la Red (Min 4 USDT)</h4>
-                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">BEP20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('BEP20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar ></button></div>
-                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">ERC20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('ERC20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar ></button></div>
-                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">TRC20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('TRC20', 'TYZruyFwd8m5hbQL2mrZJKYnEXhwSo1oSn')">Seleccionar ></button></div>
+                    <h4 style="font-size:12px; color:var(--accent-green); margin-bottom:10px;">🟢 Selección de Red (Mínimo 4 USDT)</h4>
+                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">BEP20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('BEP20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar</button></div>
+                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">ERC20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('ERC20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar</button></div>
+                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">TRC20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('TRC20', 'TYZruyFwd8m5hbQL2mrZJKYnEXhwSo1oSn')">Seleccionar</button></div>
                     <div id="formularioRedSeleccionada" style="margin-top:12px;"></div>
                 `;
             } else {
                 cont.innerHTML = `
-                    <h4 style="font-size:13px; color:var(--accent-blue); margin-bottom:8px;">📤 Retirar USDT</h4>
+                    <h4 style="font-size:12px; color:var(--accent-blue); margin-bottom:8px;">📤 Solicitud de Retiro USDT</h4>
                     <form onsubmit="solicitarRetiro(event)">
-                        <div class="input-group"><label>Red</label><select id="witRed"><option value="BEP20">BEP20</option><option value="ERC20">ERC20</option><option value="TRC20">TRC20</option></select></div>
-                        <div class="input-group"><label>Wallet Destino</label><input type="text" id="witWallet" required placeholder="Dirección"></div>
-                        <div class="input-group"><label>Monto</label><input type="number" id="witMonto" step="0.01" required placeholder="Cantidad"></div>
-                        <div class="input-group"><label>Contraseña</label><input type="password" id="witPass" required placeholder="Contraseña"></div>
-                        <button type="submit" class="btn btn-blue">Solicitar Retiro</button>
+                        <div class="input-group"><label>Red Blockchain</label><select id="witRed"><option value="BEP20">BEP20</option><option value="ERC20">ERC20</option><option value="TRC20">TRC20</option></select></div>
+                        <div class="input-group"><label>Dirección de Wallet de Destino</label><input type="text" id="witWallet" required placeholder="Ej: 0x... o T... (Dirección válida)"></div>
+                        <div class="input-group"><label>Monto a Retirar</label><input type="number" id="witMonto" step="0.01" required placeholder="Cantidad USDT"></div>
+                        <div class="input-group"><label>Contraseña de Seguridad</label><input type="password" id="witPass" required placeholder="Contraseña"></div>
+                        <button type="submit" class="btn btn-blue">Enviar Solicitud de Retiro</button>
                     </form>
                 `;
             }
@@ -729,41 +712,42 @@
         function abrirFormRed(redNombre, direccionWallet) {
             document.getElementById('formularioRedSeleccionada').innerHTML = `
                 <div style="background:var(--bg-input); border:1px solid var(--accent-green); padding:12px; border-radius:8px;">
-                    <p style="font-size:11px; font-weight:bold; color:var(--accent-green); margin-bottom:4px;">Red: ${redNombre}</p>
-                    <code style="font-size:10px; color:#3861fb; word-break:break-all; display:block; background:var(--bg-main); padding:6px; border-radius:4px; margin-bottom:6px;">${direccionWallet}</code>
-                    <button class="btn btn-blue" style="padding:6px; font-size:11px; margin-bottom:10px;" onclick="copiarTexto('${direccionWallet}')">Copiar Dirección</button>
+                    <p style="font-size:11px; font-weight:600; color:var(--accent-green); margin-bottom:4px;">Red Activa: ${redNombre}</p>
+                    <code style="font-size:10px; color:#2962ff; word-break:break-all; display:block; background:#07090e; padding:6px; border-radius:4px; margin-bottom:8px;">${direccionWallet}</code>
+                    <button class="btn btn-blue" style="padding:6px; font-size:11px; margin-bottom:10px;" onclick="copiarTexto('${direccionWallet}')">Copiar Dirección de Depósito</button>
                     <form onsubmit="reportarDepositoEspecifico(event, '${redNombre}')">
-                        <div class="input-group"><label>Monto (Min 4)</label><input type="number" id="depMontoEsp" step="0.01" min="4" required placeholder="Ej: 50"></div>
-                        <div class="input-group"><label>TXID / Hash</label><input type="text" id="depHashEsp" required placeholder="Hash"></div>
-                        <button type="submit" class="btn btn-green">Enviar Reporte al CEO</button>
+                        <div class="input-group"><label>Monto Depositado (Mín 4)</label><input type="number" id="depMontoEsp" step="0.01" min="4" required placeholder="Ej: 50"></div>
+                        <div class="input-group"><label>ID de Transacción (TXID / Hash)</label><input type="text" id="depHashEsp" required placeholder="Ej: 0x8f9c... (Hash válido blockchain)"></div>
+                        <button type="submit" class="btn btn-green">Verificar y Enviar al CEO</button>
                     </form>
                 </div>
             `;
         }
 
-        function copiarTexto(txt) { navigator.clipboard.writeText(txt); mostrarAlertaPro("Portapapeles", "¡Copiado con éxito!"); }
-
-        function copiarEnlaceReferido() { 
-            let users = obtenerUsuarios();
-            let u = users.find(x => x.email === sessionEmail);
-            if(u) {
-                navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code); 
-                mostrarAlertaPro("Referidos", "¡Enlace copiado al portapapeles!"); 
-            }
-        }
+        function copiarTexto(txt) { navigator.clipboard.writeText(txt); mostrarAlertaPro("Portapapeles", "¡Dirección copiada con éxito!"); }
 
         function reportarDepositoEspecifico(e, red) {
             e.preventDefault();
             let monto = parseFloat(document.getElementById('depMontoEsp').value);
             let hash = document.getElementById('depHashEsp').value.trim();
-            if(monto < 4) { mostrarAlertaPro("Aviso", "Monto mínimo 4 USDT"); return; }
+            
+            // VALIDACIÓN ESTRICTA DEL ID DE TRANSACCIÓN (HASH)
+            if(hash.length < 15 || hash.includes(" ")) {
+                mostrarAlertaPro("Error de Validación", "El ID de Transacción (TXID/Hash) ingresado no es válido. Ingrese el Hash real de la blockchain.");
+                return;
+            }
+
+            let btn = e.target.querySelector('button');
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Validando en red (2s)..."; }
+
             setTimeout(() => {
-                let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
+                let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
                 dbDeps.push({ id: Date.now(), user: sessionEmail, red, monto, hash, status: 'Pendiente' });
-                localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps));
-                mostrarAlertaPro("Éxito", "¡Depósito notificado al CEO!");
+                localStorage.setItem(STORAGE_DEPS, JSON.stringify(dbDeps));
+                if(btn) { btn.disabled = false; btn.innerText = "Verificar y Enviar al CEO"; }
+                mostrarAlertaPro("Éxito", "¡Depósito notificado correctamente al panel CEO!");
                 document.getElementById('subAccionContainer').style.display = 'none';
-            }, 3000);
+            }, 2000);
         }
 
         function solicitarRetiro(e) {
@@ -772,56 +756,69 @@
             let wallet = document.getElementById('witWallet').value.trim();
             let monto = parseFloat(document.getElementById('witMonto').value);
             let pass = document.getElementById('witPass').value.trim();
+
+            // VALIDACIÓN ESTRICTA DE LA WALLET DE RETIRO
+            if(wallet.length < 10 || wallet.includes(" ")) {
+                mostrarAlertaPro("Error de Validación", "La dirección de wallet de destino no es válida para esta red. Verifique los datos.");
+                return;
+            }
+
             let users = obtenerUsuarios();
             let u = users.find(x => x.email === sessionEmail);
-            if(u.pass !== pass) { mostrarAlertaPro("Error", "Contraseña incorrecta"); return; }
-            if(u.balance < monto) { mostrarAlertaPro("Error", "Saldo insuficiente"); return; }
+            if(u.pass !== pass) { mostrarAlertaPro("Error de Seguridad", "Contraseña institucional incorrecta."); return; }
+            if(u.balance < monto) { mostrarAlertaPro("Saldo Insuficiente", "El monto solicitado supera su balance disponible."); return; }
+
+            let btn = e.target.querySelector('button');
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Procesando retiro (2s)..."; }
+
             setTimeout(() => {
                 u.balance -= monto;
                 guardarUsuarios(users);
-                let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || [];
+                let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || [];
                 dbWits.push({ id: Date.now(), user: sessionEmail, red, wallet, monto, status: 'Pendiente' });
-                localStorage.setItem("inverbot_wits", JSON.stringify(dbWits));
-                mostrarAlertaPro("Éxito", "¡Retiro solicitado!");
+                localStorage.setItem(STORAGE_WITS, JSON.stringify(dbWits));
+                if(btn) { btn.disabled = false; btn.innerText = "Enviar Solicitud de Retiro"; }
+                mostrarAlertaPro("Éxito", "¡Solicitud de retiro enviada al CEO!");
                 entrarDashboardDirecto();
-            }, 3000);
+            }, 2000);
         }
 
         function comprarVip(nivel, precio) {
             let users = obtenerUsuarios();
             let u = users.find(x => x.email === sessionEmail);
-            if(u.balance < precio) { mostrarAlertaPro("Aviso", `Saldo insuficiente (${precio} USDT).`); return; }
+            if(u.balance < precio) { mostrarAlertaPro("Fondos Insuficientes", `Requiere ${precio} USDT para adquirir este nivel VIP.`); return; }
+            
             setTimeout(() => {
                 u.balance -= precio;
                 u.vipActive = nivel;
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
                 guardarUsuarios(users);
-                mostrarAlertaPro("Éxito", `¡VIP ${nivel} adquirido!`);
+                mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado institucionalmente!`);
                 entrarDashboardDirecto();
-            }, 3000);
+            }, 2000);
         }
 
         function reclamarVip(nivel) {
             let users = obtenerUsuarios();
             let u = users.find(x => x.email === sessionEmail);
-            if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "VIP no activo."); return; }
+            if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No cuenta con un VIP activo."); return; }
             let ahora = Date.now();
-            if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) { mostrarAlertaPro("Espera", "Debes esperar 24 horas para tu siguiente reclamo."); return; }
+            if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) { mostrarAlertaPro("Espera", "Debe esperar el ciclo de 24 horas para su siguiente reclamo."); return; }
             
             let btnId = (nivel === 1) ? 'btnClaim1' : (nivel === 'Max' ? 'btnClaimMax' : 'btnClaimUltra');
             let btn = document.getElementById(btnId);
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando (3s)..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Cuantificando (2s)..."; }
             
             setTimeout(() => {
                 let rec = (nivel === 1) ? 1.5 : (nivel === 'Max' ? 6.5 : 42.2);
                 u.balance += rec;
                 u.lastClaim = ahora;
                 guardarUsuarios(users);
-                if(btn) { btn.disabled = false; btn.innerText = "Verificar / Reclamar Diario"; }
-                mostrarAlertaPro("Recompensa", `¡Reclamado! +${rec} USDT acreditados.`);
+                if(btn) { btn.disabled = false; btn.innerText = "Reclamar Rendimiento Diario"; }
+                mostrarAlertaPro("Rendimiento Acreditado", `¡+${rec} USDT acreditados a su balance.`);
                 entrarDashboardDirecto();
-            }, 3000);
+            }, 2000);
         }
 
         function abrirPanelAdmin() {
@@ -839,8 +836,8 @@
         }
 
         function renderAdmin() {
-            let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
-            let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || [];
+            let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
+            let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || [];
             let users = obtenerUsuarios();
             
             let userC = document.getElementById('listaAdminUsers');
@@ -855,30 +852,39 @@
             depC.innerHTML = dbDeps.filter(d => d.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin depósitos pendientes.</p>" : "";
             dbDeps.forEach((d, idx) => {
                 if(d.status === 'Pendiente') {
-                    depC.innerHTML += `<div class="crypto-asset-card"><p style="font-size:11px;"><b>User:</b> ${d.user}</p><p style="font-size:11px;"><b>Monto:</b> <span style="color:var(--accent-green);">+$${d.monto}</span></p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarDep(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarDep(${idx})">Rechazar</button></div></div>`;
+                    depC.innerHTML += `<div class="crypto-asset-card"><p style="font-size:11px;"><b>User:</b> ${d.user}</p><p style="font-size:11px;"><b>Monto:</b> <span style="color:var(--accent-green);">+$${d.monto}</span></p><p style="font-size:10px; color:var(--text-muted); word-break:break-all;"><b>Hash:</b> ${d.hash}</p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarDep(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarDep(${idx})">Rechazar</button></div></div>`;
                 }
             });
 
             witC.innerHTML = dbWits.filter(w => w.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin retiros pendientes.</p>" : "";
             dbWits.forEach((w, idx) => {
                 if(w.status === 'Pendiente') {
-                    witC.innerHTML += `<div class="crypto-asset-card"><p style="font-size:11px;"><b>User:</b> ${w.user}</p><p style="font-size:11px;"><b>Monto:</b> <span style="color:var(--accent-red);">-$${w.monto}</span></p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarWit(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarWit(${idx})">Rechazar</button></div></div>`;
+                    witC.innerHTML += `<div class="crypto-asset-card"><p style="font-size:11px;"><b>User:</b> ${w.user}</p><p style="font-size:11px;"><b>Monto:</b> <span style="color:var(--accent-red);">-$${w.monto}</span></p><p style="font-size:10px; color:var(--text-muted); word-break:break-all;"><b>Wallet:</b> ${w.wallet}</p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarWit(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarWit(${idx})">Rechazar</button></div></div>`;
                 }
             });
         }
 
         function aprobarDep(idx) {
-            let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
+            let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
             let users = obtenerUsuarios();
             let dep = dbDeps[idx]; let u = users.find(x => x.email === dep.user);
-            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; guardarUsuarios(users); localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Aprobado!"); renderAdmin(); }
+            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; guardarUsuarios(users); localStorage.setItem(STORAGE_DEPS, JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Depósito aprobado!"); renderAdmin(); }
         }
-        function rechazarDep(idx) { let dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); renderAdmin(); }
-        function aprobarWit(idx) { let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
+        function rechazarDep(idx) { let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem(STORAGE_DEPS, JSON.stringify(dbDeps)); renderAdmin(); }
+        function aprobarWit(idx) { let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem(STORAGE_WITS, JSON.stringify(dbWits)); renderAdmin(); }
         function rechazarWit(idx) {
-            let dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; let users = obtenerUsuarios();
+            let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || []; let users = obtenerUsuarios();
             let w = dbWits[idx]; let u = users.find(x => x.email === w.user);
-            if(u) { u.balance += w.monto; w.status = 'Rechazado'; guardarUsuarios(users); localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
+            if(u) { u.balance += w.monto; w.status = 'Rechazado'; guardarUsuarios(users); localStorage.setItem(STORAGE_WITS, JSON.stringify(dbWits)); renderAdmin(); }
+        }
+
+        function copiarEnlaceReferido() { 
+            let users = obtenerUsuarios();
+            let u = users.find(x => x.email === sessionEmail);
+            if(u) {
+                navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code); 
+                mostrarAlertaPro("Red", "¡Enlace de referido copiado!"); 
+            }
         }
     </script>
 </body>
