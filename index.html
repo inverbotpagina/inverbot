@@ -63,6 +63,45 @@
         .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .brand-header h1 { font-size: 18px; color: #fff; font-weight: 800; }
         
+        /* Banner Profesional de Referidos en Hogar */
+        .promo-banner {
+            background: linear-gradient(135deg, #162238, #1a2332);
+            border: 1px solid var(--accent-blue);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(56, 97, 251, 0.2);
+        }
+        .promo-banner h3 { font-size: 15px; color: #fff; margin-bottom: 6px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .promo-banner p { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
+
+        /* Gráfico Animado de Barras de Trading en Tiempo Real */
+        .live-chart-box {
+            background: #161f30;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 12px; font-weight: 700; color: #fff; }
+        .chart-bars-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 60px;
+            padding: 0 5px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 8px;
+        }
+        .animated-bar {
+            width: 8px;
+            background: var(--accent-green);
+            border-radius: 3px 3px 0 0;
+            transition: height 0.2s ease;
+        }
+        .animated-bar.red { background: var(--accent-red); }
+
         /* Citas en Vivo */
         .live-market-box {
             background: #161f30;
@@ -70,7 +109,6 @@
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 12px;
-            transition: all 0.3s ease;
         }
         .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .live-title { font-size: 14px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
@@ -91,7 +129,6 @@
             border-radius: 14px;
             padding: 16px;
             margin-bottom: 14px;
-            transition: all 0.3s ease;
         }
         .assets-title { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
         .assets-amount { font-size: 28px; font-weight: 800; color: var(--accent-green); font-family: monospace; margin-bottom: 14px; }
@@ -120,10 +157,8 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: 0.3s ease;
             box-shadow: 0 4px 15px rgba(14,203,129,0.3);
         }
-        .btn-pro-deposit:hover { transform: scale(1.02); }
         .btn-pro-withdraw {
             background-color: transparent;
             color: var(--accent-green);
@@ -137,9 +172,7 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: 0.3s ease;
         }
-        .btn-pro-withdraw:hover { border-color: var(--accent-green); background: rgba(14,203,129,0.05); transform: scale(1.02); }
 
         /* Tarjetas VIP */
         .vip-pro-card {
@@ -148,53 +181,16 @@
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 14px;
-            transition: all 0.3s ease;
         }
-        .vip-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-        }
-        .vip-title-name {
-            font-size: 18px;
-            font-weight: 800;
-            color: #f0b90b;
-        }
-        .vip-status-label {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--accent-green);
-        }
-        .vip-grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .vip-grid-box {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 10px;
-        }
-        .vip-grid-box.full-width {
-            grid-column: span 2;
-        }
-        .vip-box-title {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-        .vip-box-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #fff;
-            font-family: monospace;
-        }
-        .vip-box-value.green {
-            color: var(--accent-green);
-        }
+        .vip-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .vip-title-name { font-size: 18px; font-weight: 800; color: #f0b90b; }
+        .vip-status-label { font-size: 12px; font-weight: 700; color: var(--accent-green); }
+        .vip-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .vip-grid-box { background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; }
+        .vip-grid-box.full-width { grid-column: span 2; }
+        .vip-box-title { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        .vip-box-value { font-size: 16px; font-weight: 700; color: #fff; font-family: monospace; }
+        .vip-box-value.green { color: var(--accent-green); }
 
         /* Redes Depósito */
         .network-select-card {
@@ -206,96 +202,45 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 10px;
-            transition: all 0.3s ease;
         }
         .network-info { display: flex; align-items: center; gap: 12px; }
         .net-logo-container { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(14,203,129,0.1); border-radius: 50%; border: 1px solid var(--accent-green); }
         .net-main-icon { font-size: 18px; font-weight: bold; color: var(--accent-green); }
         .net-badge-icon { position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; border: 1px solid #121824; }
         .net-name { font-size: 14px; font-weight: bold; color: #fff; }
-        
-        .btn-select-net {
-            background: rgba(14,203,129,0.12);
-            color: var(--accent-green);
-            border: 1px solid var(--accent-green);
-            padding: 7px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s ease;
-        }
-        .btn-select-net:hover { background: var(--accent-green); color: #000; }
+        .btn-select-net { background: rgba(14,203,129,0.12); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
-        /* Botón Flotante Redondo INVERBOT (Soporte Gmail) */
+        /* Botón Flotante Redondo INVERBOT */
         .floating-support-btn {
-            position: fixed;
-            bottom: 75px;
-            right: 20px;
+            position: fixed; bottom: 75px; right: 20px;
             background: linear-gradient(135deg, var(--accent-green), #0a935f);
-            color: #0b0e14;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 6px 20px rgba(14,203,129,0.5);
-            cursor: pointer;
-            z-index: 999;
-            text-decoration: none;
-            border: 2px solid #fff;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: #0b0e14; width: 60px; height: 60px; border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 6px 20px rgba(14,203,129,0.5); cursor: pointer; z-index: 999;
+            text-decoration: none; border: 2px solid #fff; transition: transform 0.3s ease;
         }
-        .floating-support-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(14,203,129,0.8);
-        }
-        .floating-support-logo { font-weight: 900; font-size: 13px; letter-spacing: -0.5px; line-height: 1; }
+        .floating-support-btn:hover { transform: scale(1.1); }
+        .floating-support-logo { font-weight: 900; font-size: 13px; line-height: 1; }
         .floating-support-text { font-size: 8px; font-weight: 800; text-transform: uppercase; margin-top: 2px; }
 
         /* Alertas Pro */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(7, 11, 18, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 1000;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
+            background: rgba(7, 11, 18, 0.85); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
         .modal-card {
-            background: linear-gradient(135deg, #121824, #1a2332);
-            border: 1px solid var(--accent-blue);
-            padding: 24px;
-            border-radius: 16px;
-            width: 100%; max-width: 360px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-            position: relative;
-            animation: scaleUp 0.3s ease;
+            background: linear-gradient(135deg, #121824, #1a2332); border: 1px solid var(--accent-blue);
+            padding: 24px; border-radius: 16px; width: 100%; max-width: 360px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9); position: relative;
         }
-        @keyframes scaleUp { from { transform: scale(0.9); } to { transform: scale(1); } }
-
         .modal-title { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 10px; }
         .modal-msg { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
-        
         .modal-close-btn {
-            background: var(--bg-input);
-            color: #fff;
-            border: 1px solid var(--border-color);
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            font-size: 16px; font-weight: bold;
-            cursor: pointer;
-            display: inline-flex; justify-content: center; align-items: center;
-            transition: 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            background: var(--bg-input); color: #fff; border: 1px solid var(--border-color);
+            width: 36px; height: 36px; border-radius: 50%; font-size: 16px; font-weight: bold;
+            cursor: pointer; display: inline-flex; justify-content: center; align-items: center;
         }
-        .modal-close-btn:hover { background: var(--accent-red); border-color: var(--accent-red); transform: rotate(90deg); }
 
         /* Barra Inferior */
         .bottom-nav {
@@ -303,17 +248,15 @@
             background: #121824; border-top: 1px solid var(--border-color);
             display: flex; justify-content: space-around; padding: 10px 0; z-index: 100;
         }
-        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer; gap: 3px; transition: color 0.3s ease; }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 11px; font-weight: 600; cursor: pointer; gap: 3px; }
         .nav-item.active { color: var(--accent-green); }
         .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
 
         .input-group { margin-bottom: 12px; text-align: left; }
         .input-group label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; }
-        .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 13px; transition: border-color 0.3s ease; }
-        .input-group input:focus, .input-group select:focus { border-color: var(--accent-green); outline: none; }
+        .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 13px; }
         
-        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; margin-top: 4px; }
-        .btn:hover { transform: translateY(-1px); }
+        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 4px; }
         .btn-green { background-color: var(--accent-green); color: #000; }
         .btn-blue { background-color: var(--accent-blue); color: #fff; }
         .btn-red { background-color: var(--accent-red); color: #fff; }
@@ -325,7 +268,6 @@
 </head>
 <body>
 
-    <!-- Fondo de Trading con velas dinámicas -->
     <div class="trading-bg-canvas">
         <div class="candle-stick" style="height: 50px;"></div>
         <div class="candle-stick candle-red" style="height: 90px;"></div>
@@ -340,17 +282,16 @@
     </div>
 
     <!-- Botón Flotante Redondo INVERBOT (Soporte Gmail) -->
-    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Técnico%20INVERBOT" class="floating-support-btn" title="Soporte SoporteInverbot@gmail.com">
+    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Técnico%20INVERBOT" class="floating-support-btn" title="Soporte soporteinverbot@gmail.com">
         <span class="floating-support-logo">INV</span>
         <span class="floating-support-text">SOPORTE</span>
     </a>
 
-    <!-- Contenedor para Notificaciones -->
     <div id="customModalContainer"></div>
 
     <div class="terminal-container">
         
-        <!-- ================= AUTENTICACIÓN ================= -->
+        <!-- ================= AUTENTICACIÓN (SIN CORREO AQUÍ) ================= -->
         <div id="authScreen" class="trading-card">
             <div class="brand-header">
                 <h1>INVERBOT</h1>
@@ -389,14 +330,41 @@
         <!-- ================= PANEL PRINCIPAL ================= -->
         <div id="userDashboard" class="trading-card" style="display: none; border:none; background:transparent; padding:0; box-shadow:none;">
             
-            <!-- HOGAR (Citas en Vivo) -->
+            <!-- HOGAR (ANUNCIO PROFESIONAL "INVITAS Y GANAS" Y GRÁFICO DE BARRAS EN TIEMPO REAL) -->
             <div id="tabHogar" class="tab-content">
                 <div class="brand-header trading-card" style="margin-bottom:12px;">
                     <div>
                         <h1 style="font-size: 16px;">INVERBOT Exchange</h1>
-                        <p style="font-size: 11px; color: var(--text-muted);">Panel de Operaciones en Vivo</p>
+                        <p style="font-size: 11px; color: var(--text-muted);">Mercado Financiero en Directo</p>
                     </div>
                     <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 10px; font-size: 11px; margin:0;">Salir</button>
+                </div>
+
+                <!-- Banner Profesional Invitas y Ganas -->
+                <div class="promo-banner">
+                    <h3>🚀 ¡Invita Amigos y Gana 0.20 USDT!</h3>
+                    <p>Comparte tu enlace único con tu red, suma referidos y haz crecer tus ganancias al instante.</p>
+                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="margin:0; font-size:12px; padding:8px;">Ver Mi Enlace y Red</button>
+                </div>
+
+                <!-- Gráfico de Trading en Vivo (Barritas animadas en milisegundos) -->
+                <div class="live-chart-box">
+                    <div class="chart-header">
+                        <span>📊 Análisis de Mercado (Live Chart)</span>
+                        <span style="color:var(--accent-green); font-size:10px;">● Tiempo Real</span>
+                    </div>
+                    <div class="chart-bars-container" id="chartBarsContainer">
+                        <div class="animated-bar" style="height: 35px;"></div>
+                        <div class="animated-bar red" style="height: 50px;"></div>
+                        <div class="animated-bar" style="height: 25px;"></div>
+                        <div class="animated-bar" style="height: 55px;"></div>
+                        <div class="animated-bar red" style="height: 20px;"></div>
+                        <div class="animated-bar" style="height: 45px;"></div>
+                        <div class="animated-bar" style="height: 60px;"></div>
+                        <div class="animated-bar red" style="height: 30px;"></div>
+                        <div class="animated-bar" style="height: 50px;"></div>
+                        <div class="animated-bar" style="height: 40px;"></div>
+                    </div>
                 </div>
 
                 <div class="live-market-box">
@@ -406,8 +374,6 @@
                     </div>
                     <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveBtcBin">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
                     <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveBtcOkx">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
-                    <div class="exchange-row"><span class="ex-name">HUOBI</span><span class="ex-price" id="liveBtcHuo">81,602.65</span><span class="ex-change-green">+0.36%</span></div>
-                    <div class="exchange-row"><span class="ex-name">COINBASE</span><span class="ex-price" id="liveBtcCoi">81,602.65</span><span class="ex-change-green">+0.36%</span></div>
                 </div>
 
                 <div class="live-market-box">
@@ -417,8 +383,6 @@
                     </div>
                     <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveEthBin">2,387.48</span><span class="ex-change-red">-0.27%</span></div>
                     <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveEthOkx">2,387.48</span><span class="ex-change-red">-0.27%</span></div>
-                    <div class="exchange-row"><span class="ex-name">HUOBI</span><span class="ex-price" id="liveEthHuo">2,387.34</span><span class="ex-change-red">-0.22%</span></div>
-                    <div class="exchange-row"><span class="ex-name">COINBASE</span><span class="ex-price" id="liveEthCoi">2,387.34</span><span class="ex-change-red">-0.22%</span></div>
                 </div>
 
                 <div class="live-market-box">
@@ -427,7 +391,6 @@
                         <span class="live-badge">LIVE</span>
                     </div>
                     <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveBnbBin">718.00</span><span class="ex-change-green">+0.28%</span></div>
-                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveBnbOkx">718.00</span><span class="ex-change-green">+0.28%</span></div>
                 </div>
             </div>
 
@@ -448,26 +411,10 @@
                         <span id="vip1StatusText" class="vip-status-label" style="color:var(--text-muted);">Bloqueado</span>
                     </div>
                     <div class="vip-grid-container">
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Cuantificar carreras</div>
-                            <div class="vip-box-value">1</div>
-                        </div>
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Cuantificar días</div>
-                            <div class="vip-box-value">35</div>
-                        </div>
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Beneficio diario</div>
-                            <div class="vip-box-value green">1.50 USDT</div>
-                        </div>
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Precio VIP</div>
-                            <div class="vip-box-value">4.00 USDT</div>
-                        </div>
-                        <div class="vip-grid-box full-width">
-                            <div class="vip-box-title">Tarifa de servicio</div>
-                            <div class="vip-box-value">0%</div>
-                        </div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Beneficio diario</div><div class="vip-box-value green">1.50 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Precio</div><div class="vip-box-value">4.00 USDT</div></div>
                     </div>
                     <div id="vip1ActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button></div>
                     <button id="btnClaim1" class="btn btn-blue" onclick="reclamarVip(1)" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
@@ -480,26 +427,10 @@
                         <span id="vipMaxStatusText" class="vip-status-label" style="color:var(--text-muted);">Bloqueado</span>
                     </div>
                     <div class="vip-grid-container">
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Cuantificar carreras</div>
-                            <div class="vip-box-value">1</div>
-                        </div>
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Cuantificar días</div>
-                            <div class="vip-box-value">35</div>
-                        </div>
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Beneficio diario</div>
-                            <div class="vip-box-value green">6.50 USDT</div>
-                        </div>
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Precio VIP</div>
-                            <div class="vip-box-value">16.00 USDT</div>
-                        </div>
-                        <div class="vip-grid-box full-width">
-                            <div class="vip-box-title">Tarifa de servicio</div>
-                            <div class="vip-box-value">0%</div>
-                        </div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Beneficio diario</div><div class="vip-box-value green">6.50 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Precio</div><div class="vip-box-value">16.00 USDT</div></div>
                     </div>
                     <div id="vipMaxActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip('Max', 16)">Adquirir VIP Max</button></div>
                     <button id="btnClaimMax" class="btn btn-blue" onclick="reclamarVip('Max')" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
@@ -512,26 +443,10 @@
                         <span id="vipUltraStatusText" class="vip-status-label" style="color:var(--text-muted);">Bloqueado</span>
                     </div>
                     <div class="vip-grid-container">
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Cuantificar carreras</div>
-                            <div class="vip-box-value">1</div>
-                        </div>
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Cuantificar días</div>
-                            <div class="vip-box-value">35</div>
-                        </div>
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Beneficio diario</div>
-                            <div class="vip-box-value green">42.2 USDT</div>
-                        </div>
-                        <div class="vip-grid-box">
-                            <div class="vip-box-title">Precio VIP</div>
-                            <div class="vip-box-value">65.00 USDT</div>
-                        </div>
-                        <div class="vip-grid-box full-width">
-                            <div class="vip-box-title">Tarifa de servicio</div>
-                            <div class="vip-box-value">0%</div>
-                        </div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Días</div><div class="vip-box-value">35</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Beneficio diario</div><div class="vip-box-value green">42.2 USDT</div></div>
+                        <div class="vip-grid-box"><div class="vip-box-title">Precio</div><div class="vip-box-value">65.00 USDT</div></div>
                     </div>
                     <div id="vipUltraActionArea" style="margin-top:10px;"><button class="btn btn-green" onclick="comprarVip('Ultra', 65)">Adquirir VIP Ultra</button></div>
                     <button id="btnClaimUltra" class="btn btn-blue" onclick="reclamarVip('Ultra')" style="margin-top: 8px; display:none;">Verificar / Reclamar Diario</button>
@@ -549,7 +464,7 @@
                 </div>
             </div>
 
-            <!-- A MÍ (AQUÍ APARECE EL CORREO) -->
+            <!-- A MÍ (AQUÍ SÍ APARECE EL CORREO) -->
             <div id="tabAmi" class="tab-content" style="display: none;">
                 <div class="assets-total-box">
                     <div class="brand-header" style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
@@ -578,12 +493,8 @@
                     </div>
 
                     <div class="action-buttons-grid">
-                        <button class="btn-pro-deposit" onclick="mostrarSeccion('dep')">
-                            <span style="font-size:18px;">＋</span> Depósito
-                        </button>
-                        <button class="btn-pro-withdraw" onclick="mostrarSeccion('wit')">
-                            <span style="font-size:16px;">↑</span> Retirar
-                        </button>
+                        <button class="btn-pro-deposit" onclick="mostrarSeccion('dep')"><span style="font-size:18px;">＋</span> Depósito</button>
+                        <button class="btn-pro-withdraw" onclick="mostrarSeccion('wit')"><span style="font-size:16px;">↑</span> Retirar</button>
                     </div>
 
                     <div id="subAccionContainer" style="display: none; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;"></div>
@@ -683,17 +594,24 @@
                 else cerrarSesion();
             }
 
-            // Cotizaciones en vivo con movimiento ultrarrápido en milisegundos
+            // Movimiento ultrarrápido en milisegundos para criptomonedas y barras de trading
             setInterval(() => {
-                let r1 = (81590 + Math.random() * 25).toFixed(2);
-                let r2 = (2387 + Math.random() * 3).toFixed(2);
-                let r3 = (718 + Math.random() * 0.8).toFixed(2);
+                let r1 = (81590 + Math.random() * 30).toFixed(2);
+                let r2 = (2387 + Math.random() * 4).toFixed(2);
+                let r3 = (718 + Math.random() * 1).toFixed(2);
 
                 if(document.getElementById('loginBtcBin')) document.getElementById('loginBtcBin').innerText = r1;
                 if(document.getElementById('liveBtcBin')) document.getElementById('liveBtcBin').innerText = r1;
                 if(document.getElementById('liveBtcOkx')) document.getElementById('liveBtcOkx').innerText = r1;
                 if(document.getElementById('liveEthBin')) document.getElementById('liveEthBin').innerText = r2;
                 if(document.getElementById('liveBnbBin')) document.getElementById('liveBnbBin').innerText = r3;
+
+                // Animar barritas del gráfico de trading en tiempo real
+                let bars = document.querySelectorAll('.animated-bar');
+                bars.forEach(bar => {
+                    let randomHeight = Math.floor(20 + Math.random() * 45);
+                    bar.style.height = randomHeight + 'px';
+                });
             }, 300);
         }
 
@@ -740,9 +658,7 @@
             sessionEmail = email;
             localStorage.setItem("inverbot_session", sessionEmail);
             
-            setTimeout(() => {
-                entrarDashboardDirecto();
-            }, 1000);
+            setTimeout(() => { entrarDashboardDirecto(); }, 1000);
         }
 
         function entrarDashboardDirecto() {
@@ -821,37 +737,14 @@
             if(tipo === 'dep') {
                 cont.innerHTML = `
                     <h4 style="font-size:13px; color:var(--accent-green); margin-bottom:10px;">🟢 Selecciona la Red (Min 4 USDT)</h4>
-                    
-                    <div class="network-select-card">
-                        <div class="network-info">
-                            <div class="net-logo-container"><span class="net-main-icon">T</span><img src="https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png" class="net-badge-icon"></div>
-                            <div><div class="net-name">BEP20-USDT</div><div style="font-size:10px; color:var(--text-muted);">Binance Smart Chain</div></div>
-                        </div>
-                        <button class="btn-select-net" onclick="abrirFormRed('BEP20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar ></button>
-                    </div>
-
-                    <div class="network-select-card">
-                        <div class="network-info">
-                            <div class="net-logo-container"><span class="net-main-icon">T</span><img src="https://assets.coingecko.com/coins/images/279/large/ethereum.png" class="net-badge-icon"></div>
-                            <div><div class="net-name">ERC20-USDT</div><div style="font-size:10px; color:var(--text-muted);">Ethereum Network</div></div>
-                        </div>
-                        <button class="btn-select-net" onclick="abrirFormRed('ERC20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar ></button>
-                    </div>
-
-                    <div class="network-select-card">
-                        <div class="network-info">
-                            <div class="net-logo-container"><span class="net-main-icon">T</span><img src="https://assets.coingecko.com/coins/images/1094/large/tron-logo.png" class="net-badge-icon"></div>
-                            <div><div class="net-name">TRC20-USDT</div><div style="font-size:10px; color:var(--text-muted);">Tron Network</div></div>
-                        </div>
-                        <button class="btn-select-net" onclick="abrirFormRed('TRC20', 'TYZruyFwd8m5hbQL2mrZJKYnEXhwSo1oSn')">Seleccionar ></button>
-                    </div>
-
+                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">BEP20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('BEP20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar ></button></div>
+                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">ERC20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('ERC20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar ></button></div>
+                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">TRC20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('TRC20', 'TYZruyFwd8m5hbQL2mrZJKYnEXhwSo1oSn')">Seleccionar ></button></div>
                     <div id="formularioRedSeleccionada" style="margin-top:12px;"></div>
                 `;
             } else {
                 cont.innerHTML = `
                     <h4 style="font-size:13px; color:var(--accent-blue); margin-bottom:8px;">📤 Retirar USDT</h4>
-                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Límites: BEP20 (1.5-1k) | ERC20 (20-20k) | TRC20 (30-30k)</p>
                     <form onsubmit="solicitarRetiro(event)">
                         <div class="input-group"><label>Red</label><select id="witRed"><option value="BEP20">BEP20</option><option value="ERC20">ERC20</option><option value="TRC20">TRC20</option></select></div>
                         <div class="input-group"><label>Wallet Destino</label><input type="text" id="witWallet" required placeholder="Dirección"></div>
@@ -864,23 +757,21 @@
         }
 
         function abrirFormRed(redNombre, direccionWallet) {
-            let contenedorForm = document.getElementById('formularioRedSeleccionada');
-            contenedorForm.innerHTML = `
+            document.getElementById('formularioRedSeleccionada').innerHTML = `
                 <div style="background:var(--bg-input); border:1px solid var(--accent-green); padding:12px; border-radius:8px;">
-                    <p style="font-size:11px; font-weight:bold; color:var(--accent-green); margin-bottom:4px;">Red Seleccionada: ${redNombre}</p>
+                    <p style="font-size:11px; font-weight:bold; color:var(--accent-green); margin-bottom:4px;">Red: ${redNombre}</p>
                     <code style="font-size:10px; color:#3861fb; word-break:break-all; display:block; background:var(--bg-main); padding:6px; border-radius:4px; margin-bottom:6px;">${direccionWallet}</code>
                     <button class="btn btn-blue" style="padding:6px; font-size:11px; margin-bottom:10px;" onclick="copiarTexto('${direccionWallet}')">Copiar Dirección</button>
-                    
                     <form onsubmit="reportarDepositoEspecifico(event, '${redNombre}')">
-                        <div class="input-group"><label>Monto Depositado (Min 4)</label><input type="number" id="depMontoEsp" step="0.01" min="4" required placeholder="Ej: 50"></div>
-                        <div class="input-group"><label>TXID / Hash de Transacción</label><input type="text" id="depHashEsp" required placeholder="Ingresa el Hash"></div>
+                        <div class="input-group"><label>Monto (Min 4)</label><input type="number" id="depMontoEsp" step="0.01" min="4" required placeholder="Ej: 50"></div>
+                        <div class="input-group"><label>TXID / Hash</label><input type="text" id="depHashEsp" required placeholder="Hash"></div>
                         <button type="submit" class="btn btn-green">Enviar Reporte al CEO</button>
                     </form>
                 </div>
             `;
         }
 
-        function copiarTexto(txt) { navigator.clipboard.writeText(txt); mostrarAlertaPro("Portapapeles", "¡Dirección copiada con éxito!"); }
+        function copiarTexto(txt) { navigator.clipboard.writeText(txt); mostrarAlertaPro("Portapapeles", "¡Copiado con éxito!"); }
 
         function copiarEnlaceReferido() { 
             dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
@@ -895,12 +786,11 @@
             e.preventDefault();
             let monto = parseFloat(document.getElementById('depMontoEsp').value);
             let hash = document.getElementById('depHashEsp').value.trim();
-            if(monto < 4) { mostrarAlertaPro("Aviso", "El monto mínimo es 4 USDT"); return; }
-            
+            if(monto < 4) { mostrarAlertaPro("Aviso", "Monto mínimo 4 USDT"); return; }
             setTimeout(() => {
                 dbDeps.push({ id: Date.now(), user: sessionEmail, red, monto, hash, status: 'Pendiente' });
                 localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps));
-                mostrarAlertaPro("Éxito", "¡Depósito notificado al CEO correctamente!");
+                mostrarAlertaPro("Éxito", "¡Depósito notificado al CEO!");
                 document.getElementById('subAccionContainer').style.display = 'none';
             }, 1000);
         }
@@ -915,13 +805,12 @@
             let u = dbUsers.find(x => x.email === sessionEmail);
             if(u.pass !== pass) { mostrarAlertaPro("Error", "Contraseña incorrecta"); return; }
             if(u.balance < monto) { mostrarAlertaPro("Error", "Saldo insuficiente"); return; }
-            
             setTimeout(() => {
                 u.balance -= monto;
                 localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
                 dbWits.push({ id: Date.now(), user: sessionEmail, red, wallet, monto, status: 'Pendiente' });
                 localStorage.setItem("inverbot_wits", JSON.stringify(dbWits));
-                mostrarAlertaPro("Éxito", "¡Solicitud de retiro enviada!");
+                mostrarAlertaPro("Éxito", "¡Retiro solicitado!");
                 entrarDashboardDirecto();
             }, 1000);
         }
@@ -929,15 +818,14 @@
         function comprarVip(nivel, precio) {
             dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             let u = dbUsers.find(x => x.email === sessionEmail);
-            if(u.balance < precio) { mostrarAlertaPro("Aviso", `Saldo insuficiente. Necesitas ${precio} USDT.`); return; }
-            
+            if(u.balance < precio) { mostrarAlertaPro("Aviso", `Saldo insuficiente (${precio} USDT).`); return; }
             setTimeout(() => {
                 u.balance -= precio;
                 u.vipActive = nivel;
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
                 localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
-                mostrarAlertaPro("Éxito", `¡VIP Nivel ${nivel} adquirido exitosamente!`);
+                mostrarAlertaPro("Éxito", `¡VIP ${nivel} adquirido!`);
                 entrarDashboardDirecto();
             }, 1000);
         }
@@ -945,30 +833,22 @@
         function reclamarVip(nivel) {
             dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             let u = dbUsers.find(x => x.email === sessionEmail);
-            if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No tienes activo este VIP."); return; }
+            if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "VIP no activo."); return; }
             let ahora = Date.now();
-            let unDia = 24 * 60 * 60 * 1000;
-            if(ahora - u.lastClaim < unDia) { mostrarAlertaPro("Espera", "Debes esperar 24 horas exactas para tu siguiente reclamo."); return; }
+            if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) { mostrarAlertaPro("Espera", "Debes esperar 24 horas para tu siguiente reclamo."); return; }
             
-            let btnId = 'btnClaim1';
-            if(nivel === 'Max') btnId = 'btnClaimMax';
-            if(nivel === 'Ultra') btnId = 'btnClaimUltra';
-            
+            let btnId = (nivel === 1) ? 'btnClaim1' : (nivel === 'Max' ? 'btnClaimMax' : 'btnClaimUltra');
             let btn = document.getElementById(btnId);
             if(btn) { btn.disabled = true; btn.innerText = "⏳ Verificando (3s)..."; }
             
-            // Reclamo diario exacto en 3 segundos como solicitaste
+            // Reclamo diario exacto en 3 segundos como pediste
             setTimeout(() => {
-                let rec = 1.5;
-                if(nivel === 'Max') rec = 6.5;
-                if(nivel === 'Ultra') rec = 42.2;
-
+                let rec = (nivel === 1) ? 1.5 : (nivel === 'Max' ? 6.5 : 42.2);
                 u.balance += rec;
                 u.lastClaim = ahora;
                 localStorage.setItem("inverbot_users", JSON.stringify(dbUsers));
-                
                 if(btn) { btn.disabled = false; btn.innerText = "Verificar / Reclamar Diario"; }
-                mostrarAlertaPro("Recompensa", `¡Reclamado con éxito! Se acreditaron ${rec} USDT a tus activos.`);
+                mostrarAlertaPro("Recompensa", `¡Reclamado! +${rec} USDT acreditados.`);
                 entrarDashboardDirecto();
             }, 3000);
         }
@@ -994,17 +874,17 @@
             let depC = document.getElementById('listaAdminDeps');
             let witC = document.getElementById('listaAdminWits');
 
-            depC.innerHTML = dbDeps.filter(d => d.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin depósitos pendientes.</p>" : "";
+            depC.innerHTML = dbDeps.filter(d => d.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin depósitos.</p>" : "";
             dbDeps.forEach((d, idx) => {
                 if(d.status === 'Pendiente') {
-                    depC.innerHTML += `<div class="crypto-asset-card" style="margin-bottom:8px;"><p style="font-size:11px;"><b>User:</b> ${d.user}</p><p style="font-size:11px;"><b>Red:</b> ${d.red} | <b>Monto:</b> <span style="color:var(--accent-green);">+$${d.monto}</span></p><p style="font-size:11px; word-break:break-all;"><b>TXID:</b> ${d.hash}</p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarDep(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarDep(${idx})">Rechazar</button></div></div>`;
+                    depC.innerHTML += `<div class="crypto-asset-card"><p style="font-size:11px;"><b>User:</b> ${d.user}</p><p style="font-size:11px;"><b>Monto:</b> <span style="color:var(--accent-green);">+$${d.monto}</span></p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarDep(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarDep(${idx})">Rechazar</button></div></div>`;
                 }
             });
 
-            witC.innerHTML = dbWits.filter(w => w.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin retiros pendientes.</p>" : "";
+            witC.innerHTML = dbWits.filter(w => w.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin retiros.</p>" : "";
             dbWits.forEach((w, idx) => {
                 if(w.status === 'Pendiente') {
-                    witC.innerHTML += `<div class="crypto-asset-card" style="margin-bottom:8px;"><p style="font-size:11px;"><b>User:</b> ${w.user}</p><p style="font-size:11px;"><b>Red:</b> ${w.red} | <b>Monto:</b> <span style="color:var(--accent-red);">-$${w.monto}</span></p><p style="font-size:11px; word-break:break-all;"><b>Wallet:</b> ${w.wallet}</p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarWit(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarWit(${idx})">Rechazar</button></div></div>`;
+                    witC.innerHTML += `<div class="crypto-asset-card"><p style="font-size:11px;"><b>User:</b> ${w.user}</p><p style="font-size:11px;"><b>Monto:</b> <span style="color:var(--accent-red);">-$${w.monto}</span></p><div style="display:flex; gap:6px; margin-top:6px;"><button class="btn btn-green" style="margin:0; padding:5px; font-size:10px;" onclick="aprobarWit(${idx})">Aprobar</button><button class="btn btn-red" style="margin:0; padding:5px; font-size:10px;" onclick="rechazarWit(${idx})">Rechazar</button></div></div>`;
                 }
             });
         }
@@ -1013,14 +893,14 @@
             dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || [];
             dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             let dep = dbDeps[idx]; let u = dbUsers.find(x => x.email === dep.user);
-            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; localStorage.setItem("inverbot_users", JSON.stringify(dbUsers)); localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Depósito aprobado!"); renderAdmin(); }
+            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; localStorage.setItem("inverbot_users", JSON.stringify(dbUsers)); localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Aprobado!"); renderAdmin(); }
         }
-        function rechazarDep(idx) { dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "Depósito rechazado."); renderAdmin(); }
-        function aprobarWit(idx) { dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); mostrarAlertaPro("CEO", "¡Retiro aprobado!"); renderAdmin(); }
+        function rechazarDep(idx) { dbDeps = JSON.parse(localStorage.getItem("inverbot_deps")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_deps", JSON.stringify(dbDeps)); renderAdmin(); }
+        function aprobarWit(idx) { dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
         function rechazarWit(idx) {
             dbWits = JSON.parse(localStorage.getItem("inverbot_wits")) || []; dbUsers = JSON.parse(localStorage.getItem("inverbot_users")) || [];
             let w = dbWits[idx]; let u = dbUsers.find(x => x.email === w.user);
-            if(u) { u.balance += w.monto; w.status = 'Rechazado'; localStorage.setItem("inverbot_users", JSON.stringify(dbUsers)); localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); mostrarAlertaPro("CEO", "Retiro rechazado y reembolsado."); renderAdmin(); }
+            if(u) { u.balance += w.monto; w.status = 'Rechazado'; localStorage.setItem("inverbot_users", JSON.stringify(dbUsers)); localStorage.setItem("inverbot_wits", JSON.stringify(dbWits)); renderAdmin(); }
         }
     </script>
 </body>
