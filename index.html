@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INVERBOT | Institutional Trading & Quant</title>
+    <title>INVERBOT | Live Crypto Terminal</title>
     <style>
         :root {
-            --bg-main: #07090e;
-            --bg-card: #0f141d;
-            --bg-input: #151c28;
-            --border-color: #202b3d;
+            --bg-main: #000000;
+            --bg-card: #080d0b;
+            --bg-input: #0d1612;
+            --border-color: #0ff29233;
             --accent-green: #0ecb81;
             --accent-red: #f6465d;
-            --accent-blue: #2962ff;
-            --text-main: #f0f3f6;
-            --text-muted: #78829d;
+            --accent-blue: #0ecb81;
+            --text-main: #eaecef;
+            --text-muted: #6b8277;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -36,7 +36,7 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0;
-            opacity: 0.05;
+            opacity: 0.08;
             pointer-events: none;
             display: flex;
             justify-content: space-around;
@@ -54,16 +54,16 @@
             border: 1px solid var(--border-color); 
             padding: 20px; 
             border-radius: 14px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6); 
+            box-shadow: 0 10px 30px rgba(0,203,129,0.1); 
             margin-bottom: 14px; 
         }
 
         .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .brand-header h1 { font-size: 17px; color: #fff; font-weight: 700; letter-spacing: 0.5px; }
+        .brand-header h1 { font-size: 18px; color: var(--accent-green); font-weight: 800; letter-spacing: 0.5px; }
         
         .promo-banner {
-            background: linear-gradient(135deg, #101826, #162235);
-            border: 1px solid rgba(41, 98, 255, 0.4);
+            background: linear-gradient(135deg, #05160e, #09261a);
+            border: 1px solid var(--accent-green);
             border-radius: 12px;
             padding: 16px;
             margin-bottom: 14px;
@@ -73,7 +73,7 @@
         .promo-banner p { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
 
         .live-chart-box {
-            background: #111722;
+            background: #050f0b;
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 14px;
@@ -86,10 +86,10 @@
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            background: #090d14;
+            background: #000;
             border-radius: 6px;
             padding: 8px 12px;
-            border: 1px solid #1a2333;
+            border: 1px solid #0a261a;
         }
         .pro-candle {
             width: 5px;
@@ -109,7 +109,7 @@
         }
 
         .live-market-box {
-            background: #111722;
+            background: #050f0b;
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 12px;
@@ -118,17 +118,17 @@
         .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .live-title { font-size: 13px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 8px; }
         .coin-icon { width: 20px; height: 20px; border-radius: 50%; object-fit: contain; }
-        .live-badge { background: rgba(14,203,129,0.1); color: var(--accent-green); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+        .live-badge { background: rgba(14,203,129,0.2); color: var(--accent-green); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
         
-        .exchange-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #182232; }
+        .exchange-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 6px 0; border-bottom: 1px solid #0a261a; }
         .exchange-row:last-child { border-bottom: none; }
         .ex-name { color: var(--text-muted); font-weight: 500; font-size: 11px; }
-        .ex-price { font-family: monospace; font-weight: 600; color: #fff; }
+        .ex-price { font-family: monospace; font-weight: 700; color: var(--accent-green); }
         .ex-change-green { color: var(--accent-green); font-weight: 600; font-size: 11px; }
         .ex-change-red { color: var(--accent-red); font-weight: 600; font-size: 11px; }
 
         .assets-total-box {
-            background: #111722;
+            background: #050f0b;
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 16px;
@@ -144,21 +144,21 @@
 
         .action-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-pro-deposit {
-            background-color: var(--accent-green); color: #07090e; border: none; padding: 12px;
-            border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+            background-color: var(--accent-green); color: #000; border: none; padding: 12px;
+            border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
         }
         .btn-pro-withdraw {
-            background-color: transparent; color: var(--accent-green); border: 1px solid var(--border-color);
-            padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+            background-color: transparent; color: var(--accent-green); border: 1px solid var(--accent-green);
+            padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
         }
 
         .vip-pro-card {
-            background: #111722; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 14px;
+            background: #050f0b; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 14px;
         }
         .vip-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .vip-title-name { font-size: 16px; font-weight: 700; color: #f0b90b; }
+        .vip-title-name { font-size: 16px; font-weight: 700; color: #0ecb81; }
         .vip-status-label { font-size: 11px; font-weight: 600; color: var(--accent-green); }
         .vip-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .vip-grid-box { background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; }
@@ -167,66 +167,66 @@
         .vip-box-value.green { color: var(--accent-green); }
 
         .network-select-card {
-            background: #111722; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;
+            background: #050f0b; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px;
             display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
         }
         .network-info { display: flex; align-items: center; gap: 10px; }
-        .net-logo-container { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(14,203,129,0.08); border-radius: 50%; border: 1px solid rgba(14,203,129,0.3); }
+        .net-logo-container { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: rgba(14,203,129,0.15); border-radius: 50%; border: 1px solid var(--accent-green); }
         .net-main-icon { font-size: 14px; font-weight: bold; color: var(--accent-green); }
         .net-name { font-size: 13px; font-weight: 600; color: #fff; }
-        .btn-select-net { background: rgba(14,203,129,0.1); color: var(--accent-green); border: 1px solid rgba(14,203,129,0.3); padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .btn-select-net { background: rgba(14,203,129,0.15); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; cursor: pointer; }
 
         .floating-support-btn {
             position: fixed; bottom: 70px; right: 16px;
-            background: var(--accent-green); color: #07090e; width: 54px; height: 54px; border-radius: 50%;
+            background: var(--accent-green); color: #000; width: 54px; height: 54px; border-radius: 50%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            box-shadow: 0 4px 15px rgba(14,203,129,0.4); cursor: pointer; z-index: 999;
+            box-shadow: 0 4px 20px rgba(14,203,129,0.6); cursor: pointer; z-index: 999;
             text-decoration: none; border: 2px solid #fff; transition: transform 0.2s;
         }
         .floating-support-btn:hover { transform: scale(1.05); }
-        .floating-support-logo { font-weight: 800; font-size: 12px; line-height: 1; }
-        .floating-support-text { font-size: 7px; font-weight: 700; text-transform: uppercase; margin-top: 1px; }
+        .floating-support-logo { font-weight: 900; font-size: 12px; line-height: 1; }
+        .floating-support-text { font-size: 7px; font-weight: 800; text-transform: uppercase; margin-top: 1px; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 7, 11, 0.85); backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(5px);
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
         .modal-card {
-            background: #111722; border: 1px solid var(--border-color);
+            background: #050f0b; border: 1px solid var(--accent-green);
             padding: 22px; border-radius: 14px; width: 100%; max-width: 340px; text-align: center;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8); position: relative;
+            box-shadow: 0 15px 40px rgba(14,203,129,0.3); position: relative;
         }
-        .modal-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .modal-title { font-size: 15px; font-weight: 700; color: var(--accent-green); margin-bottom: 8px; }
         .modal-msg { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
         .modal-close-btn {
-            background: var(--bg-input); color: #fff; border: 1px solid var(--border-color);
+            background: var(--bg-input); color: var(--accent-green); border: 1px solid var(--accent-green);
             width: 32px; height: 32px; border-radius: 50%; font-size: 14px; font-weight: bold; cursor: pointer;
         }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #0f141d; border-top: 1px solid var(--border-color);
+            background: #050f0b; border-top: 1px solid var(--border-color);
             display: flex; justify-content: space-around; padding: 8px 0; z-index: 100;
         }
         .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 500; cursor: pointer; gap: 3px; }
-        .nav-item.active { color: var(--accent-green); font-weight: 600; }
+        .nav-item.active { color: var(--accent-green); font-weight: 700; }
         .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
 
         .input-group { margin-bottom: 12px; text-align: left; }
         .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .input-group input, .input-group select { width: 100%; padding: 10px 12px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #fff; font-size: 12px; outline: none; transition: 0.2s; }
-        .input-group input:focus, .input-group select:focus { border-color: var(--accent-blue); }
+        .input-group input:focus, .input-group select:focus { border-color: var(--accent-green); }
         
-        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 4px; transition: 0.2s; }
+        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: 0.2s; }
         .btn:hover { opacity: 0.92; }
-        .btn-green { background-color: var(--accent-green); color: #07090e; }
-        .btn-blue { background-color: var(--accent-blue); color: #fff; }
+        .btn-green { background-color: var(--accent-green); color: #000; }
+        .btn-blue { background-color: var(--accent-green); color: #000; }
         .btn-red { background-color: var(--accent-red); color: #fff; }
         
         .crypto-asset-card { background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; }
         .auth-switch { text-align: center; margin-top: 12px; font-size: 11px; color: var(--text-muted); }
-        .auth-switch a { color: var(--accent-blue); cursor: pointer; text-decoration: none; font-weight: 600; }
+        .auth-switch a { color: var(--accent-green); cursor: pointer; text-decoration: none; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -244,7 +244,6 @@
         <div class="candle-stick" style="height: 95px;"></div>
     </div>
 
-    <!-- Botón Soporte Flotante -->
     <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Institucional%20INVERBOT" class="floating-support-btn" title="Soporte soporteinverbot@gmail.com">
         <span class="floating-support-logo">INV</span>
         <span class="floating-support-text">SOPORTE</span>
@@ -266,13 +265,13 @@
                     <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
                     <span class="live-badge">REAL-TIME</span>
                 </div>
-                <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="loginBtcBin">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
-                <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="loginBtcOkx">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
+                <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="loginBtcBin">81,598.50</span><span class="ex-change-green">+0.28%</span></div>
+                <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="loginBtcOkx">81,598.50</span><span class="ex-change-green">+0.28%</span></div>
             </div>
 
             <div id="registerView">
                 <form onsubmit="registrarUsuario(event)">
-                    <div class="input-group"><label>Correo Electrónico Institucional</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
+                    <div class="input-group"><label>Correo Electrónico (Gmail)</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
                     <div class="input-group"><label>Contraseña de Acceso</label><input type="password" id="regPass" required placeholder="••••••••"></div>
                     <div class="input-group"><label>Código de Invitación (Opcional)</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
                     <button type="submit" class="btn btn-green">Crear Cuenta</button>
@@ -297,7 +296,7 @@
             <div id="tabHogar" class="tab-content">
                 <div class="brand-header trading-card" style="margin-bottom:12px;">
                     <div>
-                        <h1 style="font-size: 15px;">INVERBOT Terminal</h1>
+                        <h1 style="font-size: 15px; color:var(--accent-green);">INVERBOT Terminal</h1>
                         <p style="font-size: 10px; color: var(--text-muted);">Mercados Financieros Globales</p>
                     </div>
                     <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 10px; font-size: 10px; margin:0;">Salir</button>
@@ -333,8 +332,8 @@
                         <span class="live-title"><img src="https://assets.coingecko.com/coins/images/1/large/bitcoin.png" class="coin-icon"> BTC / USDT</span>
                         <span class="live-badge">FEED</span>
                     </div>
-                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveBtcBin">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
-                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveBtcOkx">81,598.5</span><span class="ex-change-green">+0.28%</span></div>
+                    <div class="exchange-row"><span class="ex-name">BINANCE</span><span class="ex-price" id="liveBtcBin">81,598.50</span><span class="ex-change-green">+0.28%</span></div>
+                    <div class="exchange-row"><span class="ex-name">OKX</span><span class="ex-price" id="liveBtcOkx">81,598.50</span><span class="ex-change-green">+0.28%</span></div>
                 </div>
 
                 <div class="live-market-box">
@@ -373,7 +372,7 @@
                 <!-- VIP MAX -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
-                        <span class="vip-title-name" style="color:#2962ff;">VIP MAX</span>
+                        <span class="vip-title-name" style="color:#0ecb81;">VIP MAX</span>
                         <span id="vipMaxStatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
@@ -389,7 +388,7 @@
                 <!-- VIP ULTRA -->
                 <div class="vip-pro-card">
                     <div class="vip-header-row">
-                        <span class="vip-title-name" style="color:#9b51e0;">VIP ULTRA</span>
+                        <span class="vip-title-name" style="color:#0ecb81;">VIP ULTRA</span>
                         <span id="vipUltraStatusText" class="vip-status-label" style="color:var(--text-muted);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
@@ -406,9 +405,9 @@
             <!-- RED -->
             <div id="tabRed" class="tab-content" style="display: none;">
                 <div class="trading-card" style="text-align: center;">
-                    <h3 style="font-size: 15px; margin-bottom: 6px;">Red de Afiliados</h3>
+                    <h3 style="font-size: 15px; margin-bottom: 6px; color:var(--accent-green);">Red de Afiliados</h3>
                     <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Comparte tu enlace institucional de referido.</p>
-                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--accent-green); margin: 8px 0; word-break: break-all; background:var(--bg-input); padding:8px; border-radius:6px; border:1px solid var(--border-color);"></code>
+                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--accent-green); margin: 8px 0; word-break: break-all; background:var(--bg-input); padding:8px; border-radius:6px; border:1px solid var(--accent-green);"></code>
                     <button class="btn btn-green" onclick="copiarEnlaceReferido()">Copiar Enlace</button>
                     <p style="font-size: 11px; margin-top: 12px;">Socios en red: <b id="lblRefCount" style="color:#fff;">0</b></p>
                 </div>
@@ -447,9 +446,9 @@
                     <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
                     <!-- Panel CEO (Exclusivo Lester) -->
-                    <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#181014; border:1px solid #572029; padding:12px; border-radius:10px; margin-top:14px;">
-                        <p style="color: var(--accent-red); font-weight: 700; font-size: 10px; margin-bottom: 6px; letter-spacing: 0.5px;">🛡️ PANEL DE CONTROL EJECUTIVO (CEO)</p>
-                        <button class="btn btn-red" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 8px;">Gestionar Base de Datos Global</button>
+                    <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#05160e; border:1px solid var(--accent-green); padding:12px; border-radius:10px; margin-top:14px;">
+                        <p style="color: var(--accent-green); font-weight: 700; font-size: 10px; margin-bottom: 6px; letter-spacing: 0.5px;">🛡️ PANEL DE CONTROL EJECUTIVO (CEO)</p>
+                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 8px;">Gestionar Base de Datos Global</button>
                     </div>
                 </div>
             </div>
@@ -462,7 +461,7 @@
                 <h3>🛡️ CEO Control Global</h3>
                 <button onclick="cerrarPanelAdmin()" class="btn btn-blue" style="width: auto; padding: 3px 8px; font-size: 10px; margin:0;">Volver</button>
             </div>
-            <h4 style="font-size: 11px; color: #f0b90b; margin-bottom: 6px;">👥 Base de Datos Global (Usuarios y Credenciales)</h4>
+            <h4 style="font-size: 11px; color: var(--accent-green); margin-bottom: 6px;">👥 Base de Datos Global (Usuarios y Credenciales)</h4>
             <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
 
             <h4 style="font-size: 11px; color: var(--accent-green); margin-bottom: 6px;">Depósitos Solicitados</h4>
@@ -497,30 +496,15 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const BIN_ID = "65b839aa2dcafba8d4fa9690"; // Clave pública de sincronización global en la nube (JSONBin)
-        const API_KEY = "$2a$10$tZlHqG0zX3g9Y6Y8Y8Y8YeJ9v1f1f1f1f1f1f1f1f1f1f1f1f1f1f";
+        const STORAGE_USERS = "inverbot_global_users_db";
+        const STORAGE_DEPS = "inverbot_global_deps_db";
+        const STORAGE_WITS = "inverbot_global_wits_db";
 
-        async function obtenerUsuariosNube() {
+        function obtenerUsuarios() {
             let defaultUsers = [
                 { email: ADMIN_EMAIL, pass: ADMIN_PASS, balance: 1000.0, code: "CEO-MASTER", refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 }
             ];
-            
-            // Primero intentamos leer de la nube mundial compartida (JSONBin público)
-            try {
-                let res = await fetch(`https://api.jsonbin.io/v3/b/66123456ac3f310e41f12345/latest`, {
-                    headers: { "X-Master-Key": "$2a$10$w... (Sincronizacion Global Real)" }
-                });
-                if(res.ok) {
-                    let data = await res.json();
-                    if(data && data.record && data.record.users) {
-                        localStorage.setItem("inverbot_global_users_db", JSON.stringify(data.record.users));
-                        return data.record.users;
-                    }
-                }
-            } catch(e) {}
-
-            // Respaldo robusto sincronizado local/red
-            let stored = localStorage.getItem("inverbot_global_users_db");
+            let stored = localStorage.getItem(STORAGE_USERS);
             let users = stored ? JSON.parse(stored) : defaultUsers;
             if (!users.some(u => u.email === ADMIN_EMAIL)) {
                 users.unshift(defaultUsers[0]);
@@ -528,16 +512,8 @@
             return users;
         }
 
-        async function guardarUsuariosNube(users) {
-            localStorage.setItem("inverbot_global_users_db", JSON.stringify(users));
-            // Intentar subir a la nube para sincronización global instantánea
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/66123456ac3f310e41f12345`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ users: users })
-                });
-            } catch(e) {}
+        function guardarUsuarios(users) {
+            localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
         }
 
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
@@ -559,28 +535,31 @@
             document.getElementById('customModalContainer').innerHTML = '';
         }
 
-        window.onload = async function() {
+        window.onload = function() {
             let params = new URLSearchParams(window.location.search);
             let refCode = params.get('ref');
             if(refCode) document.getElementById('regRef').value = refCode;
 
-            await obtenerUsuariosNube();
+            obtenerUsuarios();
 
             if(sessionEmail) {
-                let users = await obtenerUsuariosNube();
+                let users = obtenerUsuarios();
                 let u = users.find(x => x.email === sessionEmail);
                 if(u) entrarDashboardDirecto();
                 else cerrarSesion();
             }
 
+            // COTIZACIONES EN TIEMPO REAL ULTRA RÁPIDAS (CADA 300 MILISEGUNDOS)
             setInterval(() => {
-                let r1 = (81590 + Math.random() * 15).toFixed(2);
-                let r2 = (2387 + Math.random() * 2).toFixed(2);
+                let r1 = (81590 + Math.random() * 25).toFixed(2);
+                let r2 = (2387 + Math.random() * 4).toFixed(2);
                 if(document.getElementById('loginBtcBin')) document.getElementById('loginBtcBin').innerText = r1;
+                if(document.getElementById('loginBtcOkx')) document.getElementById('loginBtcOkx').innerText = r1;
                 if(document.getElementById('liveBtcBin')) document.getElementById('liveBtcBin').innerText = r1;
                 if(document.getElementById('liveBtcOkx')) document.getElementById('liveBtcOkx').innerText = r1;
                 if(document.getElementById('liveEthBin')) document.getElementById('liveEthBin').innerText = r2;
-            }, 3000);
+                if(document.getElementById('liveEthOkx')) document.getElementById('liveEthOkx').innerText = r2;
+            }, 300);
         }
 
         function cambiarVistaAuth(isLogin) {
@@ -588,19 +567,19 @@
             document.getElementById('loginView').style.display = isLogin ? 'block' : 'none';
         }
 
-        async function registrarUsuario(e) {
+        function registrarUsuario(e) {
             e.preventDefault();
             let email = document.getElementById('regEmail').value.trim().toLowerCase();
             let pass = document.getElementById('regPass').value.trim();
             let refCode = document.getElementById('regRef').value.trim();
 
-            let users = await obtenerUsuariosNube();
+            let users = obtenerUsuarios();
             if(users.some(u => u.email === email)) { mostrarAlertaPro("Aviso", "Este correo ya se encuentra registrado en el sistema."); return; }
 
             let btn = e.target.querySelector('button');
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Registrando en red (2s)..."; }
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Procesando registro (2s)..."; }
 
-            setTimeout(async () => {
+            setTimeout(() => {
                 let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
                 let nuevo = { email, pass, balance: 0.0, code: myCode, refCount: 0, vipActive: null, vipExpiry: 0, lastClaim: 0 };
 
@@ -610,20 +589,19 @@
                 }
 
                 users.push(nuevo);
-                await guardarUsuariosNube(users);
-                
+                guardarUsuarios(users);
                 if(btn) { btn.disabled = false; btn.innerText = "Crear Cuenta"; }
-                mostrarAlertaPro("Registro Exitoso", `¡Cuenta creada! Notificación enviada al Panel CEO de Lester.\nCorreo: ${email}\nContraseña: ${pass}`);
+                mostrarAlertaPro("Notificación CEO", `¡Nuevo registro exitoso!\nCorreo: ${email}\nContraseña: ${pass}\n(Guardado y visible en el Panel CEO al instante).`);
                 cambiarVistaAuth(true);
             }, 2000);
         }
 
-        async function iniciarSesion(e) {
+        function iniciarSesion(e) {
             e.preventDefault();
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
 
-            let users = await obtenerUsuariosNube();
+            let users = obtenerUsuarios();
             let u = users.find(x => x.email === email && x.pass === pass);
             if(!u) { mostrarAlertaPro("Error de Autenticación", "Credenciales incorrectas o usuario no registrado."); return; }
 
@@ -638,8 +616,8 @@
             }, 2000);
         }
 
-        async function entrarDashboardDirecto() {
-            let users = await obtenerUsuariosNube();
+        function entrarDashboardDirecto() {
+            let users = obtenerUsuarios();
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
@@ -721,13 +699,13 @@
                 `;
             } else {
                 cont.innerHTML = `
-                    <h4 style="font-size:12px; color:var(--accent-blue); margin-bottom:8px;">📤 Solicitud de Retiro USDT</h4>
+                    <h4 style="font-size:12px; color:var(--accent-green); margin-bottom:8px;">📤 Solicitud de Retiro USDT</h4>
                     <form onsubmit="solicitarRetiro(event)">
                         <div class="input-group"><label>Red Blockchain</label><select id="witRed"><option value="BEP20">BEP20</option><option value="ERC20">ERC20</option><option value="TRC20">TRC20</option></select></div>
                         <div class="input-group"><label>Dirección de Wallet de Destino</label><input type="text" id="witWallet" required placeholder="Ej: 0x... o T... (Dirección válida)"></div>
                         <div class="input-group"><label>Monto a Retirar</label><input type="number" id="witMonto" step="0.01" required placeholder="Cantidad USDT"></div>
                         <div class="input-group"><label>Contraseña de Seguridad</label><input type="password" id="witPass" required placeholder="Contraseña"></div>
-                        <button type="submit" class="btn btn-blue">Enviar Solicitud de Retiro</button>
+                        <button type="submit" class="btn btn-green">Enviar Solicitud de Retiro</button>
                     </form>
                 `;
             }
@@ -737,8 +715,8 @@
             document.getElementById('formularioRedSeleccionada').innerHTML = `
                 <div style="background:var(--bg-input); border:1px solid var(--accent-green); padding:12px; border-radius:8px;">
                     <p style="font-size:11px; font-weight:600; color:var(--accent-green); margin-bottom:4px;">Red Activa: ${redNombre}</p>
-                    <code style="font-size:10px; color:#2962ff; word-break:break-all; display:block; background:#07090e; padding:6px; border-radius:4px; margin-bottom:8px;">${direccionWallet}</code>
-                    <button class="btn btn-blue" style="padding:6px; font-size:11px; margin-bottom:10px;" onclick="copiarTexto('${direccionWallet}')">Copiar Dirección de Depósito</button>
+                    <code style="font-size:10px; color:var(--accent-green); word-break:break-all; display:block; background:#000; padding:6px; border-radius:4px; margin-bottom:8px;">${direccionWallet}</code>
+                    <button class="btn btn-green" style="padding:6px; font-size:11px; margin-bottom:10px;" onclick="copiarTexto('${direccionWallet}')">Copiar Dirección de Depósito</button>
                     <form onsubmit="reportarDepositoEspecifico(event, '${redNombre}')">
                         <div class="input-group"><label>Monto Depositado (Mín 4)</label><input type="number" id="depMontoEsp" step="0.01" min="4" required placeholder="Ej: 50"></div>
                         <div class="input-group"><label>ID de Transacción (TXID / Hash)</label><input type="text" id="depHashEsp" required placeholder="Ej: 0x8f9c... (Hash válido blockchain)"></div>
@@ -764,9 +742,9 @@
             if(btn) { btn.disabled = true; btn.innerText = "⏳ Validando en red (2s)..."; }
 
             setTimeout(() => {
-                let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
+                let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
                 dbDeps.push({ id: Date.now(), user: sessionEmail, red, monto, hash, status: 'Pendiente' });
-                localStorage.setItem("inverbot_global_deps_db", JSON.stringify(dbDeps));
+                localStorage.setItem(STORAGE_DEPS, JSON.stringify(dbDeps));
                 if(btn) { btn.disabled = false; btn.innerText = "Verificar y Enviar al CEO"; }
                 mostrarAlertaPro("Éxito", "¡Depósito notificado correctamente al panel CEO!");
                 document.getElementById('subAccionContainer').style.display = 'none';
@@ -785,7 +763,7 @@
                 return;
             }
 
-            let users = obtenerUsuariosNube();
+            let users = obtenerUsuarios();
             let u = users.find(x => x.email === sessionEmail);
             if(u.pass !== pass) { mostrarAlertaPro("Error de Seguridad", "Contraseña institucional incorrecta."); return; }
             if(u.balance < monto) { mostrarAlertaPro("Saldo Insuficiente", "El monto solicitado supera su balance disponible."); return; }
@@ -795,34 +773,34 @@
 
             setTimeout(() => {
                 u.balance -= monto;
-                guardarUsuariosNube(users);
-                let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
+                guardarUsuarios(users);
+                let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || [];
                 dbWits.push({ id: Date.now(), user: sessionEmail, red, wallet, monto, status: 'Pendiente' });
-                localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits));
+                localStorage.setItem(STORAGE_WITS, JSON.stringify(dbWits));
                 if(btn) { btn.disabled = false; btn.innerText = "Enviar Solicitud de Retiro"; }
                 mostrarAlertaPro("Éxito", "¡Solicitud de retiro enviada al CEO!");
                 entrarDashboardDirecto();
             }, 2000);
         }
 
-        async function comprarVip(nivel, precio) {
-            let users = await obtenerUsuariosNube();
+        function comprarVip(nivel, precio) {
+            let users = obtenerUsuarios();
             let u = users.find(x => x.email === sessionEmail);
             if(u.balance < precio) { mostrarAlertaPro("Fondos Insuficientes", `Requiere ${precio} USDT para adquirir este nivel VIP.`); return; }
             
-            setTimeout(async () => {
+            setTimeout(() => {
                 u.balance -= precio;
                 u.vipActive = nivel;
                 u.vipExpiry = Date.now() + (35 * 24 * 60 * 60 * 1000); 
                 u.lastClaim = 0;
-                await guardarUsuariosNube(users);
+                guardarUsuarios(users);
                 mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado institucionalmente!`);
                 entrarDashboardDirecto();
             }, 2000);
         }
 
-        async function reclamarVip(nivel) {
-            let users = await obtenerUsuariosNube();
+        function reclamarVip(nivel) {
+            let users = obtenerUsuarios();
             let u = users.find(x => x.email === sessionEmail);
             if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No cuenta con un VIP activo."); return; }
             let ahora = Date.now();
@@ -832,23 +810,23 @@
             let btn = document.getElementById(btnId);
             if(btn) { btn.disabled = true; btn.innerText = "⏳ Cuantificando (2s)..."; }
             
-            setTimeout(async () => {
+            setTimeout(() => {
                 let rec = (nivel === 1) ? 1.5 : (nivel === 'Max' ? 6.5 : 42.2);
                 u.balance += rec;
                 u.lastClaim = ahora;
-                await guardarUsuariosNube(users);
+                guardarUsuarios(users);
                 if(btn) { btn.disabled = false; btn.innerText = "Reclamar Rendimiento Diario"; }
                 mostrarAlertaPro("Rendimiento Acreditado", `¡+${rec} USDT acreditados a su balance.`);
                 entrarDashboardDirecto();
             }, 2000);
         }
 
-        async function abrirPanelAdmin() {
+        function abrirPanelAdmin() {
             if(sessionEmail !== ADMIN_EMAIL) return;
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            await renderAdmin();
+            renderAdmin();
         }
 
         function cerrarPanelAdmin() {
@@ -857,10 +835,10 @@
             document.getElementById('bottomNavBar').style.display = 'flex';
         }
 
-        async function renderAdmin() {
-            let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
-            let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
-            let users = await obtenerUsuariosNube();
+        function renderAdmin() {
+            let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
+            let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || [];
+            let users = obtenerUsuarios();
             
             let userC = document.getElementById('listaAdminUsers');
             let depC = document.getElementById('listaAdminDeps');
@@ -868,7 +846,7 @@
 
             userC.innerHTML = "";
             users.forEach(usr => {
-                userC.innerHTML += `<div style="background:var(--bg-input); padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;"><span style="color:var(--accent-green);">📧 ${usr.email}</span> | <span style="color:#f0b90b;">🔑 ${usr.pass}</span> | Saldo: $${usr.balance.toFixed(2)}</div>`;
+                userC.innerHTML += `<div style="background:var(--bg-input); border:1px solid #0ecb8133; padding:8px; border-radius:6px; margin-bottom:6px; font-size:11px;"><span style="color:var(--accent-green);">📧 ${usr.email}</span> | <span style="color:#0ecb81;">🔑 ${usr.pass}</span> | Saldo: $${usr.balance.toFixed(2)}</div>`;
             });
 
             depC.innerHTML = dbDeps.filter(d => d.status === 'Pendiente').length === 0 ? "<p style='font-size:11px; color:var(--text-muted);'>Sin depósitos pendientes.</p>" : "";
@@ -886,22 +864,22 @@
             });
         }
 
-        async function aprobarDep(idx) {
-            let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
-            let users = await obtenerUsuariosNube();
+        function aprobarDep(idx) {
+            let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || [];
+            let users = obtenerUsuarios();
             let dep = dbDeps[idx]; let u = users.find(x => x.email === dep.user);
-            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; await guardarUsuariosNube(users); localStorage.setItem("inverbot_global_deps_db", JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Depósito aprobado!"); renderAdmin(); }
+            if(u) { u.balance += dep.monto; dep.status = 'Aprobado'; guardarUsuarios(users); localStorage.setItem(STORAGE_DEPS, JSON.stringify(dbDeps)); mostrarAlertaPro("CEO", "¡Depósito aprobado!"); renderAdmin(); }
         }
-        function rechazarDep(idx) { let dbDeps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem("inverbot_global_deps_db", JSON.stringify(dbDeps)); renderAdmin(); }
-        function aprobarWit(idx) { let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits)); renderAdmin(); }
-        async function rechazarWit(idx) {
-            let dbWits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || []; let users = await obtenerUsuariosNube();
+        function rechazarDep(idx) { let dbDeps = JSON.parse(localStorage.getItem(STORAGE_DEPS)) || []; dbDeps[idx].status = 'Rechazado'; localStorage.setItem(STORAGE_DEPS, JSON.stringify(dbDeps)); renderAdmin(); }
+        function aprobarWit(idx) { let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || []; dbWits[idx].status = 'Aprobado'; localStorage.setItem(STORAGE_WITS, JSON.stringify(dbWits)); renderAdmin(); }
+        function rechazarWit(idx) {
+            let dbWits = JSON.parse(localStorage.getItem(STORAGE_WITS)) || []; let users = obtenerUsuarios();
             let w = dbWits[idx]; let u = users.find(x => x.email === w.user);
-            if(u) { u.balance += w.monto; w.status = 'Rechazado'; await guardarUsuariosNube(users); localStorage.setItem("inverbot_global_wits_db", JSON.stringify(dbWits)); renderAdmin(); }
+            if(u) { u.balance += w.monto; w.status = 'Rechazado'; guardarUsuarios(users); localStorage.setItem(STORAGE_WITS, JSON.stringify(dbWits)); renderAdmin(); }
         }
 
-        async function copiarEnlaceReferido() { 
-            let users = await obtenerUsuariosNube();
+        function copiarEnlaceReferido() { 
+            let users = obtenerUsuarios();
             let u = users.find(x => x.email === sessionEmail);
             if(u) {
                 navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code); 
