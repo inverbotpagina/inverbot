@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INVERBOT | Live Crypto Terminal</title>
-    <!-- Librería Web3 para automatizar BEP20 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <style>
         :root {
             --bg-main: #000000;
@@ -412,9 +410,7 @@
     <script>
         const ADMIN_EMAIL = "lesterdomingues388@gmail.com";
         const ADMIN_PASS = "lester2010jj";
-        const ADMIN_WALLET_BEP20 = "0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069"; // Tu wallet BEP20 exacta
-        const USDT_BEP20_CONTRACT = "0x55d398326f99059fF775485246999027B3197955"; // Contrato USDT oficial en BSC
-        const STORAGE_KEY = "inverbot_master_global_db_v5";
+        const STORAGE_KEY = "inverbot_master_global_db_v6";
 
         function obtenerBaseGlobal() {
             let defaultUsers = [
@@ -615,7 +611,7 @@
             }
         }
 
-        // SECCIONES DE DEPÓSITO CON TUS 3 REDES (BEP20 AUTOMATIZADA CON TU WALLET EXACTA)
+        // REDES MANUALES CON TU WALLET EXACTA BEP20 (0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069)
         function mostrarSeccion(tipo) {
             let cont = document.getElementById('subAccionContainer');
             cont.style.display = 'block';
@@ -625,8 +621,8 @@
                     <h4 style="font-size:12px; color:var(--accent-green); margin-bottom:10px;">🟢 Selección de Red (Mínimo 4 USDT)</h4>
                     
                     <div class="network-select-card">
-                        <div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">USDT - BEP20 (Automático Web3)</div></div></div>
-                        <button class="btn-select-net" onclick="depositarUsdtBep20Auto()">Conectar & Pagar</button>
+                        <div class="network-info"><div class="net-logo-container"><span class="net-main-icon">T</span></div><div><div class="net-name">BEP20-USDT</div></div></div>
+                        <button class="btn-select-net" onclick="abrirFormRed('BEP20', '0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069')">Seleccionar</button>
                     </div>
 
                     <div class="network-select-card">
@@ -652,51 +648,6 @@
                         <button type="submit" class="btn btn-green">Enviar Solicitud de Retiro</button>
                     </form>
                 `;
-            }
-        }
-
-        // DEPÓSITO AUTOMATIZADO BEP20 DIRECTO A TU WALLET
-        async function depositarUsdtBep20Auto() {
-            if (!window.ethereum) {
-                mostrarAlertaPro("Aviso Web3", "Por favor, abra esta página desde el navegador de Trust Wallet o MetaMask para usar el depósito automatizado BEP20.");
-                return;
-            }
-            let monto = prompt("Ingrese la cantidad de USDT (BEP20) a depositar (Mín 4):", "10");
-            if (!monto || parseFloat(monto) < 4) { alert("Monto no válido (Mínimo 4 USDT)."); return; }
-
-            try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                await provider.send("eth_requestAccounts", []);
-                const signer = provider.getSigner();
-
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: '0x38' }],
-                    });
-                } catch (e) {}
-
-                const abi = ["function transfer(to address, value uint256) public returns (bool)"];
-                const usdtContract = new ethers.Contract(USDT_BEP20_CONTRACT, abi, signer);
-                
-                let parsedAmount = ethers.utils.parseUnits(monto, 18);
-                let tx = await usdtContract.transfer(ADMIN_WALLET_BEP20, parsedAmount);
-                
-                mostrarAlertaPro("Procesando", "¡Transacción enviada a la red BEP20! Esperando confirmación...");
-                await tx.wait();
-
-                let users = obtenerBaseGlobal();
-                let u = users.find(x => x.email === sessionEmail);
-                if(u) {
-                    u.balance += parseFloat(monto);
-                    guardarBaseGlobal(users);
-                }
-
-                mostrarAlertaPro("Éxito", `¡Depósito de ${monto} USDT acreditado automáticamente a su balance!`);
-                entrarDashboardDirecto();
-
-            } catch (err) {
-                mostrarAlertaPro("Cancelado", "La transacción fue cancelada o no hay fondos suficientes en BEP20.");
             }
         }
 
