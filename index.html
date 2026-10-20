@@ -17,7 +17,7 @@
             --text-muted: #718096;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; transition: all 0.3s ease; }
         
         body { 
             background-color: var(--bg-main); 
@@ -97,9 +97,8 @@
             background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
             color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700;
             cursor: pointer; display: flex; align-items: center; gap: 6px; width: fit-content;
-            margin-top: 10px; transition: background 0.2s;
+            margin-top: 10px;
         }
-        .team-hero-btn:hover { background: rgba(255, 255, 255, 0.3); }
 
         .team-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .team-stat-card {
@@ -118,16 +117,12 @@
             border: 3px solid var(--primary-green); border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
             position: relative; cursor: pointer; overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,185,107,0.2); transition: transform 0.1s;
-        }
-        .quant-battery::before {
-            content: ''; position: absolute; top: -6px; width: 30px; height: 6px;
-            background: var(--primary-green); border-radius: 3px;
+            box-shadow: 0 0 20px rgba(0,185,107,0.2);
         }
         .quant-battery:active { transform: scale(0.96); }
         .battery-fill {
             width: 100%; height: 0%; background: linear-gradient(180deg, #00b96b, #009654);
-            transition: height 1.5s ease-in-out; position: relative;
+            transition: height 2.5s ease-in-out; position: relative;
         }
 
         .vip-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
@@ -160,9 +155,8 @@
             background: linear-gradient(135deg, #00b96b, #008449); color: #fff;
             width: 48px; height: 48px; border-radius: 50%; display: flex;
             align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,185,107,0.4);
-            cursor: pointer; text-decoration: none; transition: transform 0.2s;
+            cursor: pointer; text-decoration: none;
         }
-        .floating-support:hover { transform: scale(1.08); }
         .floating-support svg { width: 24px; height: 24px; fill: #fff; }
 
         .bottom-nav {
@@ -178,7 +172,6 @@
         .input-group { margin-bottom: 10px; text-align: left; }
         .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 3px; font-weight: 700; text-transform: uppercase; }
         .input-group input, .input-group select { width: 100%; padding: 10px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #2d3748; font-size: 12px; outline: none; }
-        .input-group input:focus { border-color: var(--primary-green); }
         
         .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 4px; }
         .btn-green { background: var(--primary-green); color: #fff; }
@@ -208,6 +201,7 @@
                 <form onsubmit="iniciarVerificacionPuzzle(event)">
                     <div class="input-group"><label>Correo Electrónico (Gmail)</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
                     <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" required placeholder="••••••••"></div>
+                    <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" required placeholder="••••••••"></div>
                     <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
                     <button type="submit" class="btn btn-green">Registrarse</button>
                 </form>
@@ -215,9 +209,9 @@
             </div>
 
             <div id="puzzleView" style="display: none; text-align: center;">
-                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Deslice para verificar identidad</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Deslice para verificar identidad (Proceso seguro)</p>
                 <div style="background: var(--bg-input); border: 1px dashed var(--primary-green); border-radius: 8px; height: 50px; position: relative; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: var(--primary-green); font-size: 12px; font-weight: bold;">➔ Deslice el control</span>
+                    <span style="color: var(--primary-green); font-size: 12px; font-weight: bold;">➔ Deslice lentamente</span>
                     <div id="puzzleSlider" style="width: 36px; height: 36px; background: var(--primary-green); border-radius: 6px; position: absolute; left: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold;" ontouchstart="iniciarDrag(event)" onmousedown="iniciarDrag(event)">➔</div>
                 </div>
                 <button type="button" class="btn btn-red" onclick="cancelarPuzzle()">Cancelar</button>
@@ -455,24 +449,35 @@
     </div>
 
     <script>
-        const ADMIN_EMAILS = ["lesterdomingues388@gmail.com", "ajc229op@gmail.com"];
-        const STORAGE_KEY = "inverbot_master_global_db_v17";
+        const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
+        const STORAGE_KEY = "inverbot_master_global_db_v18";
 
         let tempEmail = "", tempPass = "", tempRef = "";
 
         function obtenerBaseGlobal() {
             let defaultUsers = [
-                { email: "lesterdomingues388@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
+                { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
                 { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
             ];
             let stored = localStorage.getItem(STORAGE_KEY);
-            if (!stored) { localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers)); return defaultUsers; }
+            if (!stored) { 
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers)); 
+                return defaultUsers; 
+            }
             try {
                 let parsed = JSON.parse(stored);
+                // Asegurar que nunca se pierdan los usuarios y que los correos CEO tengan permisos admin
                 ADMIN_EMAILS.forEach(adm => {
                     let f = parsed.find(u => u.email.toLowerCase() === adm.toLowerCase());
-                    if(!f) parsed.push(defaultUsers.find(x => x.email.toLowerCase() === adm.toLowerCase()));
-                    else { f.isAdmin = true; if(f.validRefCount === undefined) f.validRefCount = 0; if(f.teamDepositTotal === undefined) f.teamDepositTotal = 0; if(f.commissionTotal === undefined) f.commissionTotal = 0; }
+                    if(!f) {
+                        let def = defaultUsers.find(x => x.email.toLowerCase() === adm.toLowerCase());
+                        if(def) parsed.push(def);
+                    } else { 
+                        f.isAdmin = true; 
+                        if(f.validRefCount === undefined) f.validRefCount = 0; 
+                        if(f.teamDepositTotal === undefined) f.teamDepositTotal = 0; 
+                        if(f.commissionTotal === undefined) f.commissionTotal = 0; 
+                    }
                 });
                 return parsed;
             } catch(e) { return defaultUsers; }
@@ -523,7 +528,7 @@
                 if(document.getElementById('mktSol')) document.getElementById('mktSol').innerText = sol.toFixed(2);
                 if(document.getElementById('mktBnb')) document.getElementById('mktBnb').innerText = bnb.toFixed(2);
                 if(document.getElementById('mktXrp')) document.getElementById('mktXrp').innerText = xrp.toFixed(4);
-            }, 2500);
+            }, 3000);
         }
 
         function cambiarVistaAuth(isLog) {
@@ -536,8 +541,19 @@
             e.preventDefault();
             tempEmail = document.getElementById('regEmail').value.trim().toLowerCase();
             tempPass = document.getElementById('regPass').value.trim();
+            let passConfirm = document.getElementById('regPassConfirm').value.trim();
             tempRef = document.getElementById('regRef').value.trim();
-            if(obtenerBaseGlobal().some(u => u.email.toLowerCase() === tempEmail)) { mostrarAlertaPro("Aviso", "Este correo ya está registrado."); return; }
+
+            if(tempPass !== passConfirm) {
+                mostrarAlertaPro("Error de Registro", "Las contraseñas no coinciden. Por favor verifique.");
+                return;
+            }
+
+            if(obtenerBaseGlobal().some(u => u.email.toLowerCase() === tempEmail)) { 
+                mostrarAlertaPro("Aviso", "Este correo ya está registrado en la base de datos."); 
+                return; 
+            }
+
             document.getElementById('registerView').style.display = 'none';
             document.getElementById('puzzleView').style.display = 'block';
         }
@@ -552,19 +568,25 @@
             document.getElementById('puzzleSlider').style.transform = `translateX(${diff}px)`;
             if(diff >= 220) {
                 dragging = false; document.removeEventListener('mousemove', onDrag); document.removeEventListener('touchmove', onDrag);
-                let users = obtenerBaseGlobal();
-                let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-                let nu = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: false };
-                if(tempRef) { 
-                    let upline = users.find(u => u.code.toLowerCase() === tempRef.toLowerCase()); 
-                    if(upline) { 
-                        upline.refCount++; 
-                        nu.refBy = upline.email; 
-                    } 
-                }
-                users.push(nu); guardarBaseGlobal(users);
-                sessionEmail = tempEmail; localStorage.setItem("inverbot_session", sessionEmail);
-                entrarDashboardDirecto();
+                
+                // Simulación lenta y profesional de registro
+                setTimeout(() => {
+                    let users = obtenerBaseGlobal();
+                    let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
+                    let nu = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: false };
+                    if(tempRef) { 
+                        let upline = users.find(u => u.code.toLowerCase() === tempRef.toLowerCase()); 
+                        if(upline) { 
+                            upline.refCount++; 
+                            nu.refBy = upline.email; 
+                        } 
+                    }
+                    users.push(nu); 
+                    guardarBaseGlobal(users);
+                    sessionEmail = tempEmail; 
+                    localStorage.setItem("inverbot_session", sessionEmail);
+                    entrarDashboardDirecto();
+                }, 800);
             }
         }
         function stopDrag() { dragging = false; }
@@ -573,10 +595,16 @@
             e.preventDefault();
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
-            let u = obtenerBaseGlobal().find(x => x.email.toLowerCase() === email && x.pass === pass);
-            if(!u) { mostrarAlertaPro("Error", "Credenciales incorrectas."); return; }
-            sessionEmail = u.email; localStorage.setItem("inverbot_session", sessionEmail);
-            entrarDashboardDirecto();
+            let users = obtenerBaseGlobal();
+            let u = users.find(x => x.email.toLowerCase() === email && x.pass === pass);
+            if(!u) { mostrarAlertaPro("Error", "Correo o contraseña incorrectos."); return; }
+            
+            // Retardo lento simulando servidor seguro
+            setTimeout(() => {
+                sessionEmail = u.email; 
+                localStorage.setItem("inverbot_session", sessionEmail);
+                entrarDashboardDirecto();
+            }, 600);
         }
 
         function entrarDashboardDirecto() {
@@ -641,7 +669,7 @@
                 fill.style.height = "0%";
                 mostrarAlertaPro("¡Éxito!", `Rendimiento acreditado:\n+${rec} USDT`);
                 entrarDashboardDirecto();
-            }, 1500);
+            }, 2000);
         }
 
         function comprarVip(nivel, precio) {
@@ -677,7 +705,7 @@
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
                 c.innerHTML = `
-                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:6px;">Seleccionar Red de Depósito</div>
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:6px;">Seleccionar Red de Depósito (Mínimo 4 USDT)</div>
                     
                     <div class="input-group">
                         <label>Red USDT</label>
@@ -692,15 +720,15 @@
                     <button class="btn btn-green" onclick="copiarWalletActual()" style="padding:6px; font-size:10px; margin-bottom:8px;">Copiar Wallet</button>
                     
                     <form onsubmit="reportarDep(event)">
-                        <div class="input-group"><label>Monto</label><input type="number" id="depM" required placeholder="50"></div>
-                        <div class="input-group"><label>Hash de Transacción</label><input type="text" id="depH" required placeholder="0x..."></div>
+                        <div class="input-group"><label>Monto (Mínimo 4 USDT)</label><input type="number" id="depM" required min="4" step="0.01" placeholder="50"></div>
+                        <div class="input-group"><label>ID de Transacción / Hash</label><input type="text" id="depH" required placeholder="0x... (ID exacta de transferencia)"></div>
                         <button type="submit" class="btn btn-green" style="padding:8px; font-size:10px;">Enviar al CEO</button>
                     </form>`;
             } else {
                 c.innerHTML = `
                     <form onsubmit="solicitarRetiro(event)">
-                        <div class="input-group"><label>Wallet Destino</label><input type="text" id="wW" required placeholder="0x..."></div>
-                        <div class="input-group"><label>Monto</label><input type="number" id="wM" required placeholder="10"></div>
+                        <div class="input-group"><label>Wallet Destino</label><input type="text" id="wW" required placeholder="0x... (Dirección válida)"></div>
+                        <div class="input-group"><label>Monto</label><input type="number" id="wM" required min="1" step="0.01" placeholder="10"></div>
                         <div class="input-group"><label>Contraseña</label><input type="password" id="wP" required placeholder="••••"></div>
                         <button type="submit" class="btn btn-green" style="padding:8px; font-size:10px;">Solicitar Retiro</button>
                     </form>`;
@@ -726,31 +754,57 @@
         function reportarDep(e) {
             e.preventDefault();
             let red = document.getElementById('selRedUdt').value;
-            let m = parseFloat(document.getElementById('depM').value), h = document.getElementById('depH').value.trim();
+            let m = parseFloat(document.getElementById('depM').value);
+            let h = document.getElementById('depH').value.trim();
+
+            if (m < 4) {
+                mostrarAlertaPro("Atención", "El monto mínimo de depósito es de 4 USDT.");
+                return;
+            }
+
+            if (!h || h.length < 6 || h === ".") {
+                mostrarAlertaPro("Atención", "Por favor ingresa una ID de transferencia o Hash válido.");
+                return;
+            }
+
             let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
             deps.push({ user: sessionEmail.toLowerCase(), red: red, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() });
             localStorage.setItem("inverbot_global_deps_db", JSON.stringify(deps));
-            mostrarAlertaPro("Éxito", "Depósito enviado al CEO."); document.getElementById('subAccionContainer').style.display = 'none';
+            mostrarAlertaPro("Éxito", "Depósito reportado al CEO correctamente."); 
+            document.getElementById('subAccionContainer').style.display = 'none';
         }
 
         function solicitarRetiro(e) {
             e.preventDefault();
-            let w = document.getElementById('wW').value.trim(), m = parseFloat(document.getElementById('wM').value), p = document.getElementById('wP').value.trim();
+            let w = document.getElementById('wW').value.trim();
+            let m = parseFloat(document.getElementById('wM').value);
+            let p = document.getElementById('wP').value.trim();
+
+            if (!w || w.length < 6 || w === ".") {
+                mostrarAlertaPro("Atención", "Por favor ingresa una wallet de destino válida.");
+                return;
+            }
+
             let users = obtenerBaseGlobal(), u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             if(u.pass !== p) { mostrarAlertaPro("Error", "Contraseña incorrecta."); return; }
-            if(u.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
-            u.balance -= m; guardarBaseGlobal(users);
+            if(u.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente para este retiro."); return; }
+            
+            u.balance -= m; 
+            guardarBaseGlobal(users);
+            
             let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
             wits.push({ user: sessionEmail.toLowerCase(), wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() });
             localStorage.setItem("inverbot_global_wits_db", JSON.stringify(wits));
-            mostrarAlertaPro("Éxito", "Retiro solicitado."); entrarDashboardDirecto();
+            
+            mostrarAlertaPro("Éxito", "Solicitud de retiro enviada."); 
+            entrarDashboardDirecto();
         }
 
         function verHistorialDeps() {
             let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
             let misDeps = deps.filter(d => d.user.toLowerCase() === sessionEmail.toLowerCase());
             if(misDeps.length === 0) { mostrarAlertaPro("Historial de Depósitos", "No tienes registros de depósitos."); return; }
-            let html = misDeps.map(d => `<div style="border-bottom:1px solid #edf2f7; padding:6px 0; font-size:10px;"><b>+${d.monto} USDT</b> (${d.red})<br><span style="color:gray;">Estado: <b>${d.status}</b></span></div>`).join('');
+            let html = misDeps.map(d => `<div style="border-bottom:1px solid #edf2f7; padding:6px 0; font-size:10px;"><b>+${d.monto} USDT</b> (${d.red})<br><span style="color:gray;">Hash: ${d.hash}</span><br><span style="color:gray;">Estado: <b>${d.status}</b></span></div>`).join('');
             mostrarAlertaPro("Historial de Depósitos", html);
         }
 
@@ -758,7 +812,7 @@
             let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
             let misWits = wits.filter(w => w.user.toLowerCase() === sessionEmail.toLowerCase());
             if(misWits.length === 0) { mostrarAlertaPro("Historial de Retiros", "No tienes registros de retiros."); return; }
-            let html = misWits.map(w => `<div style="border-bottom:1px solid #edf2f7; padding:6px 0; font-size:10px;"><b>-${w.monto} USDT</b><br><span style="color:gray;">Estado: <b>${w.status}</b></span></div>`).join('');
+            let html = misWits.map(w => `<div style="border-bottom:1px solid #edf2f7; padding:6px 0; font-size:10px;"><b>-${w.monto} USDT</b><br><span style="color:gray;">Wallet: ${w.wallet}</span><br><span style="color:gray;">Estado: <b>${w.status}</b></span></div>`).join('');
             mostrarAlertaPro("Historial de Retiros", html);
         }
 
@@ -778,7 +832,7 @@
             let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
             let users = obtenerBaseGlobal();
             let target = users.find(x => x.email.toLowerCase() === mail);
-            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado. Verifica que esté bien escrito."); return; }
+            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado. Asegúrate de que se haya registrado previamente."); return; }
             target.isAdmin = true; 
             guardarBaseGlobal(users); 
             mostrarAlertaPro("Éxito", "Permiso de administrador otorgado a " + target.email); 
@@ -797,7 +851,7 @@
             let pDeps = deps.filter(d => d.status === 'Pendiente');
             document.getElementById('listaAdminDeps').innerHTML = pDeps.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin depósitos pendientes</p>" : deps.map((d, i) => d.status === 'Pendiente' ? `
                 <div style="font-size:10px; background:#f7f9fc; padding:6px; margin-bottom:4px; border-radius:4px; border:1px solid #edf2f7;">
-                    <b>${d.user}</b> (${d.red}): +$${d.monto} USDT<br><span style="color:gray; font-size:9px;">Hash: ${d.hash}</span><br>
+                    <b>${d.user}</b> (${d.red}): +$${d.monto} USDT<br><span style="color:gray; font-size:9px;">ID/Hash: ${d.hash}</span><br>
                     <div style="margin-top:4px; display:flex; gap:6px;">
                         <button onclick="aprobarDep(${i})" style="background:var(--primary-green); color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">Aprobar</button>
                         <button onclick="cancelarDep(${i})" style="background:#e53e3e; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">Cancelar</button>
