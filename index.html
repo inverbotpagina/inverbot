@@ -6,15 +6,15 @@
     <title>Inverbot - Plataforma de Inversión y Criptomonedas</title>
     <style>
         :root {
-            --bg-color: #0b0f0e;
-            --card-bg: #131f1b;
+            --bg-color: #050807;
+            --card-bg: #0e1713;
             --primary-green: #00ff66;
             --dark-green: #008833;
             --accent-green: #1aff8c;
             --text-main: #ffffff;
-            --text-muted: #a3b8b0;
+            --text-muted: #8fa89e;
             --danger: #ff4d4d;
-            --border-color: #1f382e;
+            --border-color: #162b22;
         }
 
         * {
@@ -43,41 +43,40 @@
 
         .logo {
             color: var(--primary-green);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
         }
 
         .container {
             flex: 1;
-            padding: 20px;
+            padding: 15px;
             max-width: 600px;
             width: 100%;
             margin: 0 auto;
-            padding-bottom: 90px;
+            padding-bottom: 95px;
         }
 
-        /* Ticker Dinámico */
+        /* Ticker Dinámico Home */
         .crypto-ticker {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 10px 15px;
-            margin-bottom: 20px;
+            padding: 10px;
+            margin-bottom: 15px;
             overflow: hidden;
             white-space: nowrap;
-            position: relative;
         }
 
         .ticker-track {
             display: inline-block;
-            animation: ticker 25s linear infinite;
+            animation: ticker 20s linear infinite;
         }
 
         .ticker-item {
             display: inline-block;
-            margin-right: 35px;
-            font-size: 0.9rem;
+            margin-right: 30px;
+            font-size: 0.85rem;
         }
 
         .ticker-item span.up { color: var(--primary-green); }
@@ -88,36 +87,29 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* Secciones */
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
+        .section { display: none; }
+        .section.active { display: block; }
 
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
+            padding: 18px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
         }
 
         h2 {
             color: var(--primary-green);
-            margin-bottom: 15px;
-            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
         }
 
-        /* Formularios y Botones */
         input, select {
             width: 100%;
             padding: 12px;
             margin-bottom: 12px;
-            background: #070d0b;
+            background: #040706;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-main);
@@ -139,14 +131,11 @@
             font-weight: bold;
             font-size: 1rem;
             cursor: pointer;
-            transition: 0.3s;
             box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+            transition: 0.2s;
         }
 
-        button:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
-        }
+        button:hover { opacity: 0.9; }
 
         .btn-secondary {
             background: transparent;
@@ -161,52 +150,42 @@
             box-shadow: 0 0 10px rgba(255, 77, 77, 0.3);
         }
 
-        /* Botón de Pila Vacía para Cuantificar */
+        /* 5. DISEÑO DE PILA VACÍA CON RAYITAS PARA CUANTIFICAR */
         .battery-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 20px 0;
-        }
-
-        .battery-body {
-            width: 90px;
-            height: 160px;
-            border: 3px solid var(--primary-green);
-            border-radius: 10px;
-            padding: 6px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            background: #070d0b;
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.2);
+            margin: 15px 0;
         }
 
         .battery-tip {
-            width: 30px;
-            height: 8px;
+            width: 25px;
+            height: 7px;
             background: var(--primary-green);
             border-radius: 4px 4px 0 0;
             margin-bottom: -1px;
         }
 
-        .battery-lines {
-            width: 100%;
-            height: 100%;
+        .battery-body {
+            width: 85px;
+            height: 150px;
+            border: 3px solid var(--primary-green);
+            border-radius: 10px;
+            padding: 6px;
+            background: #040706;
             display: flex;
             flex-direction: column;
             justify-content: space-around;
-            padding: 4px 0;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.15);
         }
 
         .b-line {
             width: 100%;
-            height: 12px;
-            background: #13221b;
+            height: 14px;
+            background: #11221a;
             border-radius: 3px;
-            transition: background 0.3s;
+            transition: background 0.3s, box-shadow 0.3s;
         }
 
         .b-line.active {
@@ -217,24 +196,17 @@
         /* VIP Cards */
         .vip-card {
             border: 1px solid var(--border-color);
-            background: #0f1a16;
+            background: #0a120f;
             border-radius: 10px;
-            padding: 15px;
+            padding: 14px;
             margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .vip-info h3 {
-            color: var(--accent-green);
-            font-size: 1.1rem;
-        }
-
-        .vip-info p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
+        .vip-info h3 { color: var(--accent-green); font-size: 1rem; }
+        .vip-info p { color: var(--text-muted); font-size: 0.8rem; }
 
         /* Navegación Inferior */
         nav.bottom-nav {
@@ -253,23 +225,15 @@
         .nav-item {
             color: var(--text-muted);
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             cursor: pointer;
             flex: 1;
-            transition: 0.2s;
         }
 
-        .nav-item.active, .nav-item:hover {
-            color: var(--primary-green);
-        }
+        .nav-item.active { color: var(--primary-green); }
+        .nav-item span { display: block; font-size: 1.1rem; margin-bottom: 2px; }
 
-        .nav-item span {
-            display: block;
-            font-size: 1.2rem;
-            margin-bottom: 2px;
-        }
-
-        /* Botón Flotante de Soporte Gmail */
+        /* 1. BOTÓN FLOTANTE GMAIL */
         .support-float {
             position: fixed;
             bottom: 75px;
@@ -282,30 +246,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             box-shadow: 0 4px 15px rgba(0, 255, 102, 0.4);
-            cursor: pointer;
             z-index: 1100;
             text-decoration: none;
-            transition: transform 0.2s;
-        }
-
-        .support-float:hover {
-            transform: scale(1.1);
         }
 
         .admin-row {
-            background: #070d0b;
+            background: #040706;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 10px;
             border: 1px solid var(--border-color);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .admin-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-top: 8px;
         }
     </style>
@@ -314,70 +272,64 @@
 
     <header>
         <div class="logo">INVERBOT</div>
-        <div id="user-balance-header" style="font-size: 0.9rem; color: var(--primary-green);">Saldo: $0.00 USDT</div>
+        <div id="user-balance-header" style="font-size: 0.85rem; color: var(--primary-green);">Saldo: $0.00 USDT</div>
     </header>
 
     <div class="container">
 
-        <!-- PANTALLA HOGAR LLENA Y DINÁMICA -->
+        <!-- 4. PANTALLA HOGAR LLENA Y DINÁMICA -->
         <div id="sec-home" class="section active">
-            <!-- Ticker de criptomonedas dinámico superior -->
             <div class="crypto-ticker">
                 <div class="ticker-track">
-                    <span class="ticker-item">BTC/USDT: <span class="up" id="tick-btc">$68,450.20 (+2.4%)</span></span>
-                    <span class="ticker-item">ETH/USDT: <span class="up" id="tick-eth">$3,540.80 (+1.8%)</span></span>
-                    <span class="ticker-item">BNB/USDT: <span class="down" id="tick-bnb">$612.40 (-0.5%)</span></span>
-                    <span class="ticker-item">SOL/USDT: <span class="up" id="tick-sol">$185.30 (+4.1%)</span></span>
-                    <span class="ticker-item">XRP/USDT: <span class="up" id="tick-xrp">$0.6234 (+1.2%)</span></span>
+                    <span class="ticker-item">BTC/USDT: <span class="up" id="tk-btc">$68,450.20 (+2.4%)</span></span>
+                    <span class="ticker-item">ETH/USDT: <span class="up" id="tk-eth">$3,540.80 (+1.8%)</span></span>
+                    <span class="ticker-item">BNB/USDT: <span class="down" id="tk-bnb">$612.40 (-0.5%)</span></span>
+                    <span class="ticker-item">SOL/USDT: <span class="up" id="tk-sol">$185.30 (+4.1%)</span></span>
                     <span class="ticker-item">BTC/USDT: <span class="up">$68,450.20 (+2.4%)</span></span>
-                    <span class="ticker-item">ETH/USDT: <span class="up">$3,540.80 (+1.8%)</span></span>
                 </div>
             </div>
 
             <div class="card">
-                <h2>Bienvenido a Inverbot</h2>
-                <p style="color: var(--text-muted); margin-bottom: 15px; line-height: 1.5;">
-                    Sistema inteligente de minería y rendimiento en la nube. Monitorea el mercado global y cuantifica tus activos diariamente de forma segura.
+                <h2>Panel de Control General</h2>
+                <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.4; margin-bottom: 12px;">
+                    Bienvenido a la red de minería algorítmica de Inverbot. Monitorea los nodos globales y procesa tus cuantificaciones diarias para liberar ganancias estables.
                 </p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
-                    <div style="background: #070d0b; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <small style="color: var(--text-muted);">Rendimiento Diario</small>
-                        <p style="color: var(--primary-green); font-size: 1.1rem; font-weight: bold;">+3.8%</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center;">
+                    <div style="background: #040706; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <small style="color: var(--text-muted);">Tasa Activa</small>
+                        <p style="color: var(--primary-green); font-weight: bold;">+4.2% / Día</p>
                     </div>
-                    <div style="background: #070d0b; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <small style="color: var(--text-muted);">Estado del Servidor</small>
-                        <p style="color: var(--primary-green); font-size: 1.1rem; font-weight: bold;">Estable</p>
+                    <div style="background: #040706; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <small style="color: var(--text-muted);">Red Global</small>
+                        <p style="color: var(--primary-green); font-weight: bold;">En Línea</p>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>Mercado Cripto en Tiempo Real</h2>
-                <div id="live-market-list">
-                    <p style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color);"><span>Bitcoin (BTC)</span> <span style="color: var(--primary-green);" id="m-btc">$68,450.20</span></p>
-                    <p style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color);"><span>Ethereum (ETH)</span> <span style="color: var(--primary-green);" id="m-eth">$3,540.80</span></p>
-                    <p style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color);"><span>Binance Coin (BNB)</span> <span style="color: var(--danger);" id="m-bnb">$612.40</span></p>
-                    <p style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color);"><span>Solana (SOL)</span> <span style="color: var(--primary-green);" id="m-sol">$185.30</span></p>
-                    <p style="display: flex; justify-content: space-between; padding: 10px 0;"><span>Cardano (ADA)</span> <span style="color: var(--danger);" id="m-ada">$0.4520</span></p>
+                <h2>Cotizaciones en Vivo</h2>
+                <div id="market-list">
+                    <p style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>Bitcoin (BTC)</span> <span style="color: var(--primary-green);" id="m-btc">$68,450.20</span></p>
+                    <p style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>Ethereum (ETH)</span> <span style="color: var(--primary-green);" id="m-eth">$3,540.80</span></p>
+                    <p style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>Binance Coin (BNB)</span> <span style="color: var(--danger);" id="m-bnb">$612.40</span></p>
+                    <p style="display: flex; justify-content: space-between; padding: 8px 0;"><span>Solana (SOL)</span> <span style="color: var(--primary-green);" id="m-sol">$185.30</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- PANTALLA CUANTIFICAR (Pila Vacía con Animación) -->
+        <!-- 5. PANTALLA CUANTIFICAR (Pila Vacía con Animación de Rayitas) -->
         <div id="sec-quantify" class="section">
             <div class="card" style="text-align: center;">
                 <h2>Centro de Cuantificación</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Pulsa cuantificar para cargar las celdas de la pila y generar tu recompensa.</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Pulsa el botón para cargar las celdas de la pila y generar tu comisión.</p>
                 
                 <div class="battery-container">
                     <div class="battery-tip"></div>
-                    <div class="battery-body" id="battery-body">
-                        <div class="battery-lines">
-                            <div class="b-line" id="bl-1"></div>
-                            <div class="b-line" id="bl-2"></div>
-                            <div class="b-line" id="bl-3"></div>
-                            <div class="b-line" id="bl-4"></div>
-                        </div>
+                    <div class="battery-body">
+                        <div class="b-line" id="bl-1"></div>
+                        <div class="b-line" id="bl-2"></div>
+                        <div class="b-line" id="bl-3"></div>
+                        <div class="b-line" id="bl-4"></div>
                     </div>
                 </div>
 
@@ -385,42 +337,42 @@
             </div>
         </div>
 
-        <!-- PANTALLA VIP -->
+        <!-- 3. PANTALLA VIP (Independientes) -->
         <div id="sec-vip" class="section">
             <div class="card">
-                <h2>Niveles VIP Activos</h2>
+                <h2>Niveles VIP Disponibles</h2>
                 
                 <div class="vip-card">
                     <div class="vip-info">
-                        <h3>VIP 1 - Starter</h3>
+                        <h3>VIP 1</h3>
                         <p>Depósito: 20 USDT | 4% diario</p>
                     </div>
-                    <button style="width: 110px; padding: 8px;" id="btn-vip-1" onclick="activarVip(1, 20)">Activar</button>
+                    <button style="width: 100px; padding: 7px; font-size: 0.85rem;" id="btn-vip-1" onclick="activarVip(1, 20)">Activar</button>
                 </div>
 
                 <div class="vip-card">
                     <div class="vip-info">
-                        <h3>VIP 2 - Advanced</h3>
+                        <h3>VIP 2</h3>
                         <p>Depósito: 50 USDT | 6% diario</p>
                     </div>
-                    <button style="width: 110px; padding: 8px;" id="btn-vip-2" onclick="activarVip(2, 50)">Activar</button>
+                    <button style="width: 100px; padding: 7px; font-size: 0.85rem;" id="btn-vip-2" onclick="activarVip(2, 50)">Activar</button>
                 </div>
 
                 <div class="vip-card">
                     <div class="vip-info">
-                        <h3>VIP 3 - Elite</h3>
+                        <h3>VIP 3</h3>
                         <p>Depósito: 100 USDT | 8% diario</p>
                     </div>
-                    <button style="width: 110px; padding: 8px;" id="btn-vip-3" onclick="activarVip(3, 100)">Activar</button>
+                    <button style="width: 100px; padding: 7px; font-size: 0.85rem;" id="btn-vip-3" onclick="activarVip(3, 100)">Activar</button>
                 </div>
             </div>
         </div>
 
-        <!-- PANTALLA BILLETERA / DEPÓSITO (3 Redes USDT Completas) -->
+        <!-- 2. BILLETERA / DEPÓSITO CON LAS 3 REDES DE USDT -->
         <div id="sec-wallet" class="section">
             <div class="card">
-                <h2>Depósito USDT</h2>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px;">Elige la red de tu transferencia:</p>
+                <h2>Depósito de USDT</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">Selecciona la red de transferencia:</p>
                 
                 <select id="usdt-network-select" onchange="actualizarRedUsdt()">
                     <option value="trc20">USDT - TRON (TRC-20)</option>
@@ -428,33 +380,32 @@
                     <option value="erc20">USDT - Ethereum (ERC-20)</option>
                 </select>
 
-                <div style="background: #070d0b; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; margin-top: 15px;">
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Dirección oficial de la red:</p>
-                    <p id="wallet-address-display" style="color: var(--primary-green); font-weight: bold; font-size: 0.95rem; margin-top: 5px; word-break: break-all;">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</p>
+                <div style="background: #040706; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center; margin-top: 12px;">
+                    <p style="font-size: 0.78rem; color: var(--text-muted);">Dirección oficial de depósito:</p>
+                    <p id="wallet-address-display" style="color: var(--primary-green); font-weight: bold; font-size: 0.85rem; margin-top: 4px; word-break: break-all;">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</p>
                 </div>
             </div>
         </div>
 
-        <!-- PANTALLA PERFIL / CEO (Con Correo, Contraseña, Aprobar y Cancelar) -->
+        <!-- 3. PANEL DE CEO (Correo, Contraseña, Aprobar y Cancelar) -->
         <div id="sec-profile" class="section">
             <div class="card">
-                <h2>Panel de Usuario</h2>
-                <div id="user-info-box" style="margin-bottom: 15px;">
+                <h2>Mi Cuenta</h2>
+                <div style="margin-bottom: 12px; font-size: 0.9rem;">
                     <p><strong>Correo:</strong> <span id="profile-email">-</span></p>
-                    <p><strong>Saldo Actual:</strong> <span id="profile-balance" style="color: var(--primary-green);">$0.00 USDT</span></p>
+                    <p><strong>Saldo:</strong> <span id="profile-balance" style="color: var(--primary-green);">$0.00 USDT</span></p>
                 </div>
                 <button class="btn-danger" onclick="cerrarSesion()">Cerrar Sesión</button>
             </div>
 
-            <!-- PANEL CEO COMPLETO -->
             <div class="card" id="ceo-panel-container" style="display:none; border-color: var(--primary-green);">
-                <h2>Panel de Control CEO (Gestión de Usuarios)</h2>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Lista general protegida de cuentas:</p>
+                <h2>Panel de Control CEO</h2>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px;">Gestión general de usuarios registrados:</p>
                 <div id="ceo-users-list"></div>
             </div>
         </div>
 
-        <!-- FORMULARIO DE ACCESO -->
+        <!-- AUTENTICACIÓN (LOGIN / REGISTRO) -->
         <div id="sec-auth" class="section">
             <div class="card">
                 <h2 id="auth-title">Acceso a Inverbot</h2>
@@ -467,7 +418,7 @@
 
     </div>
 
-    <!-- Botón flotante fijo para soporte Gmail -->
+    <!-- 1. BOTÓN FLOTANTE GMAIL SOPORTE -->
     <a href="mailto:soporteinverbot@gmail.com" class="support-float" title="Soporte Gmail">✉</a>
 
     <!-- Navegación Inferior -->
@@ -490,9 +441,7 @@
     </nav>
 
     <script>
-        /* ----------------------------------------------------
-           BASE DE DATOS Y PERSISTENCIA SEGURA (NUNCA BORRA USUARIOS)
-           ---------------------------------------------------- */
+        /* 6. PERSISTENCIA ULTRA SEGURA (NUNCA BORRA USUARIOS EXISTENTES) */
         let usuariosDB = JSON.parse(localStorage.getItem('inverbot_usuarios_db')) || [
             { email: "ceo@inverbot.com", password: "admin", saldo: 1000, vip: 3, aprobado: true }
         ];
@@ -504,7 +453,7 @@
             localStorage.setItem('inverbot_usuarios_db', JSON.stringify(usuariosDB));
         }
 
-        // Direcciones oficiales para las 3 redes de USDT
+        /* 2. DIRECCIONES DE LAS 3 REDES USDT */
         const direccionesUsdt = {
             trc20: "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
             bep20: "0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069",
@@ -546,7 +495,7 @@
             const password = document.getElementById('auth-password').value.trim();
 
             if (!email || !password) {
-                alert("Por favor completa todos los campos.");
+                alert("Completa todos los campos.");
                 return;
             }
 
@@ -558,7 +507,7 @@
                 }
                 usuariosDB.push({ email, password, saldo: 0, vip: 0, aprobado: false });
                 guardarBaseDeDatos();
-                alert("¡Registro exitoso! Espera la aprobación del CEO.");
+                alert("¡Registro exitoso! Espera aprobación del CEO.");
                 alternarModoAuth();
             } else {
                 const user = usuariosDB.find(u => u.email === email && u.password === password);
@@ -585,14 +534,28 @@
             document.getElementById('profile-email').innerText = usuarioActual.email;
             document.getElementById('profile-balance').innerText = `$${usuarioActual.saldo.toFixed(2)} USDT`;
 
+            // Verificar si es CEO
             if (usuarioActual.email === "ceo@inverbot.com") {
                 document.getElementById('ceo-panel-container').style.display = "block";
                 renderizarPanelCeo();
             } else {
                 document.getElementById('ceo-panel-container').style.display = "none";
             }
+
+            // Actualizar estado visual de los VIP para este usuario
+            if (usuarioActual.vip > 0) {
+                const btnVip = document.getElementById(`btn-vip-${usuarioActual.vip}`);
+                if (btnVip) {
+                    btnVip.innerText = "ACTIVADO";
+                    btnVip.style.background = "#040706";
+                    btnVip.style.color = "var(--primary-green)";
+                    btnVip.style.border = "1px solid var(--primary-green)";
+                    btnVip.disabled = true;
+                }
+            }
         }
 
+        /* 3. PANEL CEO CON CORREO, CONTRASEÑA, APROBAR Y CANCELAR */
         function renderizarPanelCeo() {
             const contenedor = document.getElementById('ceo-users-list');
             contenedor.innerHTML = "";
@@ -601,7 +564,7 @@
                     <div class="admin-row">
                         <p><strong>Correo:</strong> ${u.email}</p>
                         <p><strong>Contraseña:</strong> ${u.password}</p>
-                        <p><strong>Estado:</strong> ${u.aprobado ? '<span style="color:var(--primary-green)">Aprobado</span>' : '<span style="color:var(--danger)">Pendiente / Cancelado</span>'}</p>
+                        <p><strong>Estado:</strong> ${u.aprobado ? '<span style="color:var(--primary-green)">Aprobado</span>' : '<span style="color:var(--danger)">Pendiente</span>'}</p>
                         <div class="admin-actions">
                             <button onclick="ceoAccion(${index}, 'aprobar')">Aprobar</button>
                             <button class="btn-danger" onclick="ceoAccion(${index}, 'cancelar')">Cancelar</button>
@@ -615,9 +578,10 @@
             usuariosDB[index].aprobado = (tipo === 'aprobar');
             guardarBaseDeDatos();
             renderizarPanelCeo();
-            alert(`Acción '${tipo}' aplicada al usuario.`);
+            alert(`Acción '${tipo}' aplicada.`);
         }
 
+        /* 5. CUANTIFICAR: PILA VACÍA CARGANDO CON RAYITAS */
         let cuantificando = false;
         function ejecutarCuantificacion() {
             if (cuantificando) return;
@@ -639,47 +603,61 @@
                     paso++;
                 } else {
                     clearInterval(intervalo);
-                    usuarioActual.saldo += 3.00;
+                    usuarioActual.saldo += 2.50;
+                    
+                    // Actualizar en la base general sin perder otros usuarios
+                    const idx = usuariosDB.findIndex(u => u.email === usuarioActual.email);
+                    if (idx !== -1) usuariosDB[idx].saldo = usuarioActual.saldo;
+                    
                     guardarBaseDeDatos();
                     sincronizarInterfaz();
-                    alert("¡Cuantificación completada! +3.00 USDT acreditados.");
+                    alert("¡Cuantificación exitosa! +2.50 USDT acreditados.");
                     
                     lineas.forEach(l => l.classList.remove('active'));
                     btn.innerText = "CUANTIFICAR";
                     cuantificando = false;
                 }
-            }, 350);
+            }, 300);
         }
 
+        /* 4. ACTIVAR VIP INDEPENDIENTE */
         function activarVip(nivel, costo) {
             if (usuarioActual.saldo < costo) {
-                alert(`Saldo insuficiente. Requieres ${costo} USDT para el VIP ${nivel}.`);
+                alert(`Saldo insuficiente. Necesitas ${costo} USDT.`);
                 return;
             }
             usuarioActual.saldo -= costo;
             usuarioActual.vip = nivel;
+            
+            const idx = usuariosDB.findIndex(u => u.email === usuarioActual.email);
+            if (idx !== -1) {
+                usuariosDB[idx].saldo = usuarioActual.saldo;
+                usuariosDB[idx].vip = nivel;
+            }
+            
             guardarBaseDeDatos();
             sincronizarInterfaz();
 
             const btnVip = document.getElementById(`btn-vip-${nivel}`);
             btnVip.innerText = "ACTIVADO";
-            btnVip.style.background = "#070d0b";
+            btnVip.style.background = "#040706";
             btnVip.style.color = "var(--primary-green)";
             btnVip.style.border = "1px solid var(--primary-green)";
             btnVip.disabled = true;
 
-            alert(`¡VIP ${nivel} activado exitosamente!`);
+            alert(`¡VIP ${nivel} activado correctamente!`);
         }
 
+        /* FLUIDEZ EN TIEMPO REAL PANTALLA HOGAR */
         setInterval(() => {
-            const btcRandom = (68450 + (Math.random() * 20 - 10)).toFixed(2);
-            const ethRandom = (3540 + (Math.random() * 10 - 5)).toFixed(2);
-            const solRandom = (185 + (Math.random() * 4 - 2)).toFixed(2);
+            const btc = (68450 + Math.random() * 15).toFixed(2);
+            const eth = (3540 + Math.random() * 8).toFixed(2);
+            const sol = (185 + Math.random() * 3).toFixed(2);
             
-            if(document.getElementById('tick-btc')) document.getElementById('tick-btc').innerText = `$${btcRandom} (+2.4%)`;
-            if(document.getElementById('m-btc')) document.getElementById('m-btc').innerText = `$${btcRandom}`;
-            if(document.getElementById('m-eth')) document.getElementById('m-eth').innerText = `$${ethRandom}`;
-            if(document.getElementById('m-sol')) document.getElementById('m-sol').innerText = `$${solRandom}`;
+            if(document.getElementById('tk-btc')) document.getElementById('tk-btc').innerText = `$${btc} (+2.4%)`;
+            if(document.getElementById('m-btc')) document.getElementById('m-btc').innerText = `$${btc}`;
+            if(document.getElementById('m-eth')) document.getElementById('m-eth').innerText = `$${eth}`;
+            if(document.getElementById('m-sol')) document.getElementById('m-sol').innerText = `$${sol}`;
         }, 3000);
 
         window.onload = function() {
