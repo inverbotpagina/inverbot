@@ -17,7 +17,7 @@
             --text-muted: #4a5568;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; transition: all 0.6s ease-in-out; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; transition: all 0.5s ease-in-out; }
         
         body { 
             background-color: var(--bg-main); 
@@ -105,7 +105,7 @@
             background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
-        .team-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
+        .team-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
         .team-stat-value { font-size: 20px; font-weight: 800; color: #1a202c; font-family: monospace; }
 
         .quant-box {
@@ -135,7 +135,7 @@
         .quant-battery:active { transform: scale(0.96); }
         .battery-fill {
             width: 100%; height: 0%; background: linear-gradient(180deg, #00b96b, #009654);
-            transition: height 3.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative;
+            transition: height 4s cubic-bezier(0.4, 0, 0.2, 1); position: relative;
         }
 
         .vip-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
@@ -395,7 +395,7 @@
                             <div style="font-size: 11px; font-weight: 800; color: #1a202c;" id="lblUserEmail"></div>
                         </div>
                         <div style="display: flex; gap: 6px;">
-                            <button onclick="eliminarCuentaPropia()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;" title="Eliminar cuenta permanentemente">🗑️ Eliminar Cuenta</button>
+                            <button onclick="eliminarCuentaPropia()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;" title="Eliminar cuenta permanentemente">Eliminar Cuenta</button>
                             <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Salir</button>
                         </div>
                     </div>
@@ -466,7 +466,7 @@
 
     <script>
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
-        const STORAGE_KEY = "inverbot_master_global_db_v20";
+        const STORAGE_KEY = "inverbot_master_global_db_v21_secure";
 
         let tempEmail = "", tempPass = "", tempRef = "";
         let countdownInterval = null;
@@ -476,14 +476,16 @@
                 { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
                 { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
             ];
-            let stored = localStorage.getItem(STORAGE_KEY);
+            
+            // Motor maestro con doble respaldo en caché local para evitar cualquier pérdida de usuarios al actualizar
+            let stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("inverbot_master_global_db_v20") || localStorage.getItem("inverbot_master_global_db_v19");
+            
             if (!stored) { 
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers)); 
                 return defaultUsers; 
             }
             try {
                 let parsed = JSON.parse(stored);
-                // Fusionar y asegurar que ninguna cuenta existente se borre jamás
                 defaultUsers.forEach(def => {
                     if(!parsed.some(u => u.email.toLowerCase() === def.email.toLowerCase())) {
                         parsed.push(def);
@@ -497,6 +499,7 @@
                     if(u.teamDepositTotal === undefined) u.teamDepositTotal = 0;
                     if(u.commissionTotal === undefined) u.commissionTotal = 0;
                 });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
                 return parsed;
             } catch(e) { return defaultUsers; }
         }
@@ -557,7 +560,7 @@
                 document.getElementById('registerView').style.display = isLog ? 'none' : 'block';
                 document.getElementById('puzzleView').style.display = 'none';
                 document.getElementById('loginView').style.display = isLog ? 'block' : 'none';
-            }, 300);
+            }, 400);
         }
 
         function iniciarVerificacionPuzzle(e) {
@@ -580,13 +583,13 @@
             setTimeout(() => {
                 document.getElementById('registerView').style.display = 'none';
                 document.getElementById('puzzleView').style.display = 'block';
-            }, 400);
+            }, 500);
         }
         function cancelarPuzzle() { 
             setTimeout(() => {
                 document.getElementById('puzzleView').style.display = 'none'; 
                 document.getElementById('registerView').style.display = 'block'; 
-            }, 300);
+            }, 400);
         }
 
         let dragging = false, startX = 0;
@@ -615,7 +618,7 @@
                     sessionEmail = tempEmail; 
                     localStorage.setItem("inverbot_session", sessionEmail);
                     entrarDashboardDirecto();
-                }, 1000);
+                }, 1200);
             }
         }
         function stopDrag() { dragging = false; }
@@ -632,7 +635,7 @@
                 sessionEmail = u.email; 
                 localStorage.setItem("inverbot_session", sessionEmail);
                 entrarDashboardDirecto();
-            }, 800);
+            }, 1000);
         }
 
         function entrarDashboardDirecto() {
@@ -660,7 +663,7 @@
 
                 actualizarVips(u);
                 iniciarContadorCuantificacion(u);
-            }, 500);
+            }, 600);
         }
 
         function iniciarContadorCuantificacion(u) {
@@ -737,7 +740,7 @@
                 fill.style.height = "0%";
                 mostrarAlertaPro("Rendimiento Acreditado", `Se han sumado con éxito:\n+${rec} USDT`);
                 entrarDashboardDirecto();
-            }, 2500);
+            }, 3000);
         }
 
         function comprarVip(nivel, precio) {
@@ -763,7 +766,7 @@
                 document.getElementById('bottomNavBar').style.display = 'none';
                 document.getElementById('authScreen').style.display = 'block';
                 cambiarVistaAuth(false);
-            }, 400);
+            }, 500);
         }
 
         function eliminarCuentaPropia() {
@@ -777,7 +780,7 @@
                     }
                     cerrarSesion();
                     mostrarAlertaPro("Cuenta Eliminada", "Su cuenta ha sido eliminada permanentemente.");
-                }, 500);
+                }, 600);
             });
         }
 
@@ -786,7 +789,7 @@
                 ['Hogar', 'Cuantificar', 'Red', 'Ami'].forEach(t => { document.getElementById('tab' + t).style.display = (t === tab) ? 'block' : 'none'; });
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 if(btn) btn.classList.add('active');
-            }, 300);
+            }, 400);
         }
 
         function mostrarSeccion(tipo) {
@@ -822,7 +825,7 @@
                             <button type="submit" class="btn btn-green" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>
                         </form>`;
                 }
-            }, 300);
+            }, 400);
         }
 
         const WALLETS_REDES = {
@@ -897,7 +900,7 @@
                 if(misDeps.length === 0) { mostrarAlertaPro("Historial de Depósitos", "No tienes registros de depósitos."); return; }
                 let html = misDeps.map(d => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>+${d.monto} USDT</b> (${d.red})<br><span style="color:gray;">Hash: ${d.hash}</span><br><span style="color:gray;">Estado: <b>${d.status}</b></span></div>`).join('');
                 mostrarAlertaPro("Historial de Depósitos", html);
-            }, 300);
+            }, 400);
         }
 
         function verHistorialWits() {
@@ -907,7 +910,7 @@
                 if(misWits.length === 0) { mostrarAlertaPro("Historial de Retiros", "No tienes registros de retiros."); return; }
                 let html = misWits.map(w => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>-${w.monto} USDT</b><br><span style="color:gray;">Wallet: ${w.wallet}</span><br><span style="color:gray;">Estado: <b>${w.status}</b></span></div>`).join('');
                 mostrarAlertaPro("Historial de Retiros", html);
-            }, 300);
+            }, 400);
         }
 
         function abrirPanelAdmin() {
@@ -916,14 +919,14 @@
                 document.getElementById('bottomNavBar').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
                 renderAdmin();
-            }, 400);
+            }, 500);
         }
         function cerrarPanelAdmin() {
             setTimeout(() => {
                 document.getElementById('adminDashboard').style.display = 'none';
                 document.getElementById('userDashboard').style.display = 'block';
                 document.getElementById('bottomNavBar').style.display = 'flex';
-            }, 400);
+            }, 500);
         }
         
         function hacerAdminCorreo() {
