@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INVERBOT | Global Quantitative Finance</title>
+    <title>Global Quantitative Financial Platform</title>
     <style>
         :root {
             --bg-main: #0b0e14;
-            --bg-card: #131a26;
-            --bg-input: #1a2332;
-            --border-color: #26354a;
-            --accent-green: #00e701;
+            --bg-card: #151b26;
+            --bg-input: #1e2636;
+            --border-color: #27344d;
+            --accent-green: #00b96b;
             --accent-gold: #f0b90b;
-            --accent-red: #f6465d;
+            --accent-red: #ff4d4f;
             --text-main: #ffffff;
-            --text-muted: #8491a5;
+            --text-muted: #8c98a9;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -38,16 +38,16 @@
             background-color: var(--bg-card); 
             border: 1px solid var(--border-color); 
             padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5); 
+            border-radius: 14px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6); 
             margin-bottom: 12px; 
         }
 
         .brand-logo-container { text-align: center; margin-bottom: 18px; }
         .bot-shield-icon {
-            width: 50px; height: 50px; background: rgba(0,231,1,0.1); border: 1px solid var(--accent-green);
+            width: 54px; height: 54px; background: rgba(0,185,107,0.15); border: 1px solid var(--accent-green);
             border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
-            font-size: 22px; margin-bottom: 8px; color: var(--accent-green);
+            font-size: 24px; margin-bottom: 8px; color: var(--accent-green); box-shadow: 0 0 15px rgba(0,185,107,0.3);
         }
         .brand-logo-container h1 { font-size: 20px; color: #fff; font-weight: 700; letter-spacing: 0.5px; }
         .brand-logo-container p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
@@ -56,9 +56,9 @@
         .brand-header h1 { font-size: 15px; color: #fff; font-weight: 700; }
         
         .promo-banner {
-            background: linear-gradient(135deg, #162235, #122c22);
-            border: 1px solid #1e3a2f;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #18283c, #113629);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
             padding: 14px;
             margin-bottom: 12px;
             text-align: center;
@@ -69,16 +69,16 @@
         .live-market-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 12px;
             margin-bottom: 10px;
         }
         .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .live-title { font-size: 12px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px; }
         .coin-icon { width: 18px; height: 18px; border-radius: 50%; object-fit: contain; }
-        .live-badge { background: rgba(0,231,1,0.15); color: var(--accent-green); font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .live-badge { background: rgba(0,185,107,0.2); color: var(--accent-green); font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
         
-        .exchange-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .exchange-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
         .exchange-row:last-child { border-bottom: none; }
         .ex-name { color: var(--text-muted); font-weight: 500; }
         .ex-price { font-family: monospace; font-weight: 600; color: #fff; }
@@ -88,12 +88,12 @@
         .assets-total-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 16px;
             margin-bottom: 12px;
         }
         .assets-title { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
-        .assets-amount { font-size: 24px; font-weight: 700; color: var(--accent-green); font-family: monospace; margin-bottom: 12px; }
+        .assets-amount { font-size: 26px; font-weight: 700; color: var(--accent-green); font-family: monospace; margin-bottom: 12px; }
         
         .assets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .asset-subcard { background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; }
@@ -102,22 +102,44 @@
 
         .action-buttons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-pro-deposit {
-            background-color: var(--accent-green); color: #000; border: none; padding: 11px;
+            background-color: var(--accent-green); color: #fff; border: none; padding: 12px;
             border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,185,107,0.3);
         }
         .btn-pro-withdraw {
             background-color: transparent; color: var(--accent-green); border: 1px solid var(--accent-green);
-            padding: 11px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+            padding: 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 6px;
         }
+
+        /* CUANTIFICAR ESTILO PILA / ORB */
+        .quant-container {
+            text-align: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px 16px;
+            margin-bottom: 14px;
+        }
+        .quant-orb {
+            width: 130px; height: 130px; margin: 0 auto 16px auto;
+            background: radial-gradient(circle, rgba(0,185,107,0.4) 0%, rgba(21,27,38,1) 75%);
+            border: 2px solid var(--accent-green); border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 0 30px rgba(0,185,107,0.3); cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .quant-orb:active { transform: scale(0.95); }
+        .quant-orb-text { font-size: 13px; font-weight: 800; color: #fff; text-transform: uppercase; }
+        .quant-orb-sub { font-size: 9px; color: var(--accent-green); margin-top: 2px; font-weight: 700; }
 
         .vip-pro-card {
             background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px;
         }
         .vip-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .vip-title-name { font-size: 14px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 6px; }
-        .vip-status-label { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: rgba(0,231,1,0.1); color: var(--accent-green); }
+        .vip-status-label { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: rgba(0,185,107,0.15); color: var(--accent-green); }
         .vip-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
         .vip-grid-box { background: var(--bg-input); border: 1px solid var(--border-color); padding: 8px; border-radius: 6px; }
         .vip-box-title { font-size: 9px; color: var(--text-muted); margin-bottom: 2px; text-transform: uppercase; }
@@ -130,16 +152,16 @@
             display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
         }
         .network-info { display: flex; align-items: center; gap: 8px; }
-        .net-logo-container { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: rgba(0,231,1,0.1); border-radius: 50%; border: 1px solid var(--accent-green); }
+        .net-logo-container { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: rgba(0,185,107,0.15); border-radius: 50%; border: 1px solid var(--accent-green); }
         .net-main-icon { font-size: 12px; font-weight: bold; color: var(--accent-green); }
         .net-name { font-size: 12px; font-weight: 600; color: #fff; }
-        .btn-select-net { background: rgba(0,231,1,0.15); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 5px 10px; border-radius: 14px; font-size: 10px; font-weight: 600; cursor: pointer; }
+        .btn-select-net { background: rgba(0,185,107,0.2); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 5px 10px; border-radius: 14px; font-size: 10px; font-weight: 600; cursor: pointer; }
 
         .floating-support-btn {
             position: fixed; bottom: 70px; right: 14px;
-            background: var(--accent-green); color: #000; width: 48px; height: 48px; border-radius: 50%;
+            background: var(--accent-green); color: #fff; width: 48px; height: 48px; border-radius: 50%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,231,1,0.5); cursor: pointer; z-index: 999;
+            box-shadow: 0 4px 15px rgba(0,185,107,0.5); cursor: pointer; z-index: 999;
             text-decoration: none; border: 2px solid #fff;
         }
         .floating-support-logo { font-weight: 900; font-size: 11px; line-height: 1; }
@@ -147,7 +169,7 @@
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px);
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
         .modal-card {
@@ -162,13 +184,13 @@
         /* ROMPECABEZAS / SLIDER ANTI-BOT */
         .puzzle-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 12px; text-align: center; }
         .puzzle-target { width: 100%; height: 60px; background: var(--bg-input); border: 1px dashed var(--accent-green); border-radius: 6px; position: relative; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .puzzle-piece { width: 36px; height: 36px; background: var(--accent-green); color: #000; font-weight: bold; border-radius: 6px; display: flex; align-items: center; justify-content: center; position: absolute; left: 5px; top: 12px; box-shadow: 0 0 8px rgba(0,231,1,0.4); }
+        .puzzle-piece { width: 36px; height: 36px; background: var(--accent-green); color: #fff; font-weight: bold; border-radius: 6px; display: flex; align-items: center; justify-content: center; position: absolute; left: 5px; top: 12px; box-shadow: 0 0 8px rgba(0,185,107,0.4); }
         .puzzle-track { width: 100%; height: 36px; background: var(--bg-input); border-radius: 18px; position: relative; display: flex; align-items: center; padding: 0 5px; border: 1px solid var(--border-color); }
-        .puzzle-slider-btn { width: 28px; height: 28px; background: var(--accent-green); border-radius: 50%; position: absolute; left: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; transition: transform 0.1s; }
+        .puzzle-slider-btn { width: 28px; height: 28px; background: var(--accent-green); border-radius: 50%; position: absolute; left: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; transition: transform 0.1s; }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #0f1520; border-top: 1px solid var(--border-color);
+            background: #111722; border-top: 1px solid var(--border-color);
             display: flex; justify-content: space-around; padding: 8px 0; z-index: 100;
         }
         .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 500; cursor: pointer; gap: 3px; }
@@ -181,8 +203,8 @@
         .input-group input:focus, .input-group select:focus { border-color: var(--accent-green); }
         
         .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 4px; }
-        .btn-green { background-color: var(--accent-green); color: #000; }
-        .btn-blue { background-color: var(--accent-green); color: #000; }
+        .btn-green { background-color: var(--accent-green); color: #fff; box-shadow: 0 4px 12px rgba(0,185,107,0.3); }
+        .btn-blue { background-color: var(--accent-green); color: #fff; }
         .btn-red { background-color: var(--accent-red); color: #fff; }
         
         .crypto-asset-card { background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; }
@@ -192,9 +214,9 @@
 </head>
 <body>
 
-    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Institucional%20INVERBOT" class="floating-support-btn" title="Soporte">
-        <span class="floating-support-logo">INV</span>
-        <span class="floating-support-text">SUP</span>
+    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Institucional" class="floating-support-btn" title="Soporte">
+        <span class="floating-support-logo">SUP</span>
+        <span class="floating-support-text">HELP</span>
     </a>
 
     <div id="customModalContainer"></div>
@@ -204,32 +226,32 @@
         <!-- ================= AUTENTICACIÓN ================= -->
         <div id="authScreen" class="trading-card">
             <div class="brand-logo-container">
-                <div class="bot-shield-icon">📊</div>
-                <h1>INVERBOT</h1>
-                <p>Quantitative Financial Platform</p>
+                <div class="bot-shield-icon">⚡</div>
+                <h1>QUANTITATIVE</h1>
+                <p>Global Financial Asset Management</p>
             </div>
 
             <!-- VISTA DE REGISTRO -->
             <div id="registerView">
                 <form onsubmit="iniciarVerificacionPuzzle(event)">
                     <div class="input-group"><label>Correo Electrónico (Gmail)</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
-                    <div class="input-group"><label>Contraseña de Acceso</label><input type="password" id="regPass" required placeholder="••••••••"></div>
-                    <div class="input-group"><label>Código de Invitación (Opcional)</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
+                    <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" required placeholder="••••••••"></div>
+                    <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
                     <button type="submit" class="btn btn-green">Registrarse</button>
                 </form>
-                <div class="auth-switch"><p>¿Ya posee una cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
+                <div class="auth-switch"><p>¿Ya tienes cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
             </div>
 
-            <!-- VISTA DE PUZZLE ANTI-BOT -->
+            <!-- VISTA DE PUZZLE -->
             <div id="puzzleView" style="display: none;">
-                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Verificación: Deslice para verificar identidad.</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px; text-align: center;">Verificación de Seguridad: Deslice el bloque.</p>
                 <div class="puzzle-box">
                     <div class="puzzle-target">
                         <div style="position: absolute; right: 35px; color: var(--accent-green); font-size: 16px; font-weight: bold;">🎯</div>
                         <div id="puzzleDraggable" class="puzzle-piece">➔</div>
                     </div>
                     <div class="puzzle-track">
-                        <span style="font-size: 9px; color: var(--text-muted); width: 100%; text-align: center;">Deslice hacia la meta</span>
+                        <span style="font-size: 9px; color: var(--text-muted); width: 100%; text-align: center;">Deslice para verificar</span>
                         <div id="puzzleSlider" class="puzzle-slider-btn" ontouchstart="iniciarDrag(event)" onmousedown="iniciarDrag(event)">➔</div>
                     </div>
                 </div>
@@ -254,7 +276,7 @@
             <div id="tabHogar" class="tab-content">
                 <div class="brand-header trading-card" style="margin-bottom:10px;">
                     <div>
-                        <h1 style="font-size: 14px; color:#fff;">INVERBOT Terminal</h1>
+                        <h1 style="font-size: 14px; color:#fff;">Quantitative Platform</h1>
                         <p style="font-size: 10px; color: var(--text-muted);">Global Financial Market</p>
                     </div>
                     <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 3px 8px; font-size: 10px; margin:0;">Salir</button>
@@ -304,11 +326,20 @@
                 </div>
             </div>
 
-            <!-- CUANTIFICAR -->
+            <!-- CUANTIFICAR (ESTILO PILA / ORB EXACTO) -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="assets-total-box" style="margin-bottom:12px;">
                     <div class="assets-title">Activos Totales de Cuantificación</div>
                     <div class="assets-amount" id="lblBalanceCuantificar">$0.00</div>
+                </div>
+
+                <!-- PILA DE CUANTIFICACIÓN CENTRAL -->
+                <div class="quant-container">
+                    <div class="quant-orb" onclick="ejecutarCuantificacionOrb()">
+                        <div class="quant-orb-text">⚡ INICIAR</div>
+                        <div class="quant-orb-sub" id="lblEstadoOrb">CUANTIFICAR</div>
+                    </div>
+                    <p style="font-size: 11px; color: var(--text-muted);" id="lblInfoOrb">Toque la pila para procesar el rendimiento diario de su VIP activo.</p>
                 </div>
 
                 <!-- VIP 1 -->
@@ -324,7 +355,6 @@
                         <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">4.00 USDT</div></div>
                     </div>
                     <div id="vip1ActionArea" style="margin-top:8px;"><button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button></div>
-                    <button id="btnClaim1" class="btn btn-blue" onclick="reclamarVip(1)" style="margin-top: 6px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
                 <!-- VIP 2 -->
@@ -340,7 +370,6 @@
                         <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">16.00 USDT</div></div>
                     </div>
                     <div id="vip2ActionArea" style="margin-top:8px;"><button class="btn btn-green" onclick="comprarVip(2, 16)">Adquirir VIP 2</button></div>
-                    <button id="btnClaim2" class="btn btn-blue" onclick="reclamarVip(2)" style="margin-top: 6px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
                 <!-- VIP 3 -->
@@ -356,7 +385,6 @@
                         <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">65.00 USDT</div></div>
                     </div>
                     <div id="vip3ActionArea" style="margin-top:8px;"><button class="btn btn-green" onclick="comprarVip(3, 65)">Adquirir VIP 3</button></div>
-                    <button id="btnClaim3" class="btn btn-blue" onclick="reclamarVip(3)" style="margin-top: 6px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
                 <!-- VIP 4 -->
@@ -372,14 +400,13 @@
                         <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value">180.00 USDT</div></div>
                     </div>
                     <div id="vip4ActionArea" style="margin-top:8px;"><button class="btn btn-green" onclick="comprarVip(4, 180)">Adquirir VIP 4</button></div>
-                    <button id="btnClaim4" class="btn btn-blue" onclick="reclamarVip(4)" style="margin-top: 6px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
 
-                <!-- VIP 5 -->
+                <!-- VIP 5 ELITE -->
                 <div class="vip-pro-card" style="border-color: var(--accent-gold);">
                     <div class="vip-header-row">
                         <span class="vip-title-name" style="color:var(--accent-gold);">👑 VIP 5 (ELITE)</span>
-                        <span id="vip5StatusText" class="vip-status-label" style="background:rgba(240,185,11,0.15); color:var(--accent-gold);">Inactivo</span>
+                        <span id="vip5StatusText" class="vip-status-label" style="background:rgba(240,185,11,0.2); color:var(--accent-gold);">Inactivo</span>
                     </div>
                     <div class="vip-grid-container">
                         <div class="vip-grid-box"><div class="vip-box-title">Carreras</div><div class="vip-box-value">1</div></div>
@@ -388,7 +415,6 @@
                         <div class="vip-grid-box"><div class="vip-box-title">Costo</div><div class="vip-box-value gold">3,600.00 USDT</div></div>
                     </div>
                     <div id="vip5ActionArea" style="margin-top:8px;"><button class="btn" style="background:linear-gradient(135deg, #f0b90b, #d49e00); color:#000; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir VIP 5 Elite</button></div>
-                    <button id="btnClaim5" class="btn btn-blue" onclick="reclamarVip(5)" style="margin-top: 6px; display:none;">Reclamar Rendimiento Diario</button>
                 </div>
             </div>
 
@@ -436,7 +462,7 @@
                     <div id="subAccionContainer" style="display: none; margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 12px;"></div>
 
                     <!-- Panel CEO / Admin -->
-                    <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#162235; border:1px solid #1e3a2f; padding:10px; border-radius:8px; margin-top:12px;">
+                    <div id="adminPanelTrigger" class="admin-control-panel" style="display: none; background:#18283c; border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-top:12px;">
                         <p style="color: var(--accent-green); font-weight: 700; font-size: 10px; margin-bottom: 6px;">🛡️ PANEL DE CONTROL EJECUTIVO (CEO)</p>
                         <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 10px; padding: 7px;">Gestionar Base de Datos y Admins</button>
                     </div>
@@ -492,7 +518,7 @@
 
     <script>
         const ADMIN_EMAILS = ["lesterdomingues388@gmail.com", "ajc229op@gmail.com"];
-        const STORAGE_KEY = "inverbot_master_global_db_v12";
+        const STORAGE_KEY = "inverbot_master_global_db_v13";
 
         let tempEmail = "";
         let tempPass = "";
@@ -697,7 +723,7 @@
 
             let users = obtenerBaseGlobal();
             let u = users.find(x => x.email === email && x.pass === pass);
-            if(!u) { mostrarAlertaPro("Error de Autenticación", "Credenciales incorrectas o usuario no registrado."); return; }
+            if(!u) { mostrarAlertaPro("Error", "Credenciales incorrectas o usuario no registrado."); return; }
 
             sessionEmail = email;
             localStorage.setItem("inverbot_session", sessionEmail);
@@ -733,14 +759,6 @@
             document.getElementById('adminPanelTrigger').style.display = isAdmin ? 'block' : 'none';
 
             actualizarInterfazVip(user);
-
-            mostrarAlertaPro(
-                "🚀 INVERBOT | Panel Institucional 🌟", 
-                "💎 ¡INVIERTES Y GANAS! 💰\n\n✨ Descubre el rendimiento de nuestros nuevos planes exclusivos y haz crecer tu capital hoy mismo. 📈\n\n👉 ¡MIRA LOS VIP EN CUANTIFICAR! ⭐", 
-                () => {
-                    cambiarTab('Cuantificar', document.getElementById('navCuantificar'));
-                }
-            );
         }
 
         function actualizarInterfazVip(user) {
@@ -761,9 +779,40 @@
                         actEl.innerHTML = activo ? `` : `<button class="btn btn-green" onclick="comprarVip(${i}, ${cost})">Adquirir VIP ${i}</button>`;
                     }
                 }
-                let clmEl = document.getElementById('btnClaim' + i);
-                if(clmEl) clmEl.style.display = activo ? 'block' : 'none';
             }
+        }
+
+        function ejecutarCuantificacionOrb() {
+            let users = obtenerBaseGlobal();
+            let u = users.find(x => x.email === sessionEmail);
+            let ahora = Date.now();
+
+            if(!u.vipActive || u.vipExpiry < ahora) {
+                mostrarAlertaPro("Aviso", "No cuenta con ningún nivel VIP activo. Adquiera uno en la sección inferior para comenzar a cuantificar.");
+                return;
+            }
+
+            if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) {
+                mostrarAlertaPro("Ciclo Activo", "Ya ha realizado la cuantificación de su ciclo de 24 horas. Vuelva mañana.");
+                return;
+            }
+
+            let rec = 0;
+            if(u.vipActive === 1) rec = 1.5;
+            else if(u.vipActive === 2) rec = 6.5;
+            else if(u.vipActive === 3) rec = 42.2;
+            else if(u.vipActive === 4) rec = 88.5;
+            else if(u.vipActive === 5) rec = 1600.0;
+
+            document.getElementById('lblEstadoOrb').innerText = "PROCESANDO";
+            setTimeout(() => {
+                u.balance += rec;
+                u.lastClaim = ahora;
+                guardarBaseGlobal(users);
+                document.getElementById('lblEstadoOrb').innerText = "CUANTIFICAR";
+                mostrarAlertaPro("¡Cuantificación Exitosa! ⚡", `Rendimiento de VIP ${u.vipActive} acreditado:\n+${rec} USDT`);
+                entrarDashboardDirecto();
+            }, 1200);
         }
 
         function cerrarSesion() {
@@ -853,7 +902,7 @@
             let hash = document.getElementById('depHashEsp').value.trim();
             
             if(hash.length < 15 || hash.includes(" ")) {
-                mostrarAlertaPro("Error de Validación", "El ID de Transacción (Hash) no es válido.");
+                mostrarAlertaPro("Error", "El ID de Transacción (Hash) no es válido.");
                 return;
             }
 
@@ -878,13 +927,13 @@
             let pass = document.getElementById('witPass').value.trim();
 
             if(wallet.length < 10 || wallet.includes(" ")) {
-                mostrarAlertaPro("Error de Validación", "La dirección de wallet no es válida.");
+                mostrarAlertaPro("Error", "La dirección de wallet no es válida.");
                 return;
             }
 
             let users = obtenerBaseGlobal();
             let u = users.find(x => x.email === sessionEmail);
-            if(u.pass !== pass) { mostrarAlertaPro("Error de Seguridad", "Contraseña institucional incorrecta."); return; }
+            if(u.pass !== pass) { mostrarAlertaPro("Error", "Contraseña institucional incorrecta."); return; }
             if(u.balance < monto) { mostrarAlertaPro("Saldo Insuficiente", "El monto solicitado supera su balance."); return; }
 
             let btn = e.target.querySelector('button');
@@ -933,34 +982,6 @@
             }, 1000);
         }
 
-        function reclamarVip(nivel) {
-            let users = obtenerBaseGlobal();
-            let u = users.find(x => x.email === sessionEmail);
-            if(u.vipActive !== nivel || u.vipExpiry < Date.now()) { mostrarAlertaPro("Aviso", "No cuenta con este VIP activo."); return; }
-            let ahora = Date.now();
-            if(ahora - u.lastClaim < 24 * 60 * 60 * 1000) { mostrarAlertaPro("Espera", "Debe esperar el ciclo de 24 horas para su próxima recompensa."); return; }
-            
-            let btnId = 'btnClaim' + nivel;
-            let btn = document.getElementById(btnId);
-            if(btn) { btn.disabled = true; btn.innerText = "⏳ Cuantificando..."; }
-            
-            setTimeout(() => {
-                let rec = 0;
-                if(nivel === 1) rec = 1.5;
-                else if(nivel === 2) rec = 6.5;
-                else if(nivel === 3) rec = 42.2;
-                else if(nivel === 4) rec = 88.5;
-                else if(nivel === 5) rec = 1600.0;
-
-                u.balance += rec;
-                u.lastClaim = ahora;
-                guardarBaseGlobal(users);
-                if(btn) { btn.disabled = false; btn.innerText = "Reclamar Rendimiento Diario"; }
-                mostrarAlertaPro("Rendimiento Acreditado", `¡+${rec} USDT acreditados correctamente a su balance!`);
-                entrarDashboardDirecto();
-            }, 1000);
-        }
-
         function abrirPanelAdmin() {
             if(!esUsuarioAdmin(sessionEmail)) return;
             document.getElementById('userDashboard').style.display = 'none';
@@ -980,11 +1001,11 @@
             if(!mailTarget) { mostrarAlertaPro("Aviso", "Ingrese un correo válido."); return; }
             let users = obtenerBaseGlobal();
             let targetUser = users.find(x => x.email === mailTarget);
-            if(!targetUser) { mostrarAlertaPro("Error", "El usuario no se encuentra registrado en la base de datos."); return; }
+            if(!targetUser) { mostrarAlertaPro("Error", "El usuario no se encuentra registrado."); return; }
 
             targetUser.isAdmin = true;
             guardarBaseGlobal(users);
-            mostrarAlertaPro("Éxito", `¡El usuario ${mailTarget} ahora es Administrador del sistema!`);
+            mostrarAlertaPro("Éxito", `¡El usuario ${mailTarget} ahora es Administrador!`);
             document.getElementById('novoAdminEmail').value = "";
             renderAdmin();
         }
