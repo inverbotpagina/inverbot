@@ -6,7 +6,7 @@
     <title>Inverbot - Plataforma de Inversión</title>
     <style>
         :root {
-            --bg-color: #f4f7f6;
+            --bg-color: #f3f6f4;
             --card-bg: #ffffff;
             --primary-green: #00b359;
             --dark-green: #008040;
@@ -65,7 +65,6 @@
             margin-bottom: 20px;
             overflow: hidden;
             white-space: nowrap;
-            position: relative;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
@@ -89,14 +88,8 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* Secciones */
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
+        .section { display: none; }
+        .section.active { display: block; }
 
         .card {
             background: var(--card-bg);
@@ -113,7 +106,6 @@
             font-size: 1.3rem;
         }
 
-        /* Formularios y Botones */
         input, select {
             width: 100%;
             padding: 12px;
@@ -145,9 +137,7 @@
             box-shadow: 0 2px 4px rgba(0, 179, 89, 0.2);
         }
 
-        button:hover {
-            background: var(--dark-green);
-        }
+        button:hover { background: var(--dark-green); }
 
         .btn-secondary {
             background: transparent;
@@ -156,9 +146,7 @@
             margin-top: 10px;
         }
 
-        .btn-secondary:hover {
-            background: #e6f9f0;
-        }
+        .btn-secondary:hover { background: #e6f9f0; }
 
         .btn-danger {
             background: var(--danger);
@@ -166,11 +154,9 @@
             box-shadow: 0 2px 4px rgba(231, 76, 60, 0.2);
         }
 
-        .btn-danger:hover {
-            background: #c0392b;
-        }
+        .btn-danger:hover { background: #c0392b; }
 
-        /* Botón de Pila Vacía con Rayitas para Cuantificar */
+        /* Pila Vacía con Rayitas para Cuantificar */
         .battery-container {
             display: flex;
             flex-direction: column;
@@ -235,15 +221,8 @@
             align-items: center;
         }
 
-        .vip-info h3 {
-            color: var(--dark-green);
-            font-size: 1.1rem;
-        }
-
-        .vip-info p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
+        .vip-info h3 { color: var(--dark-green); font-size: 1.1rem; }
+        .vip-info p { color: var(--text-muted); font-size: 0.85rem; }
 
         /* Navegación Inferior */
         nav.bottom-nav {
@@ -269,15 +248,8 @@
             transition: 0.2s;
         }
 
-        .nav-item.active, .nav-item:hover {
-            color: var(--primary-green);
-        }
-
-        .nav-item span {
-            display: block;
-            font-size: 1.2rem;
-            margin-bottom: 2px;
-        }
+        .nav-item.active, .nav-item:hover { color: var(--primary-green); }
+        .nav-item span { display: block; font-size: 1.2rem; margin-bottom: 2px; }
 
         /* Botón Flotante de Soporte Gmail */
         .support-float {
@@ -330,9 +302,8 @@
 
     <div class="container">
 
-        <!-- PANTALLA HOGAR -->
+        <!-- HOGAR -->
         <div id="sec-home" class="section active">
-            <!-- Ticker de criptomonedas dinámico -->
             <div class="crypto-ticker">
                 <div class="ticker-track">
                     <span class="ticker-item">BTC/USDT: <span class="up" id="t-btc">$68,450.20 (+2.4%)</span></span>
@@ -340,7 +311,6 @@
                     <span class="ticker-item">BNB/USDT: <span class="down" id="t-bnb">$612.40 (-0.5%)</span></span>
                     <span class="ticker-item">SOL/USDT: <span class="up" id="t-sol">$185.30 (+4.1%)</span></span>
                     <span class="ticker-item">BTC/USDT: <span class="up">$68,450.20 (+2.4%)</span></span>
-                    <span class="ticker-item">ETH/USDT: <span class="up">$3,540.80 (+1.8%)</span></span>
                 </div>
             </div>
 
@@ -364,14 +334,14 @@
             <div class="card">
                 <h2>Mercado en Vivo</h2>
                 <div id="live-market-list">
-                    <p style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>Bitcoin (BTC)</span> <span style="color: var(--primary-green); font-weight: bold;">$68,450.20</span></p>
-                    <p style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>Ethereum (ETH)</span> <span style="color: var(--primary-green); font-weight: bold;">$3,540.80</span></p>
-                    <p style="display: flex; justify-content: space-between; padding: 8px 0;"><span>Binance Coin (BNB)</span> <span style="color: var(--danger); font-weight: bold;">$612.40</span></p>
+                    <p style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>Bitcoin (BTC)</span> <span style="color: var(--primary-green); font-weight: bold;" id="m-btc">$68,450.20</span></p>
+                    <p style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>Ethereum (ETH)</span> <span style="color: var(--primary-green); font-weight: bold;" id="m-eth">$3,540.80</span></p>
+                    <p style="display: flex; justify-content: space-between; padding: 8px 0;"><span>Binance Coin (BNB)</span> <span style="color: var(--danger); font-weight: bold;" id="m-bnb">$612.40</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- PANTALLA CUANTIFICAR -->
+        <!-- CUANTIFICAR -->
         <div id="sec-quantify" class="section">
             <div class="card" style="text-align: center;">
                 <h2>Centro de Cuantificación</h2>
@@ -393,7 +363,7 @@
             </div>
         </div>
 
-        <!-- PANTALLA VIP -->
+        <!-- VIP -->
         <div id="sec-vip" class="section">
             <div class="card">
                 <h2>Niveles VIP Disponibles</h2>
@@ -424,7 +394,7 @@
             </div>
         </div>
 
-        <!-- PANTALLA BILLETERA / DEPÓSITO (3 Redes USDT) -->
+        <!-- BILLETERA (3 Redes USDT) -->
         <div id="sec-wallet" class="section">
             <div class="card">
                 <h2>Depósito de Criptomonedas (USDT)</h2>
@@ -443,7 +413,7 @@
             </div>
         </div>
 
-        <!-- PANTALLA PERFIL / CEO -->
+        <!-- PERFIL / CEO -->
         <div id="sec-profile" class="section">
             <div class="card">
                 <h2>Panel de Usuario & CEO</h2>
@@ -462,7 +432,7 @@
             </div>
         </div>
 
-        <!-- FORMULARIO DE ACCESO (LOGIN / REGISTRO) -->
+        <!-- ACCESO (LOGIN / REGISTRO) -->
         <div id="sec-auth" class="section">
             <div class="card">
                 <h2 id="auth-title">Acceso a Inverbot</h2>
