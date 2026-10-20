@@ -75,8 +75,11 @@
             background: #fff; color: var(--primary-green); border: 1px solid var(--primary-green); padding: 11px;
             border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;
         }
+        .btn-action-history {
+            background: #f7f9fc; color: #2d3748; border: 1px solid var(--border-color); padding: 9px;
+            border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 6px;
+        }
 
-        /* ESTILO PROFESIONAL DE EQUIPO / REFERIDOS (BASADO EN IMAGEN) */
         .team-hero {
             background: linear-gradient(135deg, #00b96b, #008449);
             color: #fff;
@@ -150,7 +153,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
         .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; }
-        .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; white-space: pre-line; }
+        .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; white-space: pre-line; text-align: left; max-height: 200px; overflow-y: auto; }
 
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
@@ -328,7 +331,6 @@
                 </div>
             </div>
 
-            <!-- TAB EQUIPO / RED (DISEÑO PROFESIONAL IDÉNTICO A LA IMAGEN) -->
             <div id="tabRed" class="tab-content" style="display: none;">
                 
                 <div class="team-hero">
@@ -396,6 +398,11 @@
                         <button class="btn-action-wit" onclick="mostrarSeccion('wit')">↑ Retirar</button>
                     </div>
 
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="btn-action-history" onclick="verHistorialDeps()">📋 Historial Depósitos</button>
+                        <button class="btn-action-history" onclick="verHistorialWits()">📜 Historial Retiros</button>
+                    </div>
+
                     <div id="subAccionContainer" style="display: none; margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 12px;"></div>
 
                     <div id="adminPanelTrigger" style="display: none; background: #e6f9f0; border: 1px solid var(--primary-green); padding: 10px; border-radius: 8px; margin-top: 12px;">
@@ -449,7 +456,7 @@
 
     <script>
         const ADMIN_EMAILS = ["lesterdomingues388@gmail.com", "ajc229op@gmail.com"];
-        const STORAGE_KEY = "inverbot_master_global_db_v16";
+        const STORAGE_KEY = "inverbot_master_global_db_v17";
 
         let tempEmail = "", tempPass = "", tempRef = "";
 
@@ -463,8 +470,8 @@
             try {
                 let parsed = JSON.parse(stored);
                 ADMIN_EMAILS.forEach(adm => {
-                    let f = parsed.find(u => u.email === adm);
-                    if(!f) parsed.push(defaultUsers.find(x => x.email === adm));
+                    let f = parsed.find(u => u.email.toLowerCase() === adm.toLowerCase());
+                    if(!f) parsed.push(defaultUsers.find(x => x.email.toLowerCase() === adm.toLowerCase()));
                     else { f.isAdmin = true; if(f.validRefCount === undefined) f.validRefCount = 0; if(f.teamDepositTotal === undefined) f.teamDepositTotal = 0; if(f.commissionTotal === undefined) f.commissionTotal = 0; }
                 });
                 return parsed;
@@ -480,7 +487,7 @@
                     <div class="modal-card">
                         <h3 class="modal-title">${titulo}</h3>
                         <p class="modal-msg">${mensaje}</p>
-                        <div style="display:flex; gap:6px;">
+                        <div style="display:flex; gap:6px; margin-top:10px;">
                             ${cb ? `<button class="btn btn-green" id="modalAceptar">Aceptar</button>` : ``}
                             <button class="btn btn-green" onclick="cerrarAlerta()" style="margin:0;">Cerrar</button>
                         </div>
@@ -497,7 +504,7 @@
             if(ref) document.getElementById('regRef').value = ref;
             obtenerBaseGlobal();
             if(sessionEmail) {
-                let u = obtenerBaseGlobal().find(x => x.email === sessionEmail);
+                let u = obtenerBaseGlobal().find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
                 if(u) entrarDashboardDirecto(); else cerrarSesion();
             }
             iniciarSimulacionMercado();
@@ -530,7 +537,7 @@
             tempEmail = document.getElementById('regEmail').value.trim().toLowerCase();
             tempPass = document.getElementById('regPass').value.trim();
             tempRef = document.getElementById('regRef').value.trim();
-            if(obtenerBaseGlobal().some(u => u.email === tempEmail)) { mostrarAlertaPro("Aviso", "Este correo ya está registrado."); return; }
+            if(obtenerBaseGlobal().some(u => u.email.toLowerCase() === tempEmail)) { mostrarAlertaPro("Aviso", "Este correo ya está registrado."); return; }
             document.getElementById('registerView').style.display = 'none';
             document.getElementById('puzzleView').style.display = 'block';
         }
@@ -549,7 +556,7 @@
                 let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
                 let nu = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: false };
                 if(tempRef) { 
-                    let upline = users.find(u => u.code === tempRef); 
+                    let upline = users.find(u => u.code.toLowerCase() === tempRef.toLowerCase()); 
                     if(upline) { 
                         upline.refCount++; 
                         nu.refBy = upline.email; 
@@ -566,15 +573,15 @@
             e.preventDefault();
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
-            let u = obtenerBaseGlobal().find(x => x.email === email && x.pass === pass);
+            let u = obtenerBaseGlobal().find(x => x.email.toLowerCase() === email && x.pass === pass);
             if(!u) { mostrarAlertaPro("Error", "Credenciales incorrectas."); return; }
-            sessionEmail = email; localStorage.setItem("inverbot_session", sessionEmail);
+            sessionEmail = u.email; localStorage.setItem("inverbot_session", sessionEmail);
             entrarDashboardDirecto();
         }
 
         function entrarDashboardDirecto() {
             let users = obtenerBaseGlobal();
-            let u = users.find(x => x.email === sessionEmail);
+            let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
@@ -585,14 +592,13 @@
             document.getElementById('lblBalanceAmi').innerText = b;
             document.getElementById('lblBalanceCuantificar').innerText = b;
             
-            // Datos de red / equipo
             document.getElementById('lblTeamComision').innerText = (u.commissionTotal || 0).toFixed(2);
             document.getElementById('lblTeamTotalRef').innerText = u.refCount || 0;
             document.getElementById('lblTeamValidRef').innerText = u.validRefCount || 0;
             document.getElementById('lblTeamDepEquipo').innerText = (u.teamDepositTotal || 0).toFixed(2);
 
             document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + u.code;
-            document.getElementById('adminPanelTrigger').style.display = (u.isAdmin || ADMIN_EMAILS.includes(u.email)) ? 'block' : 'none';
+            document.getElementById('adminPanelTrigger').style.display = (u.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(u.email.toLowerCase())) ? 'block' : 'none';
 
             actualizarVips(u);
         }
@@ -618,7 +624,7 @@
 
         function ejecutarCuantificacionOrb() {
             let users = obtenerBaseGlobal();
-            let u = users.find(x => x.email === sessionEmail);
+            let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             let ahora = Date.now();
             if(!u.vipActive || u.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con ningún VIP activo."); return; }
             if(ahora - u.lastClaim < 24*3600*1000) { mostrarAlertaPro("Ciclo Activo", "Ya cuantificaste en las últimas 24 horas."); return; }
@@ -640,11 +646,11 @@
 
         function comprarVip(nivel, precio) {
             let users = obtenerBaseGlobal();
-            let u = users.find(x => x.email === sessionEmail);
+            let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             if(u.balance < precio) { mostrarAlertaPro("Saldo Insuficiente", `Requiere ${precio} USDT.`); return; }
             u.balance -= precio; u.vipActive = nivel; u.vipExpiry = Date.now() + (35*24*3600*1000); u.lastClaim = 0;
             if(u.refBy) {
-                let up = users.find(x => x.email === u.refBy);
+                let up = users.find(x => x.email.toLowerCase() === u.refBy.toLowerCase());
                 if(up) { let com = nivel===1?1:(nivel===2?2:(nivel===3?10:(nivel===4?30:600))); up.balance += com; up.commissionTotal = (up.commissionTotal || 0) + com; }
             }
             guardarBaseGlobal(users);
@@ -722,7 +728,7 @@
             let red = document.getElementById('selRedUdt').value;
             let m = parseFloat(document.getElementById('depM').value), h = document.getElementById('depH').value.trim();
             let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
-            deps.push({ user: sessionEmail, red: red, monto: m, hash: h, status: 'Pendiente' });
+            deps.push({ user: sessionEmail.toLowerCase(), red: red, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() });
             localStorage.setItem("inverbot_global_deps_db", JSON.stringify(deps));
             mostrarAlertaPro("Éxito", "Depósito enviado al CEO."); document.getElementById('subAccionContainer').style.display = 'none';
         }
@@ -730,14 +736,30 @@
         function solicitarRetiro(e) {
             e.preventDefault();
             let w = document.getElementById('wW').value.trim(), m = parseFloat(document.getElementById('wM').value), p = document.getElementById('wP').value.trim();
-            let users = obtenerBaseGlobal(), u = users.find(x => x.email === sessionEmail);
+            let users = obtenerBaseGlobal(), u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             if(u.pass !== p) { mostrarAlertaPro("Error", "Contraseña incorrecta."); return; }
             if(u.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             u.balance -= m; guardarBaseGlobal(users);
             let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
-            wits.push({ user: sessionEmail, wallet: w, monto: m, status: 'Pendiente' });
+            wits.push({ user: sessionEmail.toLowerCase(), wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() });
             localStorage.setItem("inverbot_global_wits_db", JSON.stringify(wits));
             mostrarAlertaPro("Éxito", "Retiro solicitado."); entrarDashboardDirecto();
+        }
+
+        function verHistorialDeps() {
+            let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
+            let misDeps = deps.filter(d => d.user.toLowerCase() === sessionEmail.toLowerCase());
+            if(misDeps.length === 0) { mostrarAlertaPro("Historial de Depósitos", "No tienes registros de depósitos."); return; }
+            let html = misDeps.map(d => `<div style="border-bottom:1px solid #edf2f7; padding:6px 0; font-size:10px;"><b>+${d.monto} USDT</b> (${d.red})<br><span style="color:gray;">Estado: <b>${d.status}</b></span></div>`).join('');
+            mostrarAlertaPro("Historial de Depósitos", html);
+        }
+
+        function verHistorialWits() {
+            let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
+            let misWits = wits.filter(w => w.user.toLowerCase() === sessionEmail.toLowerCase());
+            if(misWits.length === 0) { mostrarAlertaPro("Historial de Retiros", "No tienes registros de retiros."); return; }
+            let html = misWits.map(w => `<div style="border-bottom:1px solid #edf2f7; padding:6px 0; font-size:10px;"><b>-${w.monto} USDT</b><br><span style="color:gray;">Estado: <b>${w.status}</b></span></div>`).join('');
+            mostrarAlertaPro("Historial de Retiros", html);
         }
 
         function abrirPanelAdmin() {
@@ -751,12 +773,18 @@
             document.getElementById('userDashboard').style.display = 'block';
             document.getElementById('bottomNavBar').style.display = 'flex';
         }
+        
         function hacerAdminCorreo() {
             let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
-            let users = obtenerBaseGlobal(), target = users.find(x => x.email === mail);
-            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
-            target.isAdmin = true; guardarBaseGlobal(users); mostrarAlertaPro("Éxito", "Permiso otorgado."); renderAdmin();
+            let users = obtenerBaseGlobal();
+            let target = users.find(x => x.email.toLowerCase() === mail);
+            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado. Verifica que esté bien escrito."); return; }
+            target.isAdmin = true; 
+            guardarBaseGlobal(users); 
+            mostrarAlertaPro("Éxito", "Permiso de administrador otorgado a " + target.email); 
+            renderAdmin();
         }
+
         function renderAdmin() {
             let users = obtenerBaseGlobal(), deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [], wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
             
@@ -787,26 +815,21 @@
                 </div>` : '').join('');
         }
 
-        // Al aprobar un depósito, automáticamente se convierte en Invitación Válida para su patrocinador y suma al total del equipo
         function aprobarDep(i) {
             let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [], users = obtenerBaseGlobal();
-            let d = deps[i], u = users.find(x => x.email === d.user);
+            let d = deps[i], u = users.find(x => x.email.toLowerCase() === d.user.toLowerCase());
             if(u) { 
                 u.balance += d.monto; 
                 d.status = 'Aprobado'; 
                 
-                // Si este usuario fue invitado por alguien, sumamos la invitación válida y el monto al equipo
                 if(u.refBy) {
-                    let upline = users.find(x => x.email === u.refBy);
+                    let upline = users.find(x => x.email.toLowerCase() === u.refBy.toLowerCase());
                     if(upline) {
-                        // Verificamos si es su primer depósito aprobado para contar como invitación válida única
                         if(!u.hasDeposited) {
                             upline.validRefCount = (upline.validRefCount || 0) + 1;
                             u.hasDeposited = true;
                         }
                         upline.teamDepositTotal = (upline.teamDepositTotal || 0) + d.monto;
-                        
-                        // Comisión por depósito del invitado (ej: 5% del depósito)
                         let comDep = d.monto * 0.05;
                         upline.balance += comDep;
                         upline.commissionTotal = (upline.commissionTotal || 0) + comDep;
@@ -828,11 +851,11 @@
         }
         function cancelarWit(i) {
             let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [], users = obtenerBaseGlobal();
-            let w = wits[i], u = users.find(x => x.email === w.user);
+            let w = wits[i], u = users.find(x => x.email.toLowerCase() === w.user.toLowerCase());
             if(u) { u.balance += w.monto; w.status = 'Cancelado'; guardarBaseGlobal(users); localStorage.setItem("inverbot_global_wits_db", JSON.stringify(wits)); renderAdmin(); }
         }
         function copiarEnlaceReferido() {
-            let u = obtenerBaseGlobal().find(x => x.email === sessionEmail);
+            let u = obtenerBaseGlobal().find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code);
             mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
         }
