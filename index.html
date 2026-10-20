@@ -9,15 +9,15 @@
             --bg-main: #f4f6f8;
             --bg-card: #ffffff;
             --bg-input: #f7f9fc;
-            --border-color: #e2e8f0;
+            --border-color: #cbd5e0;
             --primary-green: #00b96b;
             --primary-green-dark: #008449;
             --accent-gold: #f0b90b;
             --text-main: #1a202c;
-            --text-muted: #718096;
+            --text-muted: #4a5568;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; transition: all 0.3s ease; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; transition: all 0.6s ease-in-out; }
         
         body { 
             background-color: var(--bg-main); 
@@ -37,19 +37,19 @@
         .header-banner {
             background: linear-gradient(135deg, #00b96b, #008449);
             color: #fff;
-            padding: 20px 16px;
+            padding: 22px 16px;
             border-radius: 12px;
             margin-bottom: 14px;
             box-shadow: 0 4px 15px rgba(0,185,107,0.3);
             text-align: center;
         }
-        .header-banner h1 { font-size: 20px; font-weight: 800; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .header-banner p { font-size: 11px; opacity: 0.9; }
+        .header-banner h1 { font-size: 20px; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px; }
+        .header-banner p { font-size: 11px; opacity: 0.95; letter-spacing: 0.5px; }
 
         .card { 
             background-color: var(--bg-card); 
             border: 1px solid var(--border-color); 
-            padding: 16px; 
+            padding: 18px; 
             border-radius: 12px; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
             margin-bottom: 12px; 
@@ -59,43 +59,43 @@
             background: linear-gradient(145deg, #ffffff, #f8fafc);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 12px;
             text-align: left;
         }
-        .balance-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+        .balance-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.5px; }
         .balance-amount { font-size: 26px; font-weight: 800; color: var(--primary-green); font-family: monospace; }
 
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
         .btn-action-dep {
-            background: var(--primary-green); color: #fff; border: none; padding: 11px;
+            background: var(--primary-green); color: #fff; border: none; padding: 12px;
             border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;
         }
         .btn-action-wit {
-            background: #fff; color: var(--primary-green); border: 1px solid var(--primary-green); padding: 11px;
+            background: #fff; color: var(--primary-green); border: 1px solid var(--primary-green); padding: 12px;
             border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;
         }
         .btn-action-history {
-            background: #f7f9fc; color: #2d3748; border: 1px solid var(--border-color); padding: 9px;
+            background: #f7f9fc; color: #2d3748; border: 1px solid var(--border-color); padding: 10px;
             border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 6px;
         }
 
         .team-hero {
             background: linear-gradient(135deg, #00b96b, #008449);
             color: #fff;
-            padding: 20px 16px;
+            padding: 22px 16px;
             border-radius: 14px;
             margin-bottom: 12px;
             box-shadow: 0 4px 15px rgba(0,185,107,0.3);
         }
         .team-hero-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .team-hero-title { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-        .team-hero-sub { font-size: 11px; opacity: 0.9; text-align: right; }
+        .team-hero-title { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
+        .team-hero-sub { font-size: 11px; opacity: 0.95; text-align: right; }
         .team-hero-amount { font-size: 24px; font-weight: 900; font-family: monospace; }
         
         .team-hero-btn {
             background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
-            color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700;
+            color: #fff; padding: 9px 12px; border-radius: 8px; font-size: 11px; font-weight: 700;
             cursor: pointer; display: flex; align-items: center; gap: 6px; width: fit-content;
             margin-top: 10px;
         }
@@ -105,25 +105,23 @@
             background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
-        .team-stat-icon { font-size: 18px; color: var(--primary-green); margin-bottom: 6px; }
-        .team-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
-        .team-stat-value { font-size: 20px; font-weight: 800; color: #2d3748; font-family: monospace; }
+        .team-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
+        .team-stat-value { font-size: 20px; font-weight: 800; color: #1a202c; font-family: monospace; }
 
         .quant-box {
             background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 24px 16px; text-align: center; margin-bottom: 12px;
         }
         
-        /* CONTADOR 24H ARRIBA DE LA PILA */
         .countdown-timer {
             font-size: 12px;
             font-weight: 800;
             color: #e53e3e;
             background: #fff5f5;
             border: 1px solid #fed7d7;
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 6px;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-family: monospace;
         }
 
@@ -137,33 +135,33 @@
         .quant-battery:active { transform: scale(0.96); }
         .battery-fill {
             width: 100%; height: 0%; background: linear-gradient(180deg, #00b96b, #009654);
-            transition: height 2.5s ease-in-out; position: relative;
+            transition: height 3.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative;
         }
 
-        .vip-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+        .vip-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
         .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .vip-title { font-size: 14px; font-weight: 800; color: #2d3748; }
-        .vip-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: #e6f9f0; color: var(--primary-green); }
+        .vip-title { font-size: 14px; font-weight: 800; color: #1a202c; letter-spacing: 0.5px; }
+        .vip-tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: #e6f9f0; color: var(--primary-green); text-transform: uppercase; }
         
         .vip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .vip-sub { background: #f7f9fc; padding: 8px; border-radius: 6px; border: 1px solid #edf2f7; }
-        .vip-sub-t { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
-        .vip-sub-v { font-size: 12px; font-weight: 800; color: #2d3748; font-family: monospace; }
+        .vip-sub { background: #f7f9fc; padding: 9px; border-radius: 6px; border: 1px solid var(--border-color); }
+        .vip-sub-t { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .vip-sub-v { font-size: 12px; font-weight: 800; color: #1a202c; font-family: monospace; }
         .vip-sub-v.green { color: var(--primary-green); }
         .vip-sub-v.gold { color: #d69e2e; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px);
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px);
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
         .modal-card {
             background: #fff; border: 1px solid var(--border-color);
-            padding: 20px; border-radius: 14px; width: 100%; max-width: 320px; text-align: center;
+            padding: 22px; border-radius: 14px; width: 100%; max-width: 320px; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
-        .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; }
-        .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.4; white-space: pre-line; text-align: left; max-height: 200px; overflow-y: auto; }
+        .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
+        .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
 
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
@@ -172,27 +170,27 @@
             align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,185,107,0.4);
             cursor: pointer; text-decoration: none;
         }
-        .floating-support svg { width: 24px; height: 24px; fill: #fff; }
+        .floating-support svg { width: 22px; height: 22px; fill: #fff; }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 450px;
             background: #fff; border-top: 1px solid var(--border-color);
-            display: flex; justify-content: space-around; padding: 8px 0; z-index: 100;
+            display: flex; justify-content: space-around; padding: 10px 0; z-index: 100;
         }
-        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 600; cursor: pointer; gap: 3px; }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; gap: 4px; letter-spacing: 0.5px; }
         .nav-item.active { color: var(--primary-green); font-weight: 800; }
         .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
 
-        .input-group { margin-bottom: 10px; text-align: left; }
-        .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 3px; font-weight: 700; text-transform: uppercase; }
-        .input-group input, .input-group select { width: 100%; padding: 10px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #2d3748; font-size: 12px; outline: none; }
+        .input-group { margin-bottom: 12px; text-align: left; }
+        .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #1a202c; font-size: 12px; outline: none; }
         
-        .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 4px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 6px; letter-spacing: 0.5px; }
         .btn-green { background: var(--primary-green); color: #fff; }
         .btn-red { background: #e53e3e; color: #fff; }
         
-        .auth-switch { text-align: center; margin-top: 12px; font-size: 11px; color: var(--text-muted); }
+        .auth-switch { text-align: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
         .auth-switch a { color: var(--primary-green); cursor: pointer; text-decoration: none; font-weight: 800; }
     </style>
 </head>
@@ -209,24 +207,24 @@
         <div id="authScreen" class="card" style="margin-top: 40px;">
             <div class="header-banner" style="margin-bottom: 16px;">
                 <h1>INVERBOT</h1>
-                <p>Quantitative Financial Platform</p>
+                <p>Global Quantitative Asset Management</p>
             </div>
 
             <div id="registerView">
                 <form onsubmit="iniciarVerificacionPuzzle(event)">
-                    <div class="input-group"><label>Correo Electrónico (Gmail)</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
-                    <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" required placeholder="••••••••"></div>
+                    <div class="input-group"><label>Correo Electrónico Institucional</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
+                    <div class="input-group"><label>Contraseña Segura</label><input type="password" id="regPass" required placeholder="••••••••"></div>
                     <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" required placeholder="••••••••"></div>
                     <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
                     <button type="submit" class="btn btn-green">Registrarse</button>
                 </form>
-                <div class="auth-switch"><p>¿Ya tienes cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
+                <div class="auth-switch"><p>¿Ya posee una cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
             </div>
 
             <div id="puzzleView" style="display: none; text-align: center;">
-                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Deslice para verificar identidad (Proceso seguro)</p>
-                <div style="background: var(--bg-input); border: 1px dashed var(--primary-green); border-radius: 8px; height: 50px; position: relative; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: var(--primary-green); font-size: 12px; font-weight: bold;">➔ Deslice lentamente</span>
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-weight: 700;">Verificación de Seguridad Criptográfica</p>
+                <div style="background: var(--bg-input); border: 1px dashed var(--primary-green); border-radius: 8px; height: 50px; position: relative; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
+                    <span style="color: var(--primary-green); font-size: 11px; font-weight: 700; letter-spacing: 0.5px;">➔ Deslice lentamente para verificar</span>
                     <div id="puzzleSlider" style="width: 36px; height: 36px; background: var(--primary-green); border-radius: 6px; position: absolute; left: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold;" ontouchstart="iniciarDrag(event)" onmousedown="iniciarDrag(event)">➔</div>
                 </div>
                 <button type="button" class="btn btn-red" onclick="cancelarPuzzle()">Cancelar</button>
@@ -238,7 +236,7 @@
                     <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" required placeholder="••••••••"></div>
                     <button type="submit" class="btn btn-green">Iniciar Sesión</button>
                 </form>
-                <div class="auth-switch"><p>¿Nuevo usuario? <a onclick="cambiarVistaAuth(false)">Registrarse</a></p></div>
+                <div class="auth-switch"><p>¿Nuevo socio? <a onclick="cambiarVistaAuth(false)">Registrarse</a></p></div>
             </div>
         </div>
 
@@ -251,28 +249,28 @@
                 </div>
 
                 <div class="card" style="text-align: center; background: #e6f9f0; border-color: #b2f5ea;">
-                    <h3 style="font-size: 13px; color: var(--primary-green-dark); margin-bottom: 4px; font-weight: 800;">🚀 Programa de Afiliados</h3>
-                    <p style="font-size: 11px; color: #234e52; margin-bottom: 8px;">Obtén 0.20 USDT por cada socio invitado.</p>
-                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="padding: 7px; font-size: 11px;">Ver Mi Red</button>
+                    <h3 style="font-size: 12px; color: var(--primary-green-dark); margin-bottom: 4px; font-weight: 800; letter-spacing: 0.5px;">PROGRAMA DE AFILIADOS</h3>
+                    <p style="font-size: 11px; color: #234e52; margin-bottom: 10px;">Obtén comisiones institucionales por cada socio.</p>
+                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
                 </div>
 
                 <div class="card">
-                    <div style="font-size: 12px; font-weight: 800; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-                        <span>Mercados en Vivo</span>
-                        <span style="font-size: 9px; color: var(--primary-green); background: #e6f9f0; padding: 2px 6px; border-radius: 4px;">● En línea</span>
+                    <div style="font-size: 11px; font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <span>Mercados Financieros Globales</span>
+                        <span style="font-size: 9px; color: var(--primary-green); background: #e6f9f0; padding: 2px 6px; border-radius: 4px; font-weight: 700;">EN LÍNEA</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 7px 0; border-bottom: 1px solid #edf2f7;"><span>BTC / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktBtc">81,598.50</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 7px 0; border-bottom: 1px solid #edf2f7;"><span>ETH / USDT</span><span style="font-family: monospace; font-weight: 700; color: #e53e3e;" id="mktEth">2,387.48</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 7px 0; border-bottom: 1px solid #edf2f7;"><span>SOL / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktSol">194.20</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 7px 0; border-bottom: 1px solid #edf2f7;"><span>BNB / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktBnb">642.15</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 7px 0;"><span>XRP / USDT</span><span style="font-family: monospace; font-weight: 700; color: #e53e3e;" id="mktXrp">1.8842</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #edf2f7;"><span>BTC / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktBtc">81,598.50</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #edf2f7;"><span>ETH / USDT</span><span style="font-family: monospace; font-weight: 700; color: #e53e3e;" id="mktEth">2,387.48</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #edf2f7;"><span>SOL / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktSol">194.20</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #edf2f7;"><span>BNB / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktBnb">642.15</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0;"><span>XRP / USDT</span><span style="font-family: monospace; font-weight: 700; color: #e53e3e;" id="mktXrp">1.8842</span></div>
                 </div>
 
                 <div class="card" style="background: #f8fafc;">
-                    <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">Estadísticas del Sistema</div>
+                    <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Métricas del Nodo Central</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center;">
-                        <div style="background:#fff; padding:8px; border-radius:6px; border:1px solid #edf2f7;"><div style="font-size:9px; color:var(--text-muted);">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-green);">$4,289,150</div></div>
-                        <div style="background:#fff; padding:8px; border-radius:6px; border:1px solid #edf2f7;"><div style="font-size:9px; color:var(--text-muted);">Nodos Activos</div><div style="font-size:12px; font-weight:800; color:#2d3748;">1,428</div></div>
+                        <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e0;"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-green);">$4,289,150</div></div>
+                        <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e0;"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Nodos Operativos</div><div style="font-size:12px; font-weight:800; color:#1a202c;">1,428</div></div>
                     </div>
                 </div>
             </div>
@@ -284,65 +282,64 @@
                 </div>
 
                 <div class="quant-box">
-                    <!-- CONTADOR DE 24H EN TIEMPO REAL -->
                     <div id="countdownContainer" style="display: none;">
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 2px; text-transform: uppercase;">Próxima cuantificación en:</div>
+                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Próximo ciclo de cuantificación:</div>
                         <div class="countdown-timer" id="lblCountdownTimer">23:59:59</div>
                     </div>
 
                     <div class="quant-battery" onclick="ejecutarCuantificacionOrb()">
                         <div class="battery-fill" id="batteryFill"></div>
                         <div style="position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2;">
-                            <div style="font-size: 14px; font-weight: 900; color: var(--primary-green-dark);" id="lblEstadoOrbIcon">⚡</div>
-                            <div style="font-size: 10px; font-weight: 800; color: #2d3748; margin-top: 4px;" id="lblEstadoOrb">INICIAR</div>
+                            <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:var(--primary-green-dark); margin-bottom:2px;"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+                            <div style="font-size: 10px; font-weight: 800; color: #1a202c; letter-spacing: 0.5px;" id="lblEstadoOrb">INICIAR</div>
                         </div>
                     </div>
-                    <p style="font-size: 11px; color: var(--text-muted);">Toque la pila para procesar el rendimiento diario de su VIP activo.</p>
+                    <p style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Pulse el núcleo energético para procesar el rendimiento diario de su nodo VIP activo.</p>
                 </div>
 
                 <div class="vip-card">
-                    <div class="vip-row"><span class="vip-title">⭐ VIP 1</span><span id="vip1StatusText" class="vip-tag">Inactivo</span></div>
+                    <div class="vip-row"><span class="vip-title">NIVEL VIP 1</span><span id="vip1StatusText" class="vip-tag">Inactivo</span></div>
                     <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Diario</div><div class="vip-sub-v green">1.50 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo</div><div class="vip-sub-v">4.00 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">1.50 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Costo de Licencia</div><div class="vip-sub-v">4.00 USDT</div></div>
                     </div>
-                    <div id="vip1ActionArea"><button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir VIP 1</button></div>
+                    <div id="vip1ActionArea"><button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir Nivel VIP 1</button></div>
                 </div>
 
                 <div class="vip-card">
-                    <div class="vip-row"><span class="vip-title">⭐ VIP 2</span><span id="vip2StatusText" class="vip-tag">Inactivo</span></div>
+                    <div class="vip-row"><span class="vip-title">NIVEL VIP 2</span><span id="vip2StatusText" class="vip-tag">Inactivo</span></div>
                     <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Diario</div><div class="vip-sub-v green">6.50 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo</div><div class="vip-sub-v">16.00 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">6.50 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Costo de Licencia</div><div class="vip-sub-v">16.00 USDT</div></div>
                     </div>
-                    <div id="vip2ActionArea"><button class="btn btn-green" onclick="comprarVip(2, 16)">Adquirir VIP 2</button></div>
+                    <div id="vip2ActionArea"><button class="btn btn-green" onclick="comprarVip(2, 16)">Adquirir Nivel VIP 2</button></div>
                 </div>
 
                 <div class="vip-card">
-                    <div class="vip-row"><span class="vip-title">⭐ VIP 3</span><span id="vip3StatusText" class="vip-tag">Inactivo</span></div>
+                    <div class="vip-row"><span class="vip-title">NIVEL VIP 3</span><span id="vip3StatusText" class="vip-tag">Inactivo</span></div>
                     <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Diario</div><div class="vip-sub-v green">42.2 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo</div><div class="vip-sub-v">65.00 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">42.2 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Costo de Licencia</div><div class="vip-sub-v">65.00 USDT</div></div>
                     </div>
-                    <div id="vip3ActionArea"><button class="btn btn-green" onclick="comprarVip(3, 65)">Adquirir VIP 3</button></div>
+                    <div id="vip3ActionArea"><button class="btn btn-green" onclick="comprarVip(3, 65)">Adquirir Nivel VIP 3</button></div>
                 </div>
 
                 <div class="vip-card">
-                    <div class="vip-row"><span class="vip-title" style="color:var(--primary-green);">🔥 VIP 4</span><span id="vip4StatusText" class="vip-tag">Inactivo</span></div>
+                    <div class="vip-row"><span class="vip-title" style="color:var(--primary-green);">NIVEL VIP 4</span><span id="vip4StatusText" class="vip-tag">Inactivo</span></div>
                     <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Diario</div><div class="vip-sub-v green">88.50 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo</div><div class="vip-sub-v">180.00 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">88.50 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Costo de Licencia</div><div class="vip-sub-v">180.00 USDT</div></div>
                     </div>
-                    <div id="vip4ActionArea"><button class="btn btn-green" onclick="comprarVip(4, 180)">Adquirir VIP 4</button></div>
+                    <div id="vip4ActionArea"><button class="btn btn-green" onclick="comprarVip(4, 180)">Adquirir Nivel VIP 4</button></div>
                 </div>
 
                 <div class="vip-card" style="border-color: var(--accent-gold);">
-                    <div class="vip-row"><span class="vip-title" style="color:var(--accent-gold);">👑 VIP 5 (ELITE)</span><span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span></div>
+                    <div class="vip-row"><span class="vip-title" style="color:var(--accent-gold);">NIVEL VIP 5 (ELITE)</span><span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span></div>
                     <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Diario</div><div class="vip-sub-v gold">1,600.00 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo</div><div class="vip-sub-v gold">3,600.00 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v gold">1,600.00 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Costo de Licencia</div><div class="vip-sub-v gold">3,600.00 USDT</div></div>
                     </div>
-                    <div id="vip5ActionArea"><button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir VIP 5 Elite</button></div>
+                    <div id="vip5ActionArea"><button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir Nivel VIP 5 Elite</button></div>
                 </div>
             </div>
 
@@ -351,15 +348,15 @@
                 <div class="team-hero">
                     <div class="team-hero-top">
                         <div class="team-hero-title">
-                            <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                            COMISIÓN
+                            <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            COMISIÓN DE RED
                         </div>
-                        <div class="team-hero-sub">Obtener comisión</div>
+                        <div class="team-hero-sub">Balance acumulado</div>
                     </div>
-                    <div style="font-size: 11px; opacity: 0.8; margin-bottom: 2px;">USDT</div>
+                    <div style="font-size: 11px; opacity: 0.9; margin-bottom: 2px; font-weight: 700;">USDT</div>
                     <div class="team-hero-amount" id="lblTeamComision">0.00</div>
                     
-                    <button class="team-hero-btn" onclick="mostrarAlertaPro('Historial', 'No hay registros de comisiones recientes.')">
+                    <button class="team-hero-btn" onclick="mostrarAlertaPro('Historial de Red', 'Registros sincronizados con la blockchain en tiempo real.')">
                         <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor;"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                         Historial de comisiones
                     </button>
@@ -367,62 +364,60 @@
 
                 <div class="team-grid-2">
                     <div class="team-stat-card">
-                        <div class="team-stat-icon">👥</div>
-                        <div class="team-stat-label">Total</div>
+                        <div class="team-stat-label">Socios Totales</div>
                         <div class="team-stat-value" id="lblTeamTotalRef">0</div>
                     </div>
                     <div class="team-stat-card">
-                        <div class="team-stat-icon">👤✓</div>
-                        <div class="team-stat-label">Invitaciones válidas</div>
+                        <div class="team-stat-label">Invitaciones Válidas</div>
                         <div class="team-stat-value" id="lblTeamValidRef" style="color: var(--primary-green);">0</div>
                     </div>
                 </div>
 
                 <div class="team-stat-card" style="margin-bottom: 12px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                        <span style="font-size: 18px;">📊</span>
-                        <div class="team-stat-label" style="margin:0;">Depósitos del equipo</div>
-                    </div>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">USDT</div>
+                    <div class="team-stat-label">Volumen de Depósito del Equipo</div>
+                    <div style="font-size: 10px; color: var(--text-muted); margin-bottom: 2px; font-weight: 700;">USDT</div>
                     <div class="team-stat-value" id="lblTeamDepEquipo">0.00</div>
                 </div>
 
                 <div class="card" style="text-align: center;">
-                    <h3 style="font-size: 13px; margin-bottom: 4px; font-weight: 800;">Enlace de Invitación</h3>
-                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Comparte tu enlace institucional</p>
-                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:8px; border-radius:6px; border:1px solid var(--border-color);"></code>
-                    <button class="btn btn-green" onclick="copiarEnlaceReferido()" style="padding:8px; font-size:11px;">Copiar Enlace</button>
+                    <h3 style="font-size: 12px; margin-bottom: 4px; font-weight: 800; letter-spacing: 0.5px;">ENLACE DE INVITACIÓN INSTITUCIONAL</h3>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Comparta este enlace seguro con nuevos socios</p>
+                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:10px; border-radius:6px; border:1px solid var(--border-color); font-weight:700;"></code>
+                    <button class="btn btn-green" onclick="copiarEnlaceReferido()" style="padding:9px; font-size:11px;">Copiar Enlace Seguro</button>
                 </div>
             </div>
 
             <div id="tabAmi" class="tab-content" style="display: none;">
                 <div class="balance-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                         <div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Sesión Activa</div>
-                            <div style="font-size: 11px; font-weight: 700; color: #2d3748;" id="lblUserEmail"></div>
+                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Sesión Activa</div>
+                            <div style="font-size: 11px; font-weight: 800; color: #1a202c;" id="lblUserEmail"></div>
                         </div>
-                        <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 3px 8px; font-size: 9px; margin:0;">Salir</button>
+                        <div style="display: flex; gap: 6px;">
+                            <button onclick="eliminarCuentaPropia()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;" title="Eliminar cuenta permanentemente">🗑️ Eliminar Cuenta</button>
+                            <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Salir</button>
+                        </div>
                     </div>
 
                     <div class="balance-title">Balance Disponible</div>
                     <div class="balance-amount" id="lblBalanceAmi">$0.00</div>
 
                     <div class="action-grid">
-                        <button class="btn-action-dep" onclick="mostrarSeccion('dep')">＋ Depositar</button>
-                        <button class="btn-action-wit" onclick="mostrarSeccion('wit')">↑ Retirar</button>
+                        <button class="btn-action-dep" onclick="mostrarSeccion('dep')">Depositar</button>
+                        <button class="btn-action-wit" onclick="mostrarSeccion('wit')">Retirar</button>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <button class="btn-action-history" onclick="verHistorialDeps()">📋 Historial Depósitos</button>
-                        <button class="btn-action-history" onclick="verHistorialWits()">📜 Historial Retiros</button>
+                        <button class="btn-action-history" onclick="verHistorialDeps()">Historial Depósitos</button>
+                        <button class="btn-action-history" onclick="verHistorialWits()">Historial Retiros</button>
                     </div>
 
-                    <div id="subAccionContainer" style="display: none; margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 12px;"></div>
+                    <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
-                    <div id="adminPanelTrigger" style="display: none; background: #e6f9f0; border: 1px solid var(--primary-green); padding: 10px; border-radius: 8px; margin-top: 12px;">
-                        <p style="color: var(--primary-green-dark); font-weight: 800; font-size: 10px; margin-bottom: 6px;">🛡️ PANEL CEO EJECUTIVO</p>
-                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 10px; padding: 7px;">Gestionar Usuarios y Finanzas</button>
+                    <div id="adminPanelTrigger" style="display: none; background: #e6f9f0; border: 1px solid var(--primary-green); padding: 12px; border-radius: 8px; margin-top: 14px;">
+                        <p style="color: var(--primary-green-dark); font-weight: 800; font-size: 10px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">PANEL EJECUTIVO CEO</p>
+                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 9px;">Administrar Nodos y Finanzas</button>
                     </div>
                 </div>
             </div>
@@ -430,22 +425,22 @@
         </div>
 
         <div id="adminDashboard" class="card" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">🛡️ Control Ejecutivo CEO</h3>
-                <button onclick="cerrarPanelAdmin()" class="btn btn-green" style="width: auto; padding: 3px 8px; font-size: 9px; margin:0;">Volver</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green); letter-spacing: 0.5px;">CONTROL EJECUTIVO CEO</h3>
+                <button onclick="cerrarPanelAdmin()" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
             </div>
             
-            <div class="input-group"><label>Dar Permiso de Admin</label><input type="email" id="novoAdminEmail" placeholder="correo@gmail.com"></div>
-            <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:7px; font-size:10px; margin-bottom:10px;">Conceder Admin</button>
+            <div class="input-group"><label>Conceder Privilegio de Administrador</label><input type="email" id="novoAdminEmail" placeholder="correo@gmail.com"></div>
+            <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:9px; font-size:11px; margin-bottom:12px;">Otorgar Privilegio Admin</button>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 4px;">Usuarios Registrados</div>
-            <div id="listaAdminUsers" style="margin-bottom: 10px; max-height: 120px; overflow-y: auto;"></div>
+            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Gestión de Socios Registrados</div>
+            <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 150px; overflow-y: auto;"></div>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 4px;">Depósitos Pendientes</div>
-            <div id="listaAdminDeps" style="margin-bottom: 10px; max-height: 120px; overflow-y: auto;"></div>
+            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Depósitos Pendientes de Validación</div>
+            <div id="listaAdminDeps" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 4px; color: #e53e3e;">Retiros Pendientes</div>
-            <div id="listaAdminWits" style="max-height: 120px; overflow-y: auto;"></div>
+            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; color: #e53e3e;">Retiros Pendientes de Aprobación</div>
+            <div id="listaAdminWits" style="max-height: 140px; overflow-y: auto;"></div>
         </div>
 
         <div class="bottom-nav" id="bottomNavBar" style="display: none;">
@@ -458,7 +453,7 @@
                 Cuantificar
             </button>
             <button class="nav-item" onclick="cambiarTab('Red', this)" id="navRed">
-                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                 Equipo
             </button>
             <button class="nav-item" onclick="cambiarTab('Ami', this)" id="navAmi">
@@ -471,7 +466,7 @@
 
     <script>
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
-        const STORAGE_KEY = "inverbot_master_global_db_v19";
+        const STORAGE_KEY = "inverbot_master_global_db_v20";
 
         let tempEmail = "", tempPass = "", tempRef = "";
         let countdownInterval = null;
@@ -488,23 +483,28 @@
             }
             try {
                 let parsed = JSON.parse(stored);
-                ADMIN_EMAILS.forEach(adm => {
-                    let f = parsed.find(u => u.email.toLowerCase() === adm.toLowerCase());
-                    if(!f) {
-                        let def = defaultUsers.find(x => x.email.toLowerCase() === adm.toLowerCase());
-                        if(def) parsed.push(def);
-                    } else { 
-                        f.isAdmin = true; 
-                        if(f.validRefCount === undefined) f.validRefCount = 0; 
-                        if(f.teamDepositTotal === undefined) f.teamDepositTotal = 0; 
-                        if(f.commissionTotal === undefined) f.commissionTotal = 0; 
+                // Fusionar y asegurar que ninguna cuenta existente se borre jamás
+                defaultUsers.forEach(def => {
+                    if(!parsed.some(u => u.email.toLowerCase() === def.email.toLowerCase())) {
+                        parsed.push(def);
                     }
+                });
+                parsed.forEach(u => {
+                    if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(u.email.toLowerCase())) {
+                        u.isAdmin = true;
+                    }
+                    if(u.validRefCount === undefined) u.validRefCount = 0;
+                    if(u.teamDepositTotal === undefined) u.teamDepositTotal = 0;
+                    if(u.commissionTotal === undefined) u.commissionTotal = 0;
                 });
                 return parsed;
             } catch(e) { return defaultUsers; }
         }
 
-        function guardarBaseGlobal(u) { localStorage.setItem(STORAGE_KEY, JSON.stringify(u)); }
+        function guardarBaseGlobal(u) { 
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(u)); 
+        }
+
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
 
         function mostrarAlertaPro(titulo, mensaje, cb = null) {
@@ -513,7 +513,7 @@
                     <div class="modal-card">
                         <h3 class="modal-title">${titulo}</h3>
                         <p class="modal-msg">${mensaje}</p>
-                        <div style="display:flex; gap:6px; margin-top:10px;">
+                        <div style="display:flex; gap:6px; margin-top:12px;">
                             ${cb ? `<button class="btn btn-green" id="modalAceptar">Aceptar</button>` : ``}
                             <button class="btn btn-green" onclick="cerrarAlerta()" style="margin:0;">Cerrar</button>
                         </div>
@@ -549,13 +549,15 @@
                 if(document.getElementById('mktSol')) document.getElementById('mktSol').innerText = sol.toFixed(2);
                 if(document.getElementById('mktBnb')) document.getElementById('mktBnb').innerText = bnb.toFixed(2);
                 if(document.getElementById('mktXrp')) document.getElementById('mktXrp').innerText = xrp.toFixed(4);
-            }, 3000);
+            }, 3500);
         }
 
         function cambiarVistaAuth(isLog) {
-            document.getElementById('registerView').style.display = isLog ? 'none' : 'block';
-            document.getElementById('puzzleView').style.display = 'none';
-            document.getElementById('loginView').style.display = isLog ? 'block' : 'none';
+            setTimeout(() => {
+                document.getElementById('registerView').style.display = isLog ? 'none' : 'block';
+                document.getElementById('puzzleView').style.display = 'none';
+                document.getElementById('loginView').style.display = isLog ? 'block' : 'none';
+            }, 300);
         }
 
         function iniciarVerificacionPuzzle(e) {
@@ -566,19 +568,26 @@
             tempRef = document.getElementById('regRef').value.trim();
 
             if(tempPass !== passConfirm) {
-                mostrarAlertaPro("Error de Registro", "Las contraseñas no coinciden. Por favor verifique.");
+                mostrarAlertaPro("Error de Registro", "Las contraseñas institucionales no coinciden.");
                 return;
             }
 
             if(obtenerBaseGlobal().some(u => u.email.toLowerCase() === tempEmail)) { 
-                mostrarAlertaPro("Aviso", "Este correo ya está registrado en la base de datos."); 
+                mostrarAlertaPro("Aviso", "Este correo ya está registrado en la base de datos central."); 
                 return; 
             }
 
-            document.getElementById('registerView').style.display = 'none';
-            document.getElementById('puzzleView').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('registerView').style.display = 'none';
+                document.getElementById('puzzleView').style.display = 'block';
+            }, 400);
         }
-        function cancelarPuzzle() { document.getElementById('puzzleView').style.display = 'none'; document.getElementById('registerView').style.display = 'block'; }
+        function cancelarPuzzle() { 
+            setTimeout(() => {
+                document.getElementById('puzzleView').style.display = 'none'; 
+                document.getElementById('registerView').style.display = 'block'; 
+            }, 300);
+        }
 
         let dragging = false, startX = 0;
         function iniciarDrag(e) { dragging = true; startX = e.clientX || (e.touches ? e.touches[0].clientX : 0); document.addEventListener('mousemove', onDrag); document.addEventListener('touchmove', onDrag); document.addEventListener('mouseup', stopDrag); document.addEventListener('touchend', stopDrag); }
@@ -606,7 +615,7 @@
                     sessionEmail = tempEmail; 
                     localStorage.setItem("inverbot_session", sessionEmail);
                     entrarDashboardDirecto();
-                }, 800);
+                }, 1000);
             }
         }
         function stopDrag() { dragging = false; }
@@ -617,38 +626,41 @@
             let pass = document.getElementById('logPass').value.trim();
             let users = obtenerBaseGlobal();
             let u = users.find(x => x.email.toLowerCase() === email && x.pass === pass);
-            if(!u) { mostrarAlertaPro("Error", "Correo o contraseña incorrectos."); return; }
+            if(!u) { mostrarAlertaPro("Error", "Credenciales incorrectas o usuario no encontrado."); return; }
             
             setTimeout(() => {
                 sessionEmail = u.email; 
                 localStorage.setItem("inverbot_session", sessionEmail);
                 entrarDashboardDirecto();
-            }, 600);
+            }, 800);
         }
 
         function entrarDashboardDirecto() {
-            let users = obtenerBaseGlobal();
-            let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('userDashboard').style.display = 'block';
-            document.getElementById('bottomNavBar').style.display = 'flex';
+            setTimeout(() => {
+                let users = obtenerBaseGlobal();
+                let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
+                if(!u) { cerrarSesion(); return; }
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('userDashboard').style.display = 'block';
+                document.getElementById('bottomNavBar').style.display = 'flex';
 
-            document.getElementById('lblUserEmail').innerText = u.email;
-            let b = "$" + u.balance.toFixed(2);
-            document.getElementById('lblBalanceAmi').innerText = b;
-            document.getElementById('lblBalanceCuantificar').innerText = b;
-            
-            document.getElementById('lblTeamComision').innerText = (u.commissionTotal || 0).toFixed(2);
-            document.getElementById('lblTeamTotalRef').innerText = u.refCount || 0;
-            document.getElementById('lblTeamValidRef').innerText = u.validRefCount || 0;
-            document.getElementById('lblTeamDepEquipo').innerText = (u.teamDepositTotal || 0).toFixed(2);
+                document.getElementById('lblUserEmail').innerText = u.email;
+                let b = "$" + u.balance.toFixed(2);
+                document.getElementById('lblBalanceAmi').innerText = b;
+                document.getElementById('lblBalanceCuantificar').innerText = b;
+                
+                document.getElementById('lblTeamComision').innerText = (u.commissionTotal || 0).toFixed(2);
+                document.getElementById('lblTeamTotalRef').innerText = u.refCount || 0;
+                document.getElementById('lblTeamValidRef').innerText = u.validRefCount || 0;
+                document.getElementById('lblTeamDepEquipo').innerText = (u.teamDepositTotal || 0).toFixed(2);
 
-            document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + u.code;
-            document.getElementById('adminPanelTrigger').style.display = (u.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(u.email.toLowerCase())) ? 'block' : 'none';
+                document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + u.code;
+                document.getElementById('adminPanelTrigger').style.display = (u.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(u.email.toLowerCase())) ? 'block' : 'none';
 
-            actualizarVips(u);
-            iniciarContadorCuantificacion(u);
+                actualizarVips(u);
+                iniciarContadorCuantificacion(u);
+            }, 500);
         }
 
         function iniciarContadorCuantificacion(u) {
@@ -700,8 +712,8 @@
                     if (activo) {
                         act.innerHTML = `<button class="btn" style="background:#e2e8f0; color:var(--text-muted); cursor:not-allowed;" disabled>Activado</button>`;
                     } else {
-                        if(i === 5) act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir VIP 5 Elite</button>`;
-                        else act.innerHTML = `<button class="btn btn-green" onclick="comprarVip(${i}, ${costo})">Adquirir VIP ${i}</button>`;
+                        if(i === 5) act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir Nivel VIP 5 Elite</button>`;
+                        else act.innerHTML = `<button class="btn btn-green" onclick="comprarVip(${i}, ${costo})">Adquirir Nivel VIP ${i}</button>`;
                     }
                 }
             }
@@ -711,12 +723,11 @@
             let users = obtenerBaseGlobal();
             let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             let ahora = Date.now();
-            if(!u.vipActive || u.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con ningún VIP activo."); return; }
-            if(ahora - u.lastClaim < 24*3600*1000) { mostrarAlertaPro("Ciclo Activo", "Ya cuantificaste en las últimas 24 horas. Espera a que termine el contador."); return; }
+            if(!u.vipActive || u.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con ninguna licencia VIP activa."); return; }
+            if(ahora - u.lastClaim < 24*3600*1000) { mostrarAlertaPro("Ciclo Activo", "Debe esperar a que finalice el contador de 24 horas."); return; }
             let rec = u.vipActive === 1 ? 1.5 : (u.vipActive === 2 ? 6.5 : (u.vipActive === 3 ? 42.2 : (u.vipActive === 4 ? 88.5 : 1600.0)));
             
-            document.getElementById('lblEstadoOrb').innerText = "PROCESO";
-            document.getElementById('lblEstadoOrbIcon').innerText = "⚡";
+            document.getElementById('lblEstadoOrb').innerText = "PROCESANDO";
             let fill = document.getElementById('batteryFill');
             fill.style.height = "100%";
 
@@ -724,73 +735,94 @@
                 u.balance += rec; u.lastClaim = ahora; guardarBaseGlobal(users);
                 document.getElementById('lblEstadoOrb').innerText = "INICIAR";
                 fill.style.height = "0%";
-                mostrarAlertaPro("¡Éxito!", `Rendimiento acreditado:\n+${rec} USDT`);
+                mostrarAlertaPro("Rendimiento Acreditado", `Se han sumado con éxito:\n+${rec} USDT`);
                 entrarDashboardDirecto();
-            }, 2000);
+            }, 2500);
         }
 
         function comprarVip(nivel, precio) {
             let users = obtenerBaseGlobal();
             let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
-            if(u.balance < precio) { mostrarAlertaPro("Saldo Insuficiente", `Requiere ${precio} USDT.`); return; }
+            if(u.balance < precio) { mostrarAlertaPro("Saldo Insuficiente", `Requiere un mínimo de ${precio} USDT.`); return; }
             u.balance -= precio; u.vipActive = nivel; u.vipExpiry = Date.now() + (35*24*3600*1000); u.lastClaim = 0;
             if(u.refBy) {
                 let up = users.find(x => x.email.toLowerCase() === u.refBy.toLowerCase());
                 if(up) { let com = nivel===1?1:(nivel===2?2:(nivel===3?10:(nivel===4?30:600))); up.balance += com; up.commissionTotal = (up.commissionTotal || 0) + com; }
             }
             guardarBaseGlobal(users);
-            mostrarAlertaPro("¡Éxito!", `¡VIP ${nivel} adquirido con éxito!`);
+            mostrarAlertaPro("Licencia Activada", `¡Nivel VIP ${nivel} adquirido correctamente!`);
             entrarDashboardDirecto();
         }
 
         function cerrarSesion() {
-            sessionEmail = null; localStorage.removeItem("inverbot_session");
-            if(countdownInterval) clearInterval(countdownInterval);
-            document.getElementById('userDashboard').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('bottomNavBar').style.display = 'none';
-            document.getElementById('authScreen').style.display = 'block';
-            cambiarVistaAuth(false);
+            setTimeout(() => {
+                sessionEmail = null; localStorage.removeItem("inverbot_session");
+                if(countdownInterval) clearInterval(countdownInterval);
+                document.getElementById('userDashboard').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('bottomNavBar').style.display = 'none';
+                document.getElementById('authScreen').style.display = 'block';
+                cambiarVistaAuth(false);
+            }, 400);
+        }
+
+        function eliminarCuentaPropia() {
+            mostrarAlertaPro("Confirmar Eliminación", "¿Está seguro de eliminar su cuenta permanentemente de la base de datos?", () => {
+                setTimeout(() => {
+                    let users = obtenerBaseGlobal();
+                    let index = users.findIndex(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
+                    if(index !== -1) {
+                        users.splice(index, 1);
+                        guardarBaseGlobal(users);
+                    }
+                    cerrarSesion();
+                    mostrarAlertaPro("Cuenta Eliminada", "Su cuenta ha sido eliminada permanentemente.");
+                }, 500);
+            });
         }
 
         function cambiarTab(tab, btn) {
-            ['Hogar', 'Cuantificar', 'Red', 'Ami'].forEach(t => { document.getElementById('tab' + t).style.display = (t === tab) ? 'block' : 'none'; });
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            if(btn) btn.classList.add('active');
+            setTimeout(() => {
+                ['Hogar', 'Cuantificar', 'Red', 'Ami'].forEach(t => { document.getElementById('tab' + t).style.display = (t === tab) ? 'block' : 'none'; });
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                if(btn) btn.classList.add('active');
+            }, 300);
         }
 
         function mostrarSeccion(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
-            if(tipo === 'dep') {
-                c.innerHTML = `
-                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:6px;">Seleccionar Red de Depósito (Mínimo 4 USDT)</div>
-                    
-                    <div class="input-group">
-                        <label>Red USDT</label>
-                        <select id="selRedUdt" onchange="actualizarWalletRed(this.value)">
-                            <option value="BEP20">USDT - BEP20 (Binance Smart Chain)</option>
-                            <option value="TRC20">USDT - TRC20 (Tron Network)</option>
-                            <option value="ERC20">USDT - ERC20 (Ethereum Network)</option>
-                        </select>
-                    </div>
+            setTimeout(() => {
+                if(tipo === 'dep') {
+                    c.innerHTML = `
+                        <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">Red de Depósito Institucional (Mínimo 4 USDT)</div>
+                        
+                        <div class="input-group">
+                            <label>Red Blockchain</label>
+                            <select id="selRedUdt" onchange="actualizarWalletRed(this.value)">
+                                <option value="BEP20">USDT - BEP20 (Binance Smart Chain)</option>
+                                <option value="TRC20">USDT - TRC20 (Tron Network)</option>
+                                <option value="ERC20">USDT - ERC20 (Ethereum Network)</option>
+                            </select>
+                        </div>
 
-                    <code id="lblWalletDestino" style="font-size:9px; background:#fff; padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin-bottom:6px;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
-                    <button class="btn btn-green" onclick="copiarWalletActual()" style="padding:6px; font-size:10px; margin-bottom:8px;">Copiar Wallet</button>
-                    
-                    <form onsubmit="reportarDep(event)">
-                        <div class="input-group"><label>Monto (Mínimo 4 USDT)</label><input type="number" id="depM" required min="4" step="0.01" placeholder="50"></div>
-                        <div class="input-group"><label>ID de Transacción / Hash</label><input type="text" id="depH" required placeholder="0x... (ID exacta de transferencia)"></div>
-                        <button type="submit" class="btn btn-green" style="padding:8px; font-size:10px;">Enviar al CEO</button>
-                    </form>`;
-            } else {
-                c.innerHTML = `
-                    <form onsubmit="solicitarRetiro(event)">
-                        <div class="input-group"><label>Wallet Destino</label><input type="text" id="wW" required placeholder="0x... (Dirección válida)"></div>
-                        <div class="input-group"><label>Monto</label><input type="number" id="wM" required min="1" step="0.01" placeholder="10"></div>
-                        <div class="input-group"><label>Contraseña</label><input type="password" id="wP" required placeholder="••••"></div>
-                        <button type="submit" class="btn btn-green" style="padding:8px; font-size:10px;">Solicitar Retiro</button>
-                    </form>`;
-            }
+                        <code id="lblWalletDestino" style="font-size:9px; background:#fff; padding:8px; display:block; word-break:break-all; border:1px solid var(--border-color); margin-bottom:8px; font-weight:700;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
+                        <button class="btn btn-green" onclick="copiarWalletActual()" style="padding:8px; font-size:10px; margin-bottom:10px;">Copiar Dirección Wallet</button>
+                        
+                        <form onsubmit="reportarDep(event)">
+                            <div class="input-group"><label>Monto (Mínimo 4 USDT)</label><input type="number" id="depM" required min="4" step="0.01" placeholder="50"></div>
+                            <div class="input-group"><label>ID de Transacción / Hash</label><input type="text" id="depH" required placeholder="0x... (ID exacta de transferencia)"></div>
+                            <button type="submit" class="btn btn-green" style="padding:9px; font-size:11px;">Enviar Reporte al CEO</button>
+                        </form>`;
+                } else {
+                    c.innerHTML = `
+                        <form onsubmit="solicitarRetiro(event)">
+                            <div class="input-group"><label>Wallet Destino</label><input type="text" id="wW" required placeholder="0x... (Dirección válida)"></div>
+                            <div class="input-group"><label>Monto a Retirar</label><input type="number" id="wM" required min="1" step="0.01" placeholder="10"></div>
+                            <div class="input-group"><label>Contraseña de Seguridad</label><input type="password" id="wP" required placeholder="••••"></div>
+                            <button type="submit" class="btn btn-green" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>
+                        </form>`;
+                }
+            }, 300);
         }
 
         const WALLETS_REDES = {
@@ -806,7 +838,7 @@
         function copiarWalletActual() {
             let w = document.getElementById('lblWalletDestino').innerText;
             navigator.clipboard.writeText(w);
-            mostrarAlertaPro('Copiado', 'Dirección de wallet copiada');
+            mostrarAlertaPro('Copiado', 'Dirección de wallet copiada al portapapeles.');
         }
 
         function reportarDep(e) {
@@ -854,75 +886,119 @@
             wits.push({ user: sessionEmail.toLowerCase(), wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() });
             localStorage.setItem("inverbot_global_wits_db", JSON.stringify(wits));
             
-            mostrarAlertaPro("Éxito", "Solicitud de retiro enviada."); 
+            mostrarAlertaPro("Éxito", "Solicitud de retiro enviada al CEO."); 
             entrarDashboardDirecto();
         }
 
         function verHistorialDeps() {
-            let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
-            let misDeps = deps.filter(d => d.user.toLowerCase() === sessionEmail.toLowerCase());
-            if(misDeps.length === 0) { mostrarAlertaPro("Historial de Depósitos", "No tienes registros de depósitos."); return; }
-            let html = misDeps.map(d => `<div style="border-bottom:1px solid #edf2f7; padding:6px 0; font-size:10px;"><b>+${d.monto} USDT</b> (${d.red})<br><span style="color:gray;">Hash: ${d.hash}</span><br><span style="color:gray;">Estado: <b>${d.status}</b></span></div>`).join('');
-            mostrarAlertaPro("Historial de Depósitos", html);
+            setTimeout(() => {
+                let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
+                let misDeps = deps.filter(d => d.user.toLowerCase() === sessionEmail.toLowerCase());
+                if(misDeps.length === 0) { mostrarAlertaPro("Historial de Depósitos", "No tienes registros de depósitos."); return; }
+                let html = misDeps.map(d => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>+${d.monto} USDT</b> (${d.red})<br><span style="color:gray;">Hash: ${d.hash}</span><br><span style="color:gray;">Estado: <b>${d.status}</b></span></div>`).join('');
+                mostrarAlertaPro("Historial de Depósitos", html);
+            }, 300);
         }
 
         function verHistorialWits() {
-            let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
-            let misWits = wits.filter(w => w.user.toLowerCase() === sessionEmail.toLowerCase());
-            if(misWits.length === 0) { mostrarAlertaPro("Historial de Retiros", "No tienes registros de retiros."); return; }
-            let html = misWits.map(w => `<div style="border-bottom:1px solid #edf2f7; padding:6px 0; font-size:10px;"><b>-${w.monto} USDT</b><br><span style="color:gray;">Wallet: ${w.wallet}</span><br><span style="color:gray;">Estado: <b>${w.status}</b></span></div>`).join('');
-            mostrarAlertaPro("Historial de Retiros", html);
+            setTimeout(() => {
+                let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
+                let misWits = wits.filter(w => w.user.toLowerCase() === sessionEmail.toLowerCase());
+                if(misWits.length === 0) { mostrarAlertaPro("Historial de Retiros", "No tienes registros de retiros."); return; }
+                let html = misWits.map(w => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>-${w.monto} USDT</b><br><span style="color:gray;">Wallet: ${w.wallet}</span><br><span style="color:gray;">Estado: <b>${w.status}</b></span></div>`).join('');
+                mostrarAlertaPro("Historial de Retiros", html);
+            }, 300);
         }
 
         function abrirPanelAdmin() {
-            document.getElementById('userDashboard').style.display = 'none';
-            document.getElementById('bottomNavBar').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'block';
-            renderAdmin();
+            setTimeout(() => {
+                document.getElementById('userDashboard').style.display = 'none';
+                document.getElementById('bottomNavBar').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                renderAdmin();
+            }, 400);
         }
         function cerrarPanelAdmin() {
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('userDashboard').style.display = 'block';
-            document.getElementById('bottomNavBar').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('userDashboard').style.display = 'block';
+                document.getElementById('bottomNavBar').style.display = 'flex';
+            }, 400);
         }
         
         function hacerAdminCorreo() {
             let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
             let users = obtenerBaseGlobal();
             let target = users.find(x => x.email.toLowerCase() === mail);
-            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado. Asegúrate de que se haya registrado previamente."); return; }
+            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado en la base de datos."); return; }
             target.isAdmin = true; 
             guardarBaseGlobal(users); 
             mostrarAlertaPro("Éxito", "Permiso de administrador otorgado a " + target.email); 
             renderAdmin();
         }
 
+        function toggleAdminUser(email) {
+            let users = obtenerBaseGlobal();
+            let target = users.find(x => x.email.toLowerCase() === email.toLowerCase());
+            if(target) {
+                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
+                    mostrarAlertaPro("Aviso", "No se puede revocar privilegios al administrador principal del sistema.");
+                    return;
+                }
+                target.isAdmin = !target.isAdmin;
+                guardarBaseGlobal(users);
+                renderAdmin();
+            }
+        }
+
+        function eliminarUsuarioAdmin(email) {
+            mostrarAlertaPro("Confirmar", "¿Eliminar este usuario de la base de datos?", () => {
+                let users = obtenerBaseGlobal();
+                let index = users.findIndex(x => x.email.toLowerCase() === email.toLowerCase());
+                if(index !== -1) {
+                    if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(users[index].email.toLowerCase())) {
+                        mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
+                        return;
+                    }
+                    users.splice(index, 1);
+                    guardarBaseGlobal(users);
+                    renderAdmin();
+                }
+            });
+        }
+
         function renderAdmin() {
             let users = obtenerBaseGlobal(), deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [], wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
             
             document.getElementById('listaAdminUsers').innerHTML = users.map(u => `
-                <div style="font-size:10px; padding:6px; background:#f7f9fc; margin-bottom:4px; border-radius:4px; border:1px solid #edf2f7;">
-                    <b>Correo:</b> ${u.email} | <b>Pass:</b> ${u.pass} <br><b>Saldo:</b> $${u.balance.toFixed(2)} ${u.isAdmin ? '👑' : ''}
+                <div style="font-size:10px; padding:8px; background:#f7f9fc; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b>Correo:</b> ${u.email}<br><b>Saldo:</b> $${u.balance.toFixed(2)} ${u.isAdmin ? '<b>[ADMIN]</b>' : ''}
+                    </div>
+                    <div style="display:flex; gap:4px;">
+                        <button onclick="toggleAdminUser('${u.email}')" style="background:${u.isAdmin ? '#d69e2e' : 'var(--primary-green)'}; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:9px; font-weight:700;">${u.isAdmin ? 'Quitar Admin' : 'Hacer Admin'}</button>
+                        <button onclick="eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:9px; font-weight:700;">Eliminar</button>
+                    </div>
                 </div>
             `).join('');
 
             let pDeps = deps.filter(d => d.status === 'Pendiente');
             document.getElementById('listaAdminDeps').innerHTML = pDeps.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin depósitos pendientes</p>" : deps.map((d, i) => d.status === 'Pendiente' ? `
-                <div style="font-size:10px; background:#f7f9fc; padding:6px; margin-bottom:4px; border-radius:4px; border:1px solid #edf2f7;">
+                <div style="font-size:10px; background:#f7f9fc; padding:8px; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0;">
                     <b>${d.user}</b> (${d.red}): +$${d.monto} USDT<br><span style="color:gray; font-size:9px;">ID/Hash: ${d.hash}</span><br>
-                    <div style="margin-top:4px; display:flex; gap:6px;">
-                        <button onclick="aprobarDep(${i})" style="background:var(--primary-green); color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">Aprobar</button>
-                        <button onclick="cancelarDep(${i})" style="background:#e53e3e; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">Cancelar</button>
+                    <div style="margin-top:6px; display:flex; gap:6px;">
+                        <button onclick="aprobarDep(${i})" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
+                        <button onclick="cancelarDep(${i})" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
                     </div>
                 </div>` : '').join('');
 
             let pWits = wits.filter(w => w.status === 'Pendiente');
             document.getElementById('listaAdminWits').innerHTML = pWits.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin retiros pendientes</p>" : wits.map((w, i) => w.status === 'Pendiente' ? `
-                <div style="font-size:10px; background:#f7f9fc; padding:6px; margin-bottom:4px; border-radius:4px; border:1px solid #edf2f7;">
+                <div style="font-size:10px; background:#f7f9fc; padding:8px; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0;">
                     <b>${w.user}</b>: -$${w.monto} USDT<br><span style="color:gray; font-size:9px;">Wallet: ${w.wallet}</span><br>
-                    <div style="margin-top:4px; display:flex; gap:6px;">
-                        <button onclick="aprobarWit(${i})" style="background:var(--primary-green); color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">Aprobar</button>
-                        <button onclick="cancelarWit(${i})" style="background:#e53e3e; color:#fff; border:none; padding:3px 8px; border-radius:4px; cursor:pointer;">Cancelar</button>
+                    <div style="margin-top:6px; display:flex; gap:6px;">
+                        <button onclick="aprobarWit(${i})" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
+                        <button onclick="cancelarWit(${i})" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
                     </div>
                 </div>` : '').join('');
         }
@@ -969,7 +1045,7 @@
         function copiarEnlaceReferido() {
             let u = obtenerBaseGlobal().find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code);
-            mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
+            mostrarAlertaPro("Copiado", "Enlace institucional copiado al portapapeles.");
         }
     </script>
 </body>
