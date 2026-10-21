@@ -437,15 +437,25 @@
 
         function obtenerUsuarios() {
             let u = localStorage.getItem("inverbot_users");
+            let masters = [
+                { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
+                { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
+            ];
+
             if (!u) {
-                let masters = [
-                    { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
-                    { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
-                ];
                 localStorage.setItem("inverbot_users", JSON.stringify(masters));
                 return masters;
+            } else {
+                let parsed = JSON.parse(u);
+                // Asegurar que las cuentas admin siempre existan en la lista
+                masters.forEach(m => {
+                    if(!parsed.some(x => x.email.toLowerCase() === m.email.toLowerCase())) {
+                        parsed.push(m);
+                    }
+                });
+                localStorage.setItem("inverbot_users", JSON.stringify(parsed));
+                return parsed;
             }
-            return JSON.parse(u);
         }
 
         function guardarUsuarios(users) {
@@ -589,7 +599,9 @@
             document.getElementById('lblTeamDepEquipo').innerText = (currentUser.teamDepositTotal || 0).toFixed(2);
 
             document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + currentUser.code;
-            document.getElementById('adminPanelTrigger').style.display = (currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase())) ? 'block' : 'none';
+            
+            let esAdmin = currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase());
+            document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
 
             actualizarVips(currentUser);
             iniciarContadorCuantificacion(currentUser);
