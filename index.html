@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Financial Asset Management</title>
-    <!-- Supabase Client SDK Oficial -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Global Financial Asset Management | Inverbot</title>
     <style>
         :root {
-            --bg-main: #f4f6f8;
-            --bg-card: #ffffff;
-            --bg-input: #f7f9fc;
-            --border-color: #cbd5e0;
-            --primary-green: #00b96b;
-            --primary-green-dark: #008449;
-            --accent-gold: #f0b90b;
-            --text-main: #1a202c;
-            --text-muted: #4a5568;
+            --bg-main: #0b0f19;
+            --bg-card: #131b2e;
+            --bg-input: #1e293b;
+            --border-color: #2a3950;
+            --primary-green: #00e676;
+            --primary-green-dark: #00c853;
+            --accent-gold: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -32,164 +31,175 @@
             overflow-x: hidden;
         }
 
-        .app-container { width: 100%; max-width: 450px; min-height: 100vh; background: var(--bg-main); position: relative; padding: 12px; }
+        .app-container { width: 100%; max-width: 450px; min-height: 100vh; background: var(--bg-main); position: relative; padding: 16px; }
         
         .header-banner {
-            background: linear-gradient(135deg, #00b96b, #008449);
+            background: linear-gradient(135deg, #0b132b, #1c2541);
+            border: 1px solid var(--border-color);
             color: #fff;
-            padding: 22px 16px;
-            border-radius: 12px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 15px rgba(0,185,107,0.3);
+            padding: 24px 16px;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
         }
-        .header-banner h1 { font-size: 20px; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px; }
-        .header-banner p { font-size: 11px; opacity: 0.95; letter-spacing: 0.5px; }
+        .header-banner::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,230,118,0.08), transparent);
+            animation: shimmer 4s infinite;
+        }
+        @keyframes shimmer { 100% { left: 100%; } }
+
+        .header-banner h1 { font-size: 22px; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 6px; color: var(--primary-green); }
+        .header-banner p { font-size: 11px; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; }
 
         .card { 
             background-color: var(--bg-card); 
             border: 1px solid var(--border-color); 
-            padding: 18px; 
-            border-radius: 12px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
-            margin-bottom: 12px; 
+            padding: 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); 
+            margin-bottom: 14px; 
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .balance-box {
-            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            background: linear-gradient(145deg, #131b2e, #0f172a);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 12px;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 14px;
             text-align: left;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
         }
-        .balance-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-        .balance-amount { font-size: 26px; font-weight: 800; color: var(--primary-green); font-family: monospace; }
+        .balance-title { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; }
+        .balance-amount { font-size: 28px; font-weight: 800; color: var(--primary-green); font-family: monospace; letter-spacing: -0.5px; }
 
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
         .btn-action-dep {
-            background: var(--primary-green); color: #fff; border: none; padding: 12px;
-            border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;
+            background: var(--primary-green); color: #0b0f19; border: none; padding: 12px;
+            border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center;
+            transition: var(--transition-smooth); box-shadow: 0 4px 15px rgba(0,230,118,0.2);
         }
-        .btn-action-wit {
-            background: #fff; color: var(--primary-green); border: 1px solid var(--primary-green); padding: 12px;
-            border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;
-        }
-        .btn-action-history {
-            background: #f7f9fc; color: #2d3748; border: 1px solid var(--border-color); padding: 10px;
-            border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 6px;
-        }
-
-        .team-hero {
-            background: linear-gradient(135deg, #00b96b, #008449);
-            color: #fff;
-            padding: 22px 16px;
-            border-radius: 14px;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 15px rgba(0,185,107,0.3);
-        }
-        .team-hero-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-        .team-hero-title { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-        .team-hero-sub { font-size: 11px; opacity: 0.95; text-align: right; }
-        .team-hero-amount { font-size: 24px; font-weight: 900; font-family: monospace; }
+        .btn-action-dep:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,230,118,0.4); }
         
-        .team-hero-btn {
-            background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
-            color: #fff; padding: 9px 12px; border-radius: 8px; font-size: 11px; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; gap: 6px; width: fit-content;
-            margin-top: 10px;
+        .btn-action-wit {
+            background: transparent; color: var(--primary-green); border: 1px solid var(--primary-green); padding: 12px;
+            border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center;
+            transition: var(--transition-smooth);
         }
+        .btn-action-wit:hover { background: rgba(0,230,118,0.08); transform: translateY(-2px); }
 
-        .team-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .team-stat-card {
-            background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;
+        .btn-action-history {
+            background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 10px;
+            border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 6px;
+            transition: var(--transition-smooth);
         }
-        .team-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
-        .team-stat-value { font-size: 20px; font-weight: 800; color: #1a202c; font-family: monospace; }
+        .btn-action-history:hover { border-color: var(--primary-green); color: var(--primary-green); }
 
         .quant-box {
-            background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 24px 16px; text-align: center; margin-bottom: 12px;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px 16px; text-align: center; margin-bottom: 14px;
         }
         
         .countdown-timer {
-            font-size: 12px; font-weight: 800; color: #e53e3e; background: #fff5f5;
-            border: 1px solid #fed7d7; padding: 5px 12px; border-radius: 6px;
-            display: inline-block; margin-bottom: 12px; font-family: monospace;
+            font-size: 12px; font-weight: 800; color: #f87171; background: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.2); padding: 6px 14px; border-radius: 8px;
+            display: inline-block; margin-bottom: 14px; font-family: monospace; letter-spacing: 1px;
         }
 
         .quant-battery {
-            width: 100px; height: 140px; margin: 0 auto 10px auto; background: #f7f9fc;
-            border: 3px solid var(--primary-green); border-radius: 12px;
+            width: 110px; height: 150px; margin: 0 auto 12px auto; background: var(--bg-input);
+            border: 2px solid var(--primary-green); border-radius: 14px;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
             position: relative; cursor: pointer; overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,185,107,0.2);
+            box-shadow: 0 0 25px rgba(0,230,118,0.15);
+            transition: var(--transition-smooth);
         }
-        .quant-battery:active { transform: scale(0.96); }
+        .quant-battery:hover { box-shadow: 0 0 35px rgba(0,230,118,0.3); transform: scale(1.02); }
+        .quant-battery:active { transform: scale(0.97); }
+        
         .battery-fill {
-            width: 100%; height: 0%; background: linear-gradient(180deg, #00b96b, #009654);
-            transition: height 3s ease; position: relative;
+            width: 100%; height: 0%; background: linear-gradient(180deg, var(--primary-green), var(--primary-green-dark));
+            transition: height 2.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
         }
 
-        .vip-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
-        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .vip-title { font-size: 14px; font-weight: 800; color: #1a202c; }
-        .vip-tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: #e6f9f0; color: var(--primary-green); text-transform: uppercase; }
+        .vip-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 18px; margin-bottom: 12px; transition: var(--transition-smooth); }
+        .vip-card:hover { border-color: rgba(0,230,118,0.4); }
+        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .vip-title { font-size: 14px; font-weight: 800; color: var(--text-main); letter-spacing: 0.5px; }
+        .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 6px; background: rgba(0,230,118,0.1); color: var(--primary-green); text-transform: uppercase; border: 1px solid rgba(0,230,118,0.2); }
         
-        .vip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .vip-sub { background: #f7f9fc; padding: 9px; border-radius: 6px; border: 1px solid var(--border-color); }
-        .vip-sub-t { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
-        .vip-sub-v { font-size: 12px; font-weight: 800; color: #1a202c; font-family: monospace; }
+        .vip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .vip-sub { background: var(--bg-input); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
+        .vip-sub-t { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .vip-sub-v { font-size: 13px; font-weight: 800; color: var(--text-main); font-family: monospace; margin-top: 2px; }
         .vip-sub-v.green { color: var(--primary-green); }
-        .vip-sub-v.gold { color: #d69e2e; }
+        .vip-sub-v.gold { color: var(--accent-gold); }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px);
+            background: rgba(5, 8, 15, 0.8); backdrop-filter: blur(8px);
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+            animation: fadeIn 0.3s ease-out;
         }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .modal-card {
-            background: #fff; border: 1px solid var(--border-color);
-            padding: 22px; border-radius: 14px; width: 100%; max-width: 320px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            padding: 24px; border-radius: 18px; width: 100%; max-width: 340px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
-        .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        .modal-title { font-size: 16px; font-weight: 800; color: var(--primary-green); margin-bottom: 10px; letter-spacing: 0.5px; }
+        .modal-msg { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; text-align: left; max-height: 220px; overflow-y: auto; }
 
         .loading-spinner {
-            width: 36px; height: 36px; border: 3px solid #e2e8f0; border-top: 3px solid var(--primary-green);
-            border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px auto;
+            width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--primary-green);
+            border-radius: 50%; animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; margin: 0 auto 14px auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .floating-support {
-            position: fixed; bottom: 75px; right: 16px; z-index: 99;
-            background: linear-gradient(135deg, #00b96b, #008449); color: #fff;
-            width: 48px; height: 48px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,185,107,0.4);
-            cursor: pointer; text-decoration: none;
+            position: fixed; bottom: 80px; right: 20px; z-index: 99;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark)); color: #0b0f19;
+            width: 52px; height: 52px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; box-shadow: 0 8px 25px rgba(0,230,118,0.3);
+            cursor: pointer; text-decoration: none; transition: var(--transition-smooth);
         }
-        .floating-support svg { width: 22px; height: 22px; fill: #fff; }
+        .floating-support:hover { transform: scale(1.1) rotate(5deg); }
+        .floating-support svg { width: 24px; height: 24px; fill: #0b0f19; }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 450px;
-            background: #fff; border-top: 1px solid var(--border-color);
-            display: flex; justify-content: space-around; padding: 10px 0; z-index: 100;
+            background: rgba(19, 27, 46, 0.95); backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-around; padding: 12px 0; z-index: 100;
         }
-        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; gap: 4px; }
-        .nav-item.active { color: var(--primary-green); font-weight: 800; }
-        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; gap: 5px; transition: var(--transition-smooth); }
+        .nav-item.active { color: var(--primary-green); font-weight: 800; transform: translateY(-2px); }
+        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
 
-        .input-group { margin-bottom: 12px; text-align: left; }
-        .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
-        .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: #1a202c; font-size: 12px; outline: none; }
+        .input-group { margin-bottom: 14px; text-align: left; }
+        .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+        .input-group input { width: 100%; padding: 13px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 13px; outline: none; transition: var(--transition-smooth); }
+        .input-group input:focus { border-color: var(--primary-green); box-shadow: 0 0 0 3px rgba(0,230,118,0.15); }
         
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 6px; }
-        .btn-green { background: var(--primary-green); color: #fff; }
-        .btn-red { background: #e53e3e; color: #fff; }
+        .btn { width: 100%; padding: 13px; border: none; border-radius: 10px; font-size: 13px; font-weight: 800; cursor: pointer; margin-top: 8px; transition: var(--transition-smooth); letter-spacing: 0.5px; }
+        .btn-green { background: var(--primary-green); color: #0b0f19; box-shadow: 0 4px 15px rgba(0,230,118,0.2); }
+        .btn-green:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,230,118,0.4); }
+        .btn-red { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .btn-red:hover { background: rgba(239, 68, 68, 0.25); }
         
-        .auth-switch { text-align: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
-        .auth-switch a { color: var(--primary-green); cursor: pointer; text-decoration: none; font-weight: 800; }
+        .auth-switch { text-align: center; margin-top: 16px; font-size: 11px; color: var(--text-muted); }
+        .auth-switch a { color: var(--primary-green); cursor: pointer; text-decoration: none; font-weight: 800; transition: var(--transition-smooth); }
+        .auth-switch a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -202,66 +212,70 @@
 
     <div class="app-container">
         
+        <!-- PANTALLA DE AUTENTICACIÓN -->
         <div id="authScreen" class="card" style="margin-top: 40px;">
-            <div class="header-banner" style="margin-bottom: 16px;">
+            <div class="header-banner" style="margin-bottom: 20px;">
                 <h1>INVERBOT</h1>
                 <p>Global Quantitative Asset Management</p>
             </div>
 
-            <!-- VISTA REGISTRO (Sin form tag para evitar recargas automáticas) -->
+            <!-- VISTA REGISTRO -->
             <div id="registerView">
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="regEmail" placeholder="trader@gmail.com"></div>
                 <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" placeholder="••••••••"></div>
                 <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" placeholder="••••••••"></div>
                 <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
                 <button type="button" class="btn btn-green" onclick="ejecutarRegistroCloud()">Registrarse</button>
-                <div class="auth-switch"><p>¿Ya posee cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
+                <div class="auth-switch"><p>¿Ya posee cuenta institucional? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
             </div>
 
-            <!-- VISTA LOGIN (Sin form tag) -->
+            <!-- VISTA LOGIN -->
             <div id="loginView" style="display: none;">
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" placeholder="trader@gmail.com"></div>
                 <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" placeholder="••••••••"></div>
                 <button type="button" class="btn btn-green" onclick="ejecutarLoginCloud()">Iniciar Sesión</button>
-                <div class="auth-switch"><p>¿Nuevo socio? <a onclick="cambiarVistaAuth(false)">Registrarse</a></p></div>
+                <div class="auth-switch"><p>¿Nuevo socio institucional? <a onclick="cambiarVistaAuth(false)">Registrarse</a></p></div>
             </div>
         </div>
 
+        <!-- DASHBOARD PRINCIPAL -->
         <div id="userDashboard" style="display: none;">
             
+            <!-- TAB HOGAR -->
             <div id="tabHogar" class="tab-content">
                 <div class="header-banner">
                     <h1>INVERBOT</h1>
                     <p>Global Quantitative Asset Management</p>
                 </div>
 
-                <div class="card" style="text-align: center; background: #e6f9f0; border-color: #b2f5ea;">
-                    <h3 style="font-size: 12px; color: var(--primary-green-dark); margin-bottom: 4px; font-weight: 800;">PROGRAMA DE AFILIADOS</h3>
-                    <p style="font-size: 11px; color: #234e52; margin-bottom: 10px;">Obtén comisiones institucionales por cada socio.</p>
-                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
+                <div class="card" style="text-align: center; background: linear-gradient(135deg, rgba(0,230,118,0.05), rgba(19,27,46,0.9)); border-color: rgba(0,230,118,0.2);">
+                    <h3 style="font-size: 13px; color: var(--primary-green); margin-bottom: 6px; font-weight: 800; letter-spacing: 0.5px;">PROGRAMA DE AFILIADOS</h3>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5;">Obtén comisiones institucionales en tiempo real por cada socio integrado.</p>
+                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="padding: 10px; font-size: 11px;">Ver Mi Red de Socios</button>
                 </div>
 
                 <div class="card">
-                    <div style="font-size: 11px; font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;">
+                    <div style="font-size: 11px; font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.8px;">
                         <span>Mercados Financieros Globales</span>
-                        <span style="font-size: 9px; color: var(--primary-green); background: #e6f9f0; padding: 2px 6px; border-radius: 4px; font-weight: 700;">EN LÍNEA</span>
+                        <span style="font-size: 9px; color: var(--primary-green); background: rgba(0,230,118,0.1); padding: 3px 8px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(0,230,118,0.2);">EN LÍNEA</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #edf2f7;"><span>BTC / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktBtc">81,598.50</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #edf2f7;"><span>ETH / USDT</span><span style="font-family: monospace; font-weight: 700; color: #e53e3e;" id="mktEth">2,387.48</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #edf2f7;"><span>SOL / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktSol">194.20</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid #edf2f7;"><span>BNB / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktBnb">642.15</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0;"><span>XRP / USDT</span><span style="font-family: monospace; font-weight: 700; color: #e53e3e;" id="mktXrp">1.8842</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color);"><span>BTC / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktBtc">81,598.50</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color);"><span>ETH / USDT</span><span style="font-family: monospace; font-weight: 700; color: #ef4444;" id="mktEth">2,387.48</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color);"><span>SOL / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktSol">194.20</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color);"><span>BNB / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-green);" id="mktBnb">642.15</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; padding: 10px 0;"><span>XRP / USDT</span><span style="font-family: monospace; font-weight: 700; color: #ef4444;" id="mktXrp">1.8842</span></div>
                 </div>
 
-                <div class="card" style="background: #f8fafc;">
-                    <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">Métricas del Modo Central</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center;">
-                        <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e0;"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-green);">$4,289,150</div></div>
-                        <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e0;"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Modos Operativos</div><div style="font-size:12px; font-weight:800; color:#1a202c;">1,428</div></div>
+                <div class="card" style="background: var(--bg-card);">
+                    <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px;">Métricas del Modo Central</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center;">
+                        <div style="background:var(--bg-input); padding:12px; border-radius:10px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Volumen 24h</div><div style="font-size:13px; font-weight:800; color:var(--primary-green); margin-top:3px;">$4,289,150</div></div>
+                        <div style="background:var(--bg-input); padding:12px; border-radius:10px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Modos Operativos</div><div style="font-size:13px; font-weight:800; color:var(--text-main); margin-top:3px;">1,428</div></div>
                     </div>
                 </div>
             </div>
 
+            <!-- TAB CUANTIFICAR -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="balance-box">
                     <div class="balance-title">Activos Totales</div>
@@ -270,20 +284,21 @@
 
                 <div class="quant-box">
                     <div id="countdownContainer" style="display: none;">
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">Próximo ciclo:</div>
+                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px;">Próximo ciclo operativo:</div>
                         <div class="countdown-timer" id="lblCountdownTimer">23:59:59</div>
                     </div>
 
                     <div class="quant-battery" onclick="ejecutarCuantificacionOrb()">
                         <div class="battery-fill" id="batteryFill"></div>
                         <div style="position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2;">
-                            <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:var(--primary-green-dark); margin-bottom:2px;"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-                            <div style="font-size: 10px; font-weight: 800; color: #1a202c;" id="lblEstadoOrb">INICIAR</div>
+                            <svg viewBox="0 0 24 24" style="width:22px; height:22px; fill:var(--primary-green); margin-bottom:4px;"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+                            <div style="font-size: 11px; font-weight: 800; color: var(--text-main);" id="lblEstadoOrb">INICIAR</div>
                         </div>
                     </div>
-                    <p style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Pulse el núcleo energético para procesar el rendimiento diario de su modo VIP activo.</p>
+                    <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; line-height: 1.5;">Pulse el núcleo energético para procesar el rendimiento diario de su licencia VIP activa.</p>
                 </div>
 
+                <!-- VIP CARDS -->
                 <div class="vip-card">
                     <div class="vip-row"><span class="vip-title">NIVEL VIP 1</span><span id="vip1StatusText" class="vip-tag">Inactivo</span></div>
                     <div class="vip-grid">
@@ -321,56 +336,57 @@
                 </div>
 
                 <div class="vip-card" style="border-color: var(--accent-gold);">
-                    <div class="vip-row"><span class="vip-title" style="color:var(--accent-gold);">NIVEL VIP 5 (ELITE)</span><span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span></div>
+                    <div class="vip-row"><span class="vip-title" style="color:var(--accent-gold);">NIVEL VIP 5 (ELITE)</span><span id="vip5StatusText" class="vip-tag" style="background:rgba(251,191,36,0.1); color:var(--accent-gold); border-color:rgba(251,191,36,0.3);">Inactivo</span></div>
                     <div class="vip-grid">
                         <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v gold">1,600.00 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v gold">3,600.00 USDT</div></div>
                     </div>
-                    <div id="vip5ActionArea"><button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir VIP 5 Elite</button></div>
+                    <div id="vip5ActionArea"><button class="btn" style="background: linear-gradient(135deg, #fbbf24, #d97706); color:#0b0f19; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir VIP 5 Elite</button></div>
                 </div>
             </div>
 
+            <!-- TAB RED / EQUIPO -->
             <div id="tabRed" class="tab-content" style="display: none;">
-                <div class="team-hero">
-                    <div class="team-hero-top">
-                        <div class="team-hero-title">COMISIÓN DE RED</div>
-                        <div class="team-hero-sub">Balance acumulado</div>
+                <div class="header-banner" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); text-transform: uppercase; letter-spacing: 1px;">COMISIÓN DE RED</div>
+                        <div style="font-size: 10px; color: var(--text-muted);">USDT</div>
                     </div>
-                    <div style="font-size: 11px; opacity: 0.9; margin-bottom: 2px; font-weight: 700;">USDT</div>
-                    <div class="team-hero-amount" id="lblTeamComision">0.00</div>
+                    <div style="font-size: 28px; font-weight: 900; font-family: monospace; color: var(--text-main);" id="lblTeamComision">0.00</div>
                     
-                    <button class="team-hero-btn" onclick="mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.')">
+                    <button class="btn" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); color: var(--text-main); margin-top: 14px; padding: 10px; font-size: 11px;" onclick="mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente con la red global.')">
                         Historial de comisiones
                     </button>
                 </div>
 
-                <div class="team-grid-2">
-                    <div class="team-stat-card"><div class="team-stat-label">Socios Totales</div><div class="team-stat-value" id="lblTeamTotalRef">0</div></div>
-                    <div class="team-stat-card"><div class="team-stat-label">Válidas</div><div class="team-stat-value" id="lblTeamValidRef" style="color: var(--primary-green);">0</div></div>
+                <div class="team-grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                    <div class="card" style="margin:0; padding:16px;"><div class="team-stat-label" style="font-size:10px; color:var(--text-muted); font-weight:700; margin-bottom:6px; text-transform:uppercase;">Socios Totales</div><div class="team-stat-value" id="lblTeamTotalRef" style="font-size:22px; font-weight:800; font-family:monospace;">0</div></div>
+                    <div class="card" style="margin:0; padding:16px;"><div class="team-stat-label" style="font-size:10px; color:var(--text-muted); font-weight:700; margin-bottom:6px; text-transform:uppercase;">Válidas</div><div class="team-stat-value" id="lblTeamValidRef" style="font-size:22px; font-weight:800; font-family:monospace; color: var(--primary-green);">0</div></div>
                 </div>
 
-                <div class="team-stat-card" style="margin-bottom: 12px;">
-                    <div class="team-stat-label">Volumen de Depósito del Equipo</div>
-                    <div class="team-stat-value" id="lblTeamDepEquipo">0.00</div>
+                <div class="card" style="margin-bottom: 12px; padding: 16px;">
+                    <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px;">Volumen de Depósito del Equipo</div>
+                    <div style="font-size: 22px; font-weight: 800; font-family: monospace;" id="lblTeamDepEquipo">0.00</div>
                 </div>
 
-                <div class="card" style="text-align: center;">
-                    <h3 style="font-size: 12px; margin-bottom: 4px; font-weight: 800;">ENLACE DE INVITACIÓN</h3>
-                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:10px; border-radius:6px; font-weight:700;"></code>
-                    <button class="btn btn-green" onclick="copiarEnlaceReferido()" style="padding:9px; font-size:11px;">Copiar Enlace Seguro</button>
+                <div class="card" style="text-align: center; padding: 20px;">
+                    <h3 style="font-size: 12px; margin-bottom: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px;">ENLACE DE INVITACIÓN</h3>
+                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 10px 0; word-break: break-all; background:var(--bg-input); padding:12px; border-radius:8px; font-weight:700; border:1px solid var(--border-color);"></code>
+                    <button class="btn btn-green" onclick="copiarEnlaceReferido()" style="padding:10px; font-size:11px;">Copiar Enlace Seguro</button>
                 </div>
             </div>
 
+            <!-- TAB PERFIL / AMI -->
             <div id="tabAmi" class="tab-content" style="display: none;">
                 <div class="balance-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
                         <div>
-                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700;">SESIÓN ACTIVA</div>
-                            <div style="font-size: 11px; font-weight: 800;" id="lblUserEmail"></div>
+                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.8px;">SESIÓN ACTIVA</div>
+                            <div style="font-size: 12px; font-weight: 800; margin-top: 2px;" id="lblUserEmail"></div>
                         </div>
                         <div style="display: flex; gap: 6px;">
-                            <button onclick="eliminarCuentaPropia()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Eliminar</button>
-                            <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Salir</button>
+                            <button onclick="eliminarCuentaPropia()" class="btn btn-red" style="width: auto; padding: 6px 10px; font-size: 10px; margin:0;">Eliminar</button>
+                            <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 6px 10px; font-size: 10px; margin:0;">Salir</button>
                         </div>
                     </div>
 
@@ -382,51 +398,53 @@
                         <button class="btn-action-wit" onclick="mostrarSeccion('wit')">Retirar</button>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
                         <button class="btn-action-history" onclick="verHistorialDeps()">Historial Depósitos</button>
                         <button class="btn-action-history" onclick="verHistorialWits()">Historial Retiros</button>
                     </div>
 
-                    <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
+                    <div id="subAccionContainer" style="display: none; margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;"></div>
 
-                    <div id="adminPanelTrigger" style="display: none; background: #e6f9f0; border: 1px solid var(--primary-green); padding: 12px; border-radius: 8px; margin-top: 14px;">
-                        <p style="color: var(--primary-green-dark); font-weight: 800; font-size: 10px; margin-bottom: 8px; text-transform: uppercase;">PANEL EJECUTIVO CEO</p>
-                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 9px;">Administrar Modos y Finanzas</button>
+                    <div id="adminPanelTrigger" style="display: none; background: rgba(0,230,118,0.05); border: 1px solid rgba(0,230,118,0.2); padding: 14px; border-radius: 12px; margin-top: 16px;">
+                        <p style="color: var(--primary-green); font-weight: 800; font-size: 10px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">PANEL EJECUTIVO CEO</p>
+                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 10px;">Administrar Modos y Finanzas</button>
                     </div>
                 </div>
             </div>
 
         </div>
 
+        <!-- PANEL DE ADMINISTRACIÓN CEO -->
         <div id="adminDashboard" class="card" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">CONTROL EJECUTIVO CEO</h3>
-                <button onclick="cerrarPanelAdmin()" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="font-size: 14px; font-weight: 800; color: var(--primary-green); letter-spacing: 0.5px;">CONTROL EJECUTIVO CEO</h3>
+                <button onclick="cerrarPanelAdmin()" class="btn btn-green" style="width: auto; padding: 6px 12px; font-size: 10px; margin:0;">Volver</button>
             </div>
             
-            <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green-dark); margin-bottom: 8px; text-transform: uppercase;">Acreditar Saldo a Usuario</div>
+            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 14px; border-radius: 12px; margin-bottom: 14px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px;">Acreditar Saldo a Usuario</div>
                 <div class="input-group"><label>Correo</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
                 <div class="input-group"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
-                <button class="btn btn-green" onclick="acreditarSaldoPorCorreo()" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
+                <button class="btn btn-green" onclick="acreditarSaldoPorCorreo()" style="padding:10px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
             </div>
 
-            <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green-dark); margin-bottom: 8px; text-transform: uppercase;">Otorgar Privilegio de Administrador</div>
+            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 14px; border-radius: 12px; margin-bottom: 14px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px;">Otorgar Privilegio de Administrador</div>
                 <div class="input-group"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
-                <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
+                <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:10px; font-size:11px; margin:0;">Otorgar Admin</button>
             </div>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Lista General de Usuarios</div>
-            <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 120px; overflow-y: auto;"></div>
+            <div style="font-size: 11px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.8px;">Lista General de Usuarios</div>
+            <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 130px; overflow-y: auto;"></div>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Depósitos Pendientes</div>
+            <div style="font-size: 11px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.8px;">Depósitos Pendientes</div>
             <div id="listaAdminDeps" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; color: #e53e3e;">Retiros Pendientes</div>
+            <div style="font-size: 11px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.8px; color: #ef4444;">Retiros Pendientes</div>
             <div id="listaAdminWits" style="max-height: 140px; overflow-y: auto;"></div>
         </div>
 
+        <!-- BARRA DE NAVEGACIÓN INFERIOR -->
         <div class="bottom-nav" id="bottomNavBar" style="display: none;">
             <button class="nav-item active" onclick="cambiarTab('Hogar', this)" id="navHogar">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Hogar
@@ -447,26 +465,23 @@
     <script>
         const SUPABASE_URL = "https://noakyexlfvblduomfca.supabase.co";
         const SUPABASE_KEY = "sb_publishable_ztwRueaYThf2D_CiAwIy0Q_9ebIRAP_";
-        
-        let supabaseClient = null;
-        try {
-            if (window.supabase) {
-                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            }
-        } catch (e) {
-            console.error("Error conectando Supabase:", e);
-        }
-
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
+        
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
         let currentUser = null;
         let countdownInterval = null;
 
+        // Conexión REST directa a Supabase (Garantizado sin fallos de SDK)
         async function obtenerUsuariosCloud() {
-            if (!supabaseClient) return null;
             try {
-                let { data, error } = await supabaseClient.from('inverbot_db').select('*').eq('id', 1).single();
-                if (error || !data || !data.payload) {
+                let res = await fetch(`${SUPABASE_URL}/rest/v1/inverbot_db?id=eq.1&select=*`, {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                let rows = await res.json();
+                if (!rows || rows.length === 0 || !rows[0].payload) {
                     let initial = {
                         users: {
                             "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
@@ -475,23 +490,43 @@
                         deposits: [],
                         withdrawals: []
                     };
-                    await supabaseClient.from('inverbot_db').upsert({ id: 1, payload: initial });
+                    await guardarUsuariosCloud(initial);
                     return initial;
                 }
-                return data.payload;
+                return rows[0].payload;
             } catch (err) {
-                console.error("Error cloud fetch:", err);
+                console.error("Error conectando a Supabase:", err);
                 return null;
             }
         }
 
         async function guardarUsuariosCloud(dbData) {
-            if (!supabaseClient) return;
             try {
-                await supabaseClient.from('inverbot_db').upsert({ id: 1, payload: dbData });
+                await fetch(`${SUPABASE_URL}/rest/v1/inverbot_db`, {
+                    method: 'POST',
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Content-Type": "application/json",
+                        "Prefer": "resolution=merge-duplicates"
+                    },
+                    body: JSON.stringify({ id: 1, payload: dbData })
+                });
             } catch (err) {
-                console.error("Error cloud save:", err);
+                console.error("Error guardando en Supabase:", err);
             }
+        }
+
+        function mostrarCargaPro(mensaje = "Sincronizando...") {
+            document.getElementById('customModalContainer').innerHTML = `
+                <div class="modal-overlay">
+                    <div class="modal-card">
+                        <div class="loading-spinner"></div>
+                        <h3 class="modal-title" style="font-size:14px; color:var(--text-main);">PROCESANDO</h3>
+                        <p class="modal-msg" style="text-align:center; margin-bottom:0; color:var(--text-muted);">${mensaje}</p>
+                    </div>
+                </div>
+            `;
         }
 
         function mostrarAlertaPro(titulo, mensaje, cb = null) {
@@ -500,9 +535,9 @@
                     <div class="modal-card">
                         <h3 class="modal-title">${titulo}</h3>
                         <p class="modal-msg">${mensaje}</p>
-                        <div style="display:flex; gap:6px; margin-top:12px;">
+                        <div style="display:flex; gap:8px; margin-top:16px;">
                             ${cb ? `<button class="btn btn-green" id="modalAceptar">Aceptar</button>` : ``}
-                            <button class="btn btn-green" onclick="cerrarAlerta()" style="margin:0;">Cerrar</button>
+                            <button class="btn btn-green" onclick="cerrarAlerta()" style="margin:0; background:var(--bg-input); color:var(--text-main); border:1px solid var(--border-color);">Cerrar</button>
                         </div>
                     </div>
                 </div>
@@ -548,13 +583,12 @@
             if(!email || !pass) { mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
             if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
+            mostrarCargaPro("Registrando cuenta en la red global...");
             let db = await obtenerUsuariosCloud();
-            if(!db) { mostrarAlertaPro("Error", "No se pudo conectar a la base de datos."); return; }
+            cerrarAlerta();
 
-            if(db.users[email]) {
-                mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
-                return;
-            }
+            if(!db) { mostrarAlertaPro("Error", "No se pudo conectar a la base de datos."); return; }
+            if(db.users[email]) { mostrarAlertaPro("Aviso", "Este correo ya está registrado."); return; }
 
             let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
             currentUser = { 
@@ -586,7 +620,10 @@
             
             if(!email || !pass) { mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
 
+            mostrarCargaPro("Verificando credenciales institucionales...");
             let db = await obtenerUsuariosCloud();
+            cerrarAlerta();
+
             if(!db || !db.users || !db.users[email]) {
                 mostrarAlertaPro("Error", "Usuario no encontrado en la nube.");
                 return;
@@ -637,15 +674,15 @@
             for(let i=1; i<=5; i++) {
                 let activo = (u.vipActive === i && u.vipExpiry > ahora);
                 let st = document.getElementById('vip' + i + 'StatusText');
-                if(st) { st.innerText = activo ? "Activado" : "Inactivo"; st.style.background = activo ? "#e6f9f0" : "#edf2f7"; st.style.color = activo ? "var(--primary-green)" : "var(--text-muted)"; }
+                if(st) { st.innerText = activo ? "Activado" : "Inactivo"; st.style.background = activo ? "rgba(0,230,118,0.1)" : "var(--bg-input)"; st.style.color = activo ? "var(--primary-green)" : "var(--text-muted)"; st.style.borderColor = activo ? "rgba(0,230,118,0.3)" : "var(--border-color)"; }
                 let act = document.getElementById('vip' + i + 'ActionArea');
                 let costo = i===1?4:(i===2?16:(i===3?65:(i===4?180:3600)));
                 if(act) {
                     if (activo) {
-                        act.innerHTML = `<button class="btn" style="background:#e2e8f0; color:var(--text-muted); cursor:not-allowed;" disabled>Activado</button>`;
+                        act.innerHTML = `<button class="btn" style="background:var(--bg-input); color:var(--text-muted); cursor:not-allowed; border:1px solid var(--border-color);" disabled>Licencia Activa</button>`;
                     } else {
-                        if(i === 5) act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir VIP 5 Elite</button>`;
-                        else act.innerHTML = `<button class="btn btn-green" onclick="comprarVip(${i}, ${costo})">Adquirir VIP ${i}</button>`;
+                        if(i === 5) act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #fbbf24, #d97706); color:#0b0f19; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir VIP 5 Elite</button>`;
+                        else act.innerHTML = `<button class="btn btn-green" onclick="comprarVip(${i}, ${costo})">Adquirir Nivel VIP ${i}</button>`;
                     }
                 }
             }
@@ -673,34 +710,39 @@
 
         async function ejecutarCuantificacionOrb() {
             let ahora = Date.now();
-            if(!currentUser.vipActive || currentUser.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con licencia VIP activa."); return; }
-            if(ahora - (currentUser.lastClaim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso", "Espera a que finalice el contador."); return; }
+            if(!currentUser.vipActive || currentUser.vipExpiry < ahora) { mostrarAlertaPro("Aviso Institucional", "No cuentas con ninguna licencia VIP activa para procesar rendimiento."); return; }
+            if(ahora - (currentUser.lastClaim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso Institucional", "El ciclo operativo diario aún está en curso. Espera que finalice el contador."); return; }
             
             let rec = currentUser.vipActive === 1 ? 1.5 : (currentUser.vipActive === 2 ? 6.5 : (currentUser.vipActive === 3 ? 42.2 : (currentUser.vipActive === 4 ? 88.5 : 1600.0)));
             document.getElementById('lblEstadoOrb').innerText = "PROCESANDO";
             document.getElementById('batteryFill').style.height = "100%";
 
+            mostrarCargaPro("Ejecutando algoritmo de cuantificación cuantitativa...");
             let db = await obtenerUsuariosCloud();
             currentUser.balance += rec; currentUser.lastClaim = ahora;
             db.users[currentUser.email] = currentUser;
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
 
             setTimeout(() => {
                 document.getElementById('lblEstadoOrb').innerText = "INICIAR";
                 document.getElementById('batteryFill').style.height = "0%";
-                mostrarAlertaPro("Éxito", `+${rec} USDT acreditados.`);
+                mostrarAlertaPro("Rendimiento Exitoso", `+${rec} USDT acreditados a su balance principal.`);
                 entrarDashboardDirecto();
             }, 1000);
         }
 
         async function comprarVip(nivel, precio) {
-            if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
+            if(currentUser.balance < precio) { mostrarAlertaPro("Saldo Insuficiente", "Su balance disponible no cubre el costo de esta licencia VIP."); return; }
+            
+            mostrarCargaPro("Adquiriendo licencia VIP en la red...");
             let db = await obtenerUsuariosCloud();
             currentUser.balance -= precio; currentUser.vipActive = nivel; currentUser.vipExpiry = Date.now() + (35*24*3600*1000); currentUser.lastClaim = 0;
             db.users[currentUser.email] = currentUser;
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
 
-            mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
+            mostrarAlertaPro("Licencia Activada", `¡Nivel VIP ${nivel} activado correctamente!`);
             entrarDashboardDirecto();
         }
 
@@ -715,10 +757,12 @@
         }
 
         async function eliminarCuentaPropia() {
-            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente?", async () => {
+            mostrarAlertaPro("Confirmación", "¿Desea eliminar su cuenta institucional permanentemente?", async () => {
+                mostrarCargaPro("Eliminando cuenta...");
                 let db = await obtenerUsuariosCloud();
                 delete db.users[currentUser.email];
                 await guardarUsuariosCloud(db);
+                cerrarAlerta();
                 cerrarSesion();
             });
         }
@@ -733,33 +777,35 @@
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
                 c.innerHTML = `
-                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:8px;">Red de Depósito (Mínimo 4 USDT)</div>
-                    <code style="font-size:9px; background:#fff; padding:8px; display:block; word-break:break-all; border:1px solid var(--border-color); margin-bottom:8px;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
-                    <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet copiada');" style="padding:8px; font-size:10px; margin-bottom:10px;">Copiar Wallet</button>
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:8px; text-transform:uppercase;">Red de Depósito Institucional (Mínimo 4 USDT)</div>
+                    <code style="font-size:9px; background:var(--bg-card); color:var(--text-main); padding:10px; display:block; word-break:break-all; border:1px solid var(--border-color); border-radius:8px; margin-bottom:10px;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
+                    <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Dirección de billetera copiada al portapapeles.');" style="padding:9px; font-size:10px; margin-bottom:12px;">Copiar Billetera Segura</button>
                     <div class="input-group"><label>Monto</label><input type="number" id="depM" min="4" step="0.01"></div>
-                    <div class="input-group"><label>Hash / ID</label><input type="text" id="depH" placeholder="0x..."></div>
-                    <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:9px; font-size:11px;">Enviar Reporte al CEO</button>`;
+                    <div class="input-group"><label>Hash / ID de Transacción</label><input type="text" id="depH" placeholder="0x..."></div>
+                    <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:10px; font-size:11px;">Enviar Reporte al CEO</button>`;
             } else {
                 c.innerHTML = `
-                    <div class="input-group"><label>Wallet Destino</label><input type="text" id="wW" placeholder="0x..."></div>
-                    <div class="input-group"><label>Monto</label><input type="number" id="wM" min="1" step="0.01"></div>
-                    <div class="input-group"><label>Contraseña</label><input type="password" id="wP"></div>
-                    <button type="button" class="btn btn-green" onclick="solicitarRetiro()" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>`;
+                    <div class="input-group"><label>Wallet Destino BEP-20</label><input type="text" id="wW" placeholder="0x..."></div>
+                    <div class="input-group"><label>Monto a Retirar</label><input type="number" id="wM" min="1" step="0.01"></div>
+                    <div class="input-group"><label>Contraseña Institucional</label><input type="password" id="wP"></div>
+                    <button type="button" class="btn btn-green" onclick="solicitarRetiro()" style="padding:10px; font-size:11px;">Solicitar Retiro Oficial</button>`;
             }
         }
 
         async function reportarDep() {
             let m = parseFloat(document.getElementById('depM').value);
             let h = document.getElementById('depH').value.trim();
-            if(!m || !h) { mostrarAlertaPro("Error", "Complete los campos del depósito."); return; }
+            if(!m || !h) { mostrarAlertaPro("Error", "Complete todos los campos del depósito."); return; }
             
+            mostrarCargaPro("Enviando reporte a la administración...");
             let db = await obtenerUsuariosCloud();
             if(!db.deposits) db.deposits = [];
             let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
             db.deposits.push(newDep);
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
 
-            mostrarAlertaPro("Éxito", "Depósito reportado al CEO correctamente.");
+            mostrarAlertaPro("Reporte Enviado", "Depósito reportado al CEO correctamente.");
             document.getElementById('subAccionContainer').style.display = 'none';
         }
 
@@ -767,157 +813,13 @@
             let w = document.getElementById('wW').value.trim();
             let m = parseFloat(document.getElementById('wM').value);
             let p = document.getElementById('wP').value.trim();
-            if(!w || !m || !p) { mostrarAlertaPro("Error", "Complete los campos de retiro."); return; }
-            if(currentUser.pass !== p) { mostrarAlertaPro("Error", "Contraseña incorrecta."); return; }
-            if(currentUser.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
+            if(!w || !m || !p) { mostrarAlertaPro("Error", "Complete todos los campos de retiro."); return; }
+            if(currentUser.pass !== p) { mostrarAlertaPro("Error", "Contraseña institucional incorrecta."); return; }
+            if(currentUser.balance < m) { mostrarAlertaPro("Error", "Saldo disponible insuficiente."); return; }
             
+            mostrarCargaPro("Procesando solicitud de retiro...");
             currentUser.balance -= m;
             let db = await obtenerUsuariosCloud();
             db.users[currentUser.email] = currentUser;
             if(!db.withdrawals) db.withdrawals = [];
-            let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
-            db.withdrawals.push(newWit);
-            await guardarUsuariosCloud(db);
-
-            mostrarAlertaPro("Éxito", "Retiro solicitado y enviado al CEO.");
-            entrarDashboardDirecto();
-        }
-
-        async function verHistorialDeps() {
-            let db = await obtenerUsuariosCloud();
-            let deps = (db.deposits || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
-            if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
-            mostrarAlertaPro("Historial Depósitos", deps.map(x => `+${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
-        }
-
-        async function verHistorialWits() {
-            let db = await obtenerUsuariosCloud();
-            let wits = (db.withdrawals || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
-            if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
-            mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
-        }
-
-        async function abrirPanelAdmin() {
-            document.getElementById('userDashboard').style.display = 'none';
-            document.getElementById('bottomNavBar').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'block';
-            await renderAdmin();
-        }
-        function cerrarPanelAdmin() {
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('userDashboard').style.display = 'block';
-            document.getElementById('bottomNavBar').style.display = 'flex';
-        }
-
-        async function acreditarSaldoPorCorreo() {
-            let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
-            let monto = parseFloat(document.getElementById('acreditarMonto').value);
-            
-            let db = await obtenerUsuariosCloud();
-            let target = db.users[mail];
-            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
-            target.balance += monto;
-            await guardarUsuariosCloud(db);
-
-            document.getElementById('acreditarEmail').value = '';
-            document.getElementById('acreditarMonto').value = '';
-            mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
-            await renderAdmin();
-        }
-
-        async function hacerAdminCorreo() {
-            let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
-            let db = await obtenerUsuariosCloud();
-            let target = db.users[mail];
-            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
-            target.isAdmin = true;
-            await guardarUsuariosCloud(db);
-
-            document.getElementById('novoAdminEmail').value = '';
-            mostrarAlertaPro("Éxito", `Privilegio de administrador otorgado a ${target.email}`);
-            await renderAdmin();
-        }
-
-        async function renderAdmin() {
-            let db = await obtenerUsuariosCloud();
-            if(!db) return;
-            
-            let usersArr = Object.values(db.users || {});
-            let uHtml = usersArr.map(u => `
-                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
-                    <div style="display:flex; gap:4px;">
-                        <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">${u.isAdmin?'Quitar':'Admin'}</button>
-                        <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e;color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">Eliminar</button>
-                    </div>
-                </div>`).join('');
-            if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
-
-            let deps = (db.deposits || []).filter(x => x.status === 'Pendiente');
-            let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
-                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
-                    <b>${x.user}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Hash: ${x.hash}</span><br>
-                    <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
-                </div>`).join('');
-            if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
-
-            let wits = (db.withdrawals || []).filter(x => x.status === 'Pendiente');
-            let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
-                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
-                    <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${x.wallet}</span><br>
-                    <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
-                </div>`).join('');
-            if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
-        }
-
-        window.toggleAdminUser = async function(email) {
-            let db = await obtenerUsuariosCloud();
-            let target = db.users[email];
-            if(target) {
-                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
-                    mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
-                    return;
-                }
-                target.isAdmin = !target.isAdmin;
-                await guardarUsuariosCloud(db);
-                await renderAdmin();
-            }
-        };
-
-        window.eliminarUsuarioAdmin = async function(email) {
-            let db = await obtenerUsuariosCloud();
-            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
-                mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
-                return;
-            }
-            delete db.users[email];
-            await guardarUsuariosCloud(db);
-            await renderAdmin();
-        };
-
-        window.aprobarDep = async function(id) {
-            let db = await obtenerUsuariosCloud();
-            let d = (db.deposits || []).find(x => x.id === id);
-            if(!d) return;
-            d.status = 'Aprobado';
-            if(db.users[d.user]) { db.users[d.user].balance += d.monto; }
-            await guardarUsuariosCloud(db);
-            await renderAdmin();
-        };
-
-        window.aprobarWit = async function(id) {
-            let db = await obtenerUsuariosCloud();
-            let w = (db.withdrawals || []).find(x => x.id === id);
-            if(!w) return;
-            w.status = 'Aprobado';
-            await guardarUsuariosCloud(db);
-            await renderAdmin();
-        };
-
-        window.copiarEnlaceReferido = function() {
-            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + currentUser.code);
-            mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
-        };
-    </script>
-</body>
-</html>
+            let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email,
