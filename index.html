@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Financial Asset Management</title>
-    <!-- Firebase SDK v9 -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
         :root {
             --bg-main: #f4f6f8;
@@ -433,26 +430,42 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyForInverbotPublicCloud99",
-            authDomain: "inverbot-global.firebaseapp.com",
-            databaseURL: "https://inverbot-global-default-rtdb.firebaseio.com",
-            projectId: "inverbot-global",
-            storageBucket: "inverbot-global.appspot.com",
-            messagingSenderId: "100000000000",
-            appId: "1:100000000000:web:abcdef123456"
-        };
-
-        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
         let currentUser = null;
         let countdownInterval = null;
 
-        function sanitizarEmail(email) {
-            return email.toLowerCase().replace(/\./g, '_dot_').replace(/@/g, '_at_');
+        function obtenerUsuarios() {
+            let u = localStorage.getItem("inverbot_users");
+            if (!u) {
+                let masters = [
+                    { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
+                    { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
+                ];
+                localStorage.setItem("inverbot_users", JSON.stringify(masters));
+                return masters;
+            }
+            return JSON.parse(u);
+        }
+
+        function guardarUsuarios(users) {
+            localStorage.setItem("inverbot_users", JSON.stringify(users));
+        }
+
+        function obtenerDeps() {
+            let d = localStorage.getItem("inverbot_deposits");
+            return d ? JSON.parse(d) : [];
+        }
+        function guardarDeps(deps) {
+            localStorage.setItem("inverbot_deposits", JSON.stringify(deps));
+        }
+
+        function obtenerWits() {
+            let w = localStorage.getItem("inverbot_withdrawals");
+            return w ? JSON.parse(w) : [];
+        }
+        function guardarWits(wits) {
+            localStorage.setItem("inverbot_withdrawals", JSON.stringify(wits));
         }
 
         function mostrarAlertaPro(titulo, mensaje, cb = null) {
@@ -477,31 +490,14 @@
             let ref = params.get('ref');
             if(ref) document.getElementById('regRef').value = ref;
 
-            // Asegurar cuentas admin maestras al cargar
-            ADMIN_EMAILS.forEach(email => {
-                db.ref("users/" + sanitizarEmail(email)).once('value', snap => {
-                    if(!snap.exists()) {
-                        db.ref("users/" + sanitizarEmail(email)).set({
-                            email: email,
-                            pass: email.includes("soporte") ? "lester2010jj" : "jan123",
-                            balance: 1000.0,
-                            code: email.includes("soporte") ? "CEO-MASTER" : "AJC-MASTER",
-                            refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0,
-                            vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true
-                        });
-                    }
-                });
-            });
-
+            let users = obtenerUsuarios();
             if(sessionEmail) {
-                db.ref('users/' + sanitizarEmail(sessionEmail)).once('value', snap => {
-                    if(snap.exists()) {
-                        currentUser = snap.val();
-                        entrarDashboardDirecto();
-                    } else {
-                        cerrarSesion();
-                    }
-                });
+                currentUser = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
+                if(currentUser) {
+                    entrarDashboardDirecto();
+                } else {
+                    cerrarSesion();
+                }
             }
             iniciarSimulacionMercado();
         }
@@ -527,28 +523,34 @@
 
             if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
-            let userRef = db.ref('users/' + sanitizarEmail(email));
-            userRef.once('value', snap => {
-                if(snap.exists()) {
-                    mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
-                } else {
-                    let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-                    currentUser = { 
-                        email: email, pass: pass, balance: 0.0, code: myCode, 
-                        refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, 
-                        commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, 
-                        isAdmin: ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)
-                    };
-                    
-                    userRef.set(currentUser).then(() => {
-                        sessionEmail = email;
-                        localStorage.setItem("inverbot_session", sessionEmail);
-                        entrarDashboardDirecto();
-                    }).catch(err => {
-                        mostrarAlertaPro("Error", "No se pudo conectar a la base de datos: " + err.message);
-                    });
+            let users = obtenerUsuarios();
+            if(users.some(x => x.email.toLowerCase() === email)) {
+                mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
+                return;
+            }
+
+            let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
+            currentUser = { 
+                email: email, pass: pass, balance: 0.0, code: myCode, 
+                refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, 
+                commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, 
+                isAdmin: ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)
+            };
+
+            if(refCode) {
+                let upline = users.find(x => x.code.toUpperCase() === refCode.toUpperCase());
+                if(upline) {
+                    upline.refCount = (upline.refCount || 0) + 1;
+                    currentUser.refBy = upline.email;
                 }
-            });
+            }
+
+            users.push(currentUser);
+            guardarUsuarios(users);
+
+            sessionEmail = email;
+            localStorage.setItem("inverbot_session", sessionEmail);
+            entrarDashboardDirecto();
         }
 
         function iniciarSesion(e) {
@@ -556,17 +558,17 @@
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
             
-            db.ref('users/' + sanitizarEmail(email)).once('value', snap => {
-                let u = snap.val();
-                if(!u || u.pass !== pass) {
-                    mostrarAlertaPro("Error", "Credenciales incorrectas o usuario no encontrado.");
-                    return;
-                }
-                currentUser = u;
-                sessionEmail = u.email;
-                localStorage.setItem("inverbot_session", sessionEmail);
-                entrarDashboardDirecto();
-            });
+            let users = obtenerUsuarios();
+            let u = users.find(x => x.email.toLowerCase() === email && x.pass === pass);
+            if(!u) {
+                mostrarAlertaPro("Error", "Credenciales incorrectas o usuario no encontrado.");
+                return;
+            }
+
+            currentUser = u;
+            sessionEmail = u.email;
+            localStorage.setItem("inverbot_session", sessionEmail);
+            entrarDashboardDirecto();
         }
 
         function entrarDashboardDirecto() {
@@ -642,7 +644,11 @@
 
             setTimeout(() => {
                 currentUser.balance += rec; currentUser.lastClaim = ahora;
-                db.ref('users/' + sanitizarEmail(currentUser.email)).set(currentUser);
+                
+                let users = obtenerUsuarios();
+                let idx = users.findIndex(x => x.email.toLowerCase() === currentUser.email.toLowerCase());
+                if(idx !== -1) { users[idx] = currentUser; guardarUsuarios(users); }
+
                 document.getElementById('lblEstadoOrb').innerText = "INICIAR";
                 document.getElementById('batteryFill').style.height = "0%";
                 mostrarAlertaPro("Éxito", `+${rec} USDT acreditados.`);
@@ -653,7 +659,11 @@
         function comprarVip(nivel, precio) {
             if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             currentUser.balance -= precio; currentUser.vipActive = nivel; currentUser.vipExpiry = Date.now() + (35*24*3600*1000); currentUser.lastClaim = 0;
-            db.ref('users/' + sanitizarEmail(currentUser.email)).set(currentUser);
+            
+            let users = obtenerUsuarios();
+            let idx = users.findIndex(x => x.email.toLowerCase() === currentUser.email.toLowerCase());
+            if(idx !== -1) { users[idx] = currentUser; guardarUsuarios(users); }
+
             mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
             entrarDashboardDirecto();
         }
@@ -670,7 +680,9 @@
 
         function eliminarCuentaPropia() {
             mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente?", () => {
-                db.ref('users/' + sanitizarEmail(currentUser.email)).remove();
+                let users = obtenerUsuarios();
+                users = users.filter(x => x.email.toLowerCase() !== currentUser.email.toLowerCase());
+                guardarUsuarios(users);
                 cerrarSesion();
             });
         }
@@ -708,8 +720,10 @@
             e.preventDefault();
             let m = parseFloat(document.getElementById('depM').value);
             let h = document.getElementById('depH').value.trim();
-            let key = db.ref('deposits').push().key;
-            db.ref('deposits/' + key).set({ id: key, user: currentUser.email, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() });
+            let deps = obtenerDeps();
+            let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+            deps.push(newDep);
+            guardarDeps(deps);
             mostrarAlertaPro("Éxito", "Depósito reportado al CEO correctamente.");
             document.getElementById('subAccionContainer').style.display = 'none';
         }
@@ -723,27 +737,29 @@
             if(currentUser.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             
             currentUser.balance -= m;
-            db.ref('users/' + sanitizarEmail(currentUser.email)).set(currentUser);
-            let key = db.ref('withdrawals').push().key;
-            db.ref('withdrawals/' + key).set({ id: key, user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() });
+            let users = obtenerUsuarios();
+            let idx = users.findIndex(x => x.email.toLowerCase() === currentUser.email.toLowerCase());
+            if(idx !== -1) { users[idx] = currentUser; guardarUsuarios(users); }
+
+            let wits = obtenerWits();
+            let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+            wits.push(newWit);
+            guardarWits(wits);
+
             mostrarAlertaPro("Éxito", "Retiro solicitado y enviado al CEO.");
             entrarDashboardDirecto();
         }
 
         function verHistorialDeps() {
-            db.ref('deposits').once('value', snap => {
-                let d = snap.val() ? Object.values(snap.val()).filter(x => x.user === currentUser.email) : [];
-                if(d.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
-                mostrarAlertaPro("Historial Depósitos", d.map(x => `+${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
-            });
+            let deps = obtenerDeps().filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
+            if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
+            mostrarAlertaPro("Historial Depósitos", deps.map(x => `+${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
         }
 
         function verHistorialWits() {
-            db.ref('withdrawals').once('value', snap => {
-                let w = snap.val() ? Object.values(snap.val()).filter(x => x.user === currentUser.email) : [];
-                if(w.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
-                mostrarAlertaPro("Historial Retiros", w.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
-            });
+            let wits = obtenerWits().filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
+            if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
+            mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
         }
 
         function abrirPanelAdmin() {
@@ -761,57 +777,56 @@
         function acreditarSaldoPorCorreo() {
             let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
             let monto = parseFloat(document.getElementById('acreditarMonto').value);
-            db.ref('users/' + sanitizarEmail(mail)).once('value', snap => {
-                let t = snap.val();
-                if(!t) { mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
-                t.balance += monto;
-                db.ref('users/' + sanitizarEmail(mail)).set(t);
-                mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${t.email}`);
-                renderAdmin();
-            });
+            let users = obtenerUsuarios();
+            let target = users.find(x => x.email.toLowerCase() === mail);
+            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
+            target.balance += monto;
+            guardarUsuarios(users);
+            mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
+            renderAdmin();
         }
 
         function renderAdmin() {
-            db.ref('deposits').once('value', snap => {
-                let d = snap.val() ? Object.values(snap.val()).filter(x => x.status === 'Pendiente') : [];
-                document.getElementById('listaAdminDeps').innerHTML = d.length === 0 ? "Sin pendientes" : d.map(x => `
-                    <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
-                        <b>${x.user}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Hash: ${x.hash}</span><br>
-                        <button onclick="aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
-                    </div>`).join('');
-            });
-            db.ref('withdrawals').once('value', snap => {
-                let w = snap.val() ? Object.values(snap.val()).filter(x => x.status === 'Pendiente') : [];
-                document.getElementById('listaAdminWits').innerHTML = w.length === 0 ? "Sin pendientes" : w.map(x => `
-                    <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
-                        <b>${w.user}</b>: -$${w.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${w.wallet}</span><br>
-                        <button onclick="aprobarWit('${w.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
-                    </div>`).join('');
-            });
+            let deps = obtenerDeps().filter(x => x.status === 'Pendiente');
+            document.getElementById('listaAdminDeps').innerHTML = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
+                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
+                    <b>${x.user}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Hash: ${x.hash}</span><br>
+                    <button onclick="aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
+                </div>`).join('');
+
+            let wits = obtenerWits().filter(x => x.status === 'Pendiente');
+            document.getElementById('listaAdminWits').innerHTML = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
+                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
+                    <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${x.wallet}</span><br>
+                    <button onclick="aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
+                </div>`).join('');
         }
 
         function aprobarDep(id) {
-            db.ref('deposits/' + id).once('value', s => {
-                let d = s.val();
-                if(!d) return;
-                d.status = 'Aprobado';
-                db.ref('deposits/' + id).set(d);
-                db.ref('users/' + sanitizarEmail(d.user)).once('value', usSnap => {
-                    let u = usSnap.val();
-                    if(u) { u.balance += d.monto; db.ref('users/' + sanitizarEmail(d.user)).set(u); }
-                });
-                renderAdmin();
-            });
+            let deps = obtenerDeps();
+            let d = deps.find(x => x.id === id);
+            if(!d) return;
+            d.status = 'Aprobado';
+            guardarDeps(deps);
+
+            let users = obtenerUsuarios();
+            let u = users.find(x => x.email.toLowerCase() === d.user.toLowerCase());
+            if(u) {
+                u.balance += d.monto;
+                guardarUsuarios(users);
+            }
+            renderAdmin();
         }
+
         function aprobarWit(id) {
-            db.ref('withdrawals/' + id).once('value', s => {
-                let w = s.val();
-                if(!w) return;
-                w.status = 'Aprobado';
-                db.ref('withdrawals/' + id).set(w);
-                renderAdmin();
-            });
+            let wits = obtenerWits();
+            let w = wits.find(x => x.id === id);
+            if(!w) return;
+            w.status = 'Aprobado';
+            guardarWits(wits);
+            renderAdmin();
         }
+
         function copiarEnlaceReferido() {
             navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + currentUser.code);
             mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
