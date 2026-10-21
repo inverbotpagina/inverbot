@@ -155,7 +155,6 @@
         .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
         .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
 
-        /* Animación de carga profesional corporativa */
         .loading-spinner {
             width: 36px; height: 36px; border: 3px solid #e2e8f0; border-top: 3px solid var(--primary-green);
             border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px auto;
@@ -329,7 +328,7 @@
                         <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v gold">1,600.00 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v gold">3,600.00 USDT</div></div>
                     </div>
-                    <div id="vip5ActionArea"><button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir Nivel VIP 5 Elite</button></div>
+                    <div id="vip5ActionArea"><button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir VIP 5 Elite</button></div>
                 </div>
             </div>
 
@@ -450,38 +449,47 @@
     <script>
         const SUPABASE_URL = "https://noakyexlfvblduomfca.supabase.co";
         const SUPABASE_KEY = "sb_publishable_ztwRueaYThf2D_CiAwIy0Q_9ebIRAP_";
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        let supabaseClient = null;
+        try {
+            if (window.supabase) {
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+        } catch (e) {
+            console.error("Error al inicializar cliente Supabase:", e);
+        }
 
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
         let currentUser = null;
         let countdownInterval = null;
 
+        // Base de datos local por defecto para evitar bloqueos absolutos de red
+        let localDBFallback = {
+            users: {
+                "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
+                "ajc229op@gmail.com": { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
+            },
+            deposits: [],
+            withdrawals: []
+        };
+
         async function obtenerUsuariosCloud() {
+            if (!supabaseClient) return localDBFallback;
             try {
                 let { data, error } = await supabaseClient.from('inverbot_db').select('*').eq('id', 1).single();
                 if (error || !data || !data.payload) {
-                    let initial = {
-                        users: {
-                            "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
-                            "ajc229op@gmail.com": { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
-                        },
-                        deposits: [],
-                        withdrawals: []
-                    };
-                    await supabaseClient.from('inverbot_db').upsert({ id: 1, payload: initial });
-                    return initial;
+                    await supabaseClient.from('inverbot_db').upsert({ id: 1, payload: localDBFallback });
+                    return localDBFallback;
                 }
                 return data.payload;
             } catch (err) {
-                console.error("Error al conectar con Supabase:", err);
-                return { users: {
-                    "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
-                }, deposits: [], withdrawals: [] };
+                return localDBFallback;
             }
         }
 
         async function guardarUsuariosCloud(dbData) {
+            if (!supabaseClient) return;
             try {
                 await supabaseClient.from('inverbot_db').upsert({ id: 1, payload: dbData });
             } catch (err) {
@@ -521,7 +529,7 @@
         window.onload = async function() {
             let params = new URLSearchParams(window.location.search);
             let ref = params.get('ref');
-            if(ref) document.getElementById('regRef').value = ref;
+            if(ref && document.getElementById('regRef')) document.getElementById('regRef').value = ref;
 
             let db = await obtenerUsuariosCloud();
             if(sessionEmail && db.users && db.users[sessionEmail]) {
@@ -569,7 +577,7 @@
                 email: email, pass: pass, balance: 0.0, code: myCode, 
                 refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, 
                 commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, 
-                isAdmin: ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)
+                isAdmin: ADMIN_EMAILS.map(em=>em.toLowerCase()).includes(email)
             };
 
             if(refCode) {
@@ -594,7 +602,7 @@
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
             
-            mostrarCargaPro("Verificando credenciales con la nube...");
+            mostrarCargaPro("Verificando credenciales...");
 
             let db = await obtenerUsuariosCloud();
             cerrarAlerta();
@@ -798,5 +806,102 @@
             let db = await obtenerUsuariosCloud();
             db.users[currentUser.email] = currentUser;
             if(!db.withdrawals) db.withdrawals = [];
-            let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString()
+            let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+            db.withdrawals.push(newWit);
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
 
+            mostrarAlertaPro("Éxito", "Retiro solicitado y enviado al CEO.");
+            entrarDashboardDirecto();
+        }
+
+        async function verHistorialDeps() {
+            let db = await obtenerUsuariosCloud();
+            let deps = (db.deposits || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
+            if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
+            mostrarAlertaPro("Historial Depósitos", deps.map(x => `+${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
+        }
+
+        async function verHistorialWits() {
+            let db = await obtenerUsuariosCloud();
+            let wits = (db.withdrawals || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
+            if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
+            mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
+        }
+
+        async function abrirPanelAdmin() {
+            document.getElementById('userDashboard').style.display = 'none';
+            document.getElementById('bottomNavBar').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            await renderAdmin();
+        }
+        function cerrarPanelAdmin() {
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('userDashboard').style.display = 'block';
+            document.getElementById('bottomNavBar').style.display = 'flex';
+        }
+
+        async function acreditarSaldoPorCorreo() {
+            let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
+            let monto = parseFloat(document.getElementById('acreditarMonto').value);
+            
+            mostrarCargaPro("Acreditando saldo...");
+            let db = await obtenerUsuariosCloud();
+            let target = db.users[mail];
+            if(!target) { cerrarAlerta(); mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
+            target.balance += monto;
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
+
+            document.getElementById('acreditarEmail').value = '';
+            document.getElementById('acreditarMonto').value = '';
+            mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
+            await renderAdmin();
+        }
+
+        async function hacerAdminCorreo() {
+            let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
+            mostrarCargaPro("Actualizando privilegios...");
+            let db = await obtenerUsuariosCloud();
+            let target = db.users[mail];
+            if(!target) { cerrarAlerta(); mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
+            target.isAdmin = true;
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
+
+            document.getElementById('novoAdminEmail').value = '';
+            mostrarAlertaPro("Éxito", `Privilegio de administrador otorgado a ${target.email}`);
+            await renderAdmin();
+        }
+
+        async function toggleAdminUser(email) {
+            let db = await obtenerUsuariosCloud();
+            let target = db.users[email];
+            if(target) {
+                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
+                    mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
+                    return;
+                }
+                target.isAdmin = !target.isAdmin;
+                await guardarUsuariosCloud(db);
+                await renderAdmin();
+            }
+        }
+
+        async function eliminarUsuarioAdmin(email) {
+            let db = await obtenerUsuariosCloud();
+            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
+                mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
+                return;
+            }
+            delete db.users[email];
+            await guardarUsuariosCloud(db);
+            await renderAdmin();
+        }
+
+        async function renderAdmin() {
+            let db = await obtenerUsuariosCloud();
+            
+            let usersArr = Object.values(db.users || {});
+            let uHtml = usersArr.map(u => `
+                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-
