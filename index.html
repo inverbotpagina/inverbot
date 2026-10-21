@@ -572,7 +572,7 @@
                 mostrarPantallaCongeladaCarga("Iniciando Inverbot...");
                 let db = await obtenerUsuariosCloud();
 
-                if (db && sessionEmail && db.users && db.users[sessionEmail]) {
+                if (sessionEmail && db && db.users && db.users[sessionEmail]) {
                     currentUser = db.users[sessionEmail];
                     await entrarDashboardDirecto();
                 } else {
@@ -686,11 +686,13 @@
         }
 
         async function entrarDashboardDirecto() {
-            if(!currentUser) return;
+            if(!currentUser || !currentUser.email) return;
             try {
                 let db = await obtenerUsuariosCloud();
 
-                if(db && db.users && db.users[currentUser.email]) currentUser = db.users[currentUser.email];
+                if(db && db.users && db.users[currentUser.email]) {
+                    currentUser = db.users[currentUser.email];
+                }
 
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
@@ -698,7 +700,7 @@
                 document.getElementById('bottomNavBar').style.display = 'flex';
 
                 document.getElementById('lblUserEmail').innerText = currentUser.email;
-                let b = "$" + currentUser.balance.toFixed(2);
+                let b = "$" + (currentUser.balance || 0).toFixed(2);
                 document.getElementById('lblBalanceAmi').innerText = b;
                 document.getElementById('lblBalanceCuantificar').innerText = b;
                 
@@ -707,7 +709,7 @@
                 document.getElementById('lblTeamValidRef').innerText = currentUser.validRefCount || 0;
                 document.getElementById('lblTeamDepEquipo').innerText = (currentUser.teamDepositTotal || 0).toFixed(2);
 
-                document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + currentUser.code;
+                document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + (currentUser.code || '');
                 
                 let esAdmin = currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase());
                 document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
@@ -808,7 +810,9 @@
         }
 
         function cerrarSesion() {
-            sessionEmail = null; sessionStorage.removeItem("inverbot_session");
+            sessionEmail = null; 
+            currentUser = null;
+            sessionStorage.removeItem("inverbot_session");
             if(countdownInterval) clearInterval(countdownInterval);
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
@@ -1003,7 +1007,7 @@
                 let usersArr = Object.values(db.users || {});
                 let uHtml = usersArr.map(u => `
                     <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
-                        <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
+                        <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${(u.balance || 0).toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
                         <div style="display:flex; gap:4px;">
                             <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">${u.isAdmin?'Quitar':'Admin'}</button>
                             <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e;color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">Eliminar</button>
@@ -1070,7 +1074,7 @@
                 let d = (db.deposits || []).find(x => x.id === id);
                 if(!d) return;
                 d.status = 'Aprobado';
-                if(db.users[d.user]) { db.users[d.user].balance += d.monto; }
+                if(db.users[d.user]) { db.users[d.user].balance = (db.users[d.user].balance || 0) + d.monto; }
                 await guardarUsuariosCloud(db);
                 await renderAdmin();
             } catch (err) {
@@ -1092,7 +1096,7 @@
         };
 
         window.copiarEnlaceReferido = function() {
-            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + currentUser.code);
+            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + (currentUser.code || ''));
             mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
         };
     </script>
