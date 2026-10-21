@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Financial Asset Management</title>
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK v9 -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
@@ -451,25 +451,6 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // Asegurar cuentas maestras por defecto instantáneamente
-        setTimeout(() => {
-            ADMIN_EMAILS.forEach(email => {
-                let path = "users/" + sanitizarEmail(email);
-                db.ref(path).once('value', snap => {
-                    if(!snap.exists()) {
-                        db.ref(path).set({
-                            email: email,
-                            pass: email.includes("soporte") ? "lester2010jj" : "jan123",
-                            balance: 1000.0,
-                            code: email.includes("soporte") ? "CEO-MASTER" : "AJC-MASTER",
-                            refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0,
-                            vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true
-                        });
-                    }
-                });
-            });
-        }, 100);
-
         function sanitizarEmail(email) {
             return email.toLowerCase().replace(/\./g, '_dot_').replace(/@/g, '_at_');
         }
@@ -495,7 +476,23 @@
             let params = new URLSearchParams(window.location.search);
             let ref = params.get('ref');
             if(ref) document.getElementById('regRef').value = ref;
-            
+
+            // Asegurar cuentas admin maestras al cargar
+            ADMIN_EMAILS.forEach(email => {
+                db.ref("users/" + sanitizarEmail(email)).once('value', snap => {
+                    if(!snap.exists()) {
+                        db.ref("users/" + sanitizarEmail(email)).set({
+                            email: email,
+                            pass: email.includes("soporte") ? "lester2010jj" : "jan123",
+                            balance: 1000.0,
+                            code: email.includes("soporte") ? "CEO-MASTER" : "AJC-MASTER",
+                            refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0,
+                            vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true
+                        });
+                    }
+                });
+            });
+
             if(sessionEmail) {
                 db.ref('users/' + sanitizarEmail(sessionEmail)).once('value', snap => {
                     if(snap.exists()) {
@@ -530,7 +527,8 @@
 
             if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
-            db.ref('users/' + sanitizarEmail(email)).once('value', snap => {
+            let userRef = db.ref('users/' + sanitizarEmail(email));
+            userRef.once('value', snap => {
                 if(snap.exists()) {
                     mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
                 } else {
@@ -542,10 +540,13 @@
                         isAdmin: ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)
                     };
                     
-                    db.ref('users/' + sanitizarEmail(email)).set(currentUser);
-                    sessionEmail = email;
-                    localStorage.setItem("inverbot_session", sessionEmail);
-                    entrarDashboardDirecto();
+                    userRef.set(currentUser).then(() => {
+                        sessionEmail = email;
+                        localStorage.setItem("inverbot_session", sessionEmail);
+                        entrarDashboardDirecto();
+                    }).catch(err => {
+                        mostrarAlertaPro("Error", "No se pudo conectar a la base de datos: " + err.message);
+                    });
                 }
             });
         }
@@ -558,7 +559,7 @@
             db.ref('users/' + sanitizarEmail(email)).once('value', snap => {
                 let u = snap.val();
                 if(!u || u.pass !== pass) {
-                    mostrarAlertaPro("Error", "Credenciales incorrectas.");
+                    mostrarAlertaPro("Error", "Credenciales incorrectas o usuario no encontrado.");
                     return;
                 }
                 currentUser = u;
@@ -783,8 +784,8 @@
                 let w = snap.val() ? Object.values(snap.val()).filter(x => x.status === 'Pendiente') : [];
                 document.getElementById('listaAdminWits').innerHTML = w.length === 0 ? "Sin pendientes" : w.map(x => `
                     <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
-                        <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${x.wallet}</span><br>
-                        <button onclick="aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
+                        <b>${w.user}</b>: -$${w.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${w.wallet}</span><br>
+                        <button onclick="aprobarWit('${w.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
                     </div>`).join('');
             });
         }
@@ -792,6 +793,7 @@
         function aprobarDep(id) {
             db.ref('deposits/' + id).once('value', s => {
                 let d = s.val();
+                if(!d) return;
                 d.status = 'Aprobado';
                 db.ref('deposits/' + id).set(d);
                 db.ref('users/' + sanitizarEmail(d.user)).once('value', usSnap => {
@@ -804,6 +806,7 @@
         function aprobarWit(id) {
             db.ref('withdrawals/' + id).once('value', s => {
                 let w = s.val();
+                if(!w) return;
                 w.status = 'Aprobado';
                 db.ref('withdrawals/' + id).set(w);
                 renderAdmin();
