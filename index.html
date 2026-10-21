@@ -209,23 +209,23 @@
             </div>
 
             <div id="registerView">
-                <form onsubmit="registrarUsuarioDirecto(event)">
+                <form id="registerForm">
                     <div class="input-group"><label>Correo Electrónico</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
                     <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" required placeholder="••••••••"></div>
                     <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" required placeholder="••••••••"></div>
                     <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
                     <button type="submit" class="btn btn-green">Registrarse</button>
                 </form>
-                <div class="auth-switch"><p>¿Ya posee cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
+                <div class="auth-switch"><p>¿Ya posee cuenta? <a id="linkToLogin">Iniciar Sesión</a></p></div>
             </div>
 
             <div id="loginView" style="display: none;">
-                <form onsubmit="iniciarSesion(event)">
+                <form id="loginForm">
                     <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" required placeholder="trader@gmail.com"></div>
                     <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" required placeholder="••••••••"></div>
                     <button type="submit" class="btn btn-green">Iniciar Sesión</button>
                 </form>
-                <div class="auth-switch"><p>¿Nuevo socio? <a onclick="cambiarVistaAuth(false)">Registrarse</a></p></div>
+                <div class="auth-switch"><p>¿Nuevo socio? <a id="linkToRegister">Registrarse</a></p></div>
             </div>
         </div>
 
@@ -240,7 +240,7 @@
                 <div class="card" style="text-align: center; background: #e6f9f0; border-color: #b2f5ea;">
                     <h3 style="font-size: 12px; color: var(--primary-green-dark); margin-bottom: 4px; font-weight: 800;">PROGRAMA DE AFILIADOS</h3>
                     <p style="font-size: 11px; color: #234e52; margin-bottom: 10px;">Obtén comisiones institucionales por cada socio.</p>
-                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
+                    <button class="btn btn-green" id="btnVerRed" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
                 </div>
 
                 <div class="card">
@@ -276,7 +276,7 @@
                         <div class="countdown-timer" id="lblCountdownTimer">23:59:59</div>
                     </div>
 
-                    <div class="quant-battery" onclick="ejecutarCuantificacionOrb()">
+                    <div class="quant-battery" id="btnOrbCore">
                         <div class="battery-fill" id="batteryFill"></div>
                         <div style="position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2;">
                             <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:var(--primary-green-dark); margin-bottom:2px;"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
@@ -341,7 +341,7 @@
                     <div style="font-size: 11px; opacity: 0.9; margin-bottom: 2px; font-weight: 700;">USDT</div>
                     <div class="team-hero-amount" id="lblTeamComision">0.00</div>
                     
-                    <button class="team-hero-btn" onclick="mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.')">
+                    <button class="team-hero-btn" id="btnHistorialRed">
                         Historial de comisiones
                     </button>
                 </div>
@@ -371,8 +371,8 @@
                             <div style="font-size: 11px; font-weight: 800;" id="lblUserEmail"></div>
                         </div>
                         <div style="display: flex; gap: 6px;">
-                            <button onclick="eliminarCuentaPropia()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Eliminar</button>
-                            <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Salir</button>
+                            <button id="btnEliminarCuenta" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Eliminar</button>
+                            <button id="btnCerrarSesion" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Salir</button>
                         </div>
                     </div>
 
@@ -380,20 +380,20 @@
                     <div class="balance-amount" id="lblBalanceAmi">$0.00</div>
 
                     <div class="action-grid">
-                        <button class="btn-action-dep" onclick="mostrarSeccion('dep')">Depositar</button>
-                        <button class="btn-action-wit" onclick="mostrarSeccion('wit')">Retirar</button>
+                        <button class="btn-action-dep" id="btnShowDep">Depositar</button>
+                        <button class="btn-action-wit" id="btnShowWit">Retirar</button>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <button class="btn-action-history" onclick="verHistorialDeps()">Historial Depósitos</button>
-                        <button class="btn-action-history" onclick="verHistorialWits()">Historial Retiros</button>
+                        <button class="btn-action-history" id="btnHistDeps">Historial Depósitos</button>
+                        <button class="btn-action-history" id="btnHistWits">Historial Retiros</button>
                     </div>
 
                     <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
                     <div id="adminPanelTrigger" style="display: none; background: #e6f9f0; border: 1px solid var(--primary-green); padding: 12px; border-radius: 8px; margin-top: 14px;">
                         <p style="color: var(--primary-green-dark); font-weight: 800; font-size: 10px; margin-bottom: 8px; text-transform: uppercase;">PANEL EJECUTIVO CEO</p>
-                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 9px;">Administrar Modos y Finanzas</button>
+                        <button class="btn btn-green" id="btnAbrirAdmin" style="margin:0; font-size: 11px; padding: 9px;">Administrar Modos y Finanzas</button>
                     </div>
                 </div>
             </div>
@@ -403,20 +403,20 @@
         <div id="adminDashboard" class="card" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">CONTROL EJECUTIVO CEO</h3>
-                <button onclick="cerrarPanelAdmin()" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
+                <button id="btnCerrarAdmin" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
             </div>
             
             <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--primary-green-dark); margin-bottom: 8px; text-transform: uppercase;">Acreditar Saldo a Usuario</div>
                 <div class="input-group"><label>Correo</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
                 <div class="input-group"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
-                <button class="btn btn-green" onclick="acreditarSaldoPorCorreo()" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
+                <button class="btn btn-green" id="btnAcreditarSaldo" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
             </div>
 
             <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--primary-green-dark); margin-bottom: 8px; text-transform: uppercase;">Otorgar Privilegio de Administrador</div>
                 <div class="input-group"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
-                <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
+                <button class="btn btn-green" id="btnHacerAdmin" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
             </div>
 
             <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Lista General de Usuarios</div>
@@ -430,16 +430,16 @@
         </div>
 
         <div class="bottom-nav" id="bottomNavBar" style="display: none;">
-            <button class="nav-item active" onclick="cambiarTab('Hogar', this)" id="navHogar">
+            <button class="nav-item active" id="navHogar">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Hogar
             </button>
-            <button class="nav-item" onclick="cambiarTab('Cuantificar', this)" id="navCuantificar">
+            <button class="nav-item" id="navCuantificar">
                 <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>Cuantificar
             </button>
-            <button class="nav-item" onclick="cambiarTab('Red', this)" id="navRed">
+            <button class="nav-item" id="navRed">
                 <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Equipo
             </button>
-            <button class="nav-item" onclick="cambiarTab('Ami', this)" id="navAmi">
+            <button class="nav-item" id="navAmi">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil
             </button>
         </div>
@@ -456,7 +456,7 @@
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             }
         } catch (e) {
-            console.error("Error al inicializar cliente Supabase:", e);
+            console.error("Supabase init error:", e);
         }
 
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
@@ -464,7 +464,7 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // Base de datos local por defecto para evitar bloqueos absolutos de red
+        // Base de datos local instantánea de respaldo
         let localDBFallback = {
             users: {
                 "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
@@ -493,11 +493,11 @@
             try {
                 await supabaseClient.from('inverbot_db').upsert({ id: 1, payload: dbData });
             } catch (err) {
-                console.error("Error al guardar en Supabase:", err);
+                console.error("Save error:", err);
             }
         }
 
-        function mostrarCargaPro(mensaje = "Sincronizando con la red...") {
+        function mostrarCargaPro(mensaje = "Sincronizando...") {
             document.getElementById('customModalContainer').innerHTML = `
                 <div class="modal-overlay">
                     <div class="modal-card">
@@ -517,19 +517,49 @@
                         <p class="modal-msg">${mensaje}</p>
                         <div style="display:flex; gap:6px; margin-top:12px;">
                             ${cb ? `<button class="btn btn-green" id="modalAceptar">Aceptar</button>` : ``}
-                            <button class="btn btn-green" onclick="cerrarAlerta()" style="margin:0;">Cerrar</button>
+                            <button class="btn btn-green" id="modalCerrar" style="margin:0;">Cerrar</button>
                         </div>
                     </div>
                 </div>
             `;
             if(cb) document.getElementById('modalAceptar').onclick = () => { cerrarAlerta(); cb(); };
+            document.getElementById('modalCerrar').onclick = cerrarAlerta;
         }
         function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
 
-        window.onload = async function() {
+        // Inicialización de eventos al cargar la ventana
+        window.addEventListener('DOMContentLoaded', async () => {
             let params = new URLSearchParams(window.location.search);
             let ref = params.get('ref');
             if(ref && document.getElementById('regRef')) document.getElementById('regRef').value = ref;
+
+            // Enlaces de cambio de vista de autenticación
+            document.getElementById('linkToLogin').addEventListener('click', () => cambiarVistaAuth(true));
+            document.getElementById('linkToRegister').addEventListener('click', () => cambiarVistaAuth(false));
+
+            // Formularios de registro y login con prevención estricta de recarga
+            document.getElementById('registerForm').addEventListener('submit', registrarUsuarioDirecto);
+            document.getElementById('loginForm').addEventListener('submit', iniciarSesion);
+
+            // Botones de navegación y acciones
+            document.getElementById('btnVerRed').addEventListener('click', () => cambiarTab('Red', document.getElementById('navRed')));
+            document.getElementById('navHogar').addEventListener('click', (e) => cambiarTab('Hogar', e.currentTarget));
+            document.getElementById('navCuantificar').addEventListener('click', (e) => cambiarTab('Cuantificar', e.currentTarget));
+            document.getElementById('navRed').addEventListener('click', (e) => cambiarTab('Red', e.currentTarget));
+            document.getElementById('navAmi').addEventListener('click', (e) => cambiarTab('Ami', e.currentTarget));
+
+            document.getElementById('btnOrbCore').addEventListener('click', ejecutarCuantificacionOrb);
+            document.getElementById('btnHistorialRed').addEventListener('click', () => mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.'));
+            document.getElementById('btnEliminarCuenta').addEventListener('click', eliminarCuentaPropia);
+            document.getElementById('btnCerrarSesion').addEventListener('click', cerrarSesion);
+            document.getElementById('btnShowDep').addEventListener('click', () => mostrarSeccion('dep'));
+            document.getElementById('btnShowWit').addEventListener('click', () => mostrarSeccion('wit'));
+            document.getElementById('btnHistDeps').addEventListener('click', verHistorialDeps);
+            document.getElementById('btnHistWits').addEventListener('click', verHistorialWits);
+            document.getElementById('btnAbrirAdmin').addEventListener('click', abrirPanelAdmin);
+            document.getElementById('btnCerrarAdmin').addEventListener('click', cerrarPanelAdmin);
+            document.getElementById('btnAcreditarSaldo').addEventListener('click', acreditarSaldoPorCorreo);
+            document.getElementById('btnHacerAdmin').addEventListener('click', hacerAdminCorreo);
 
             let db = await obtenerUsuariosCloud();
             if(sessionEmail && db.users && db.users[sessionEmail]) {
@@ -539,12 +569,13 @@
                 cerrarSesion();
             }
             iniciarSimulacionMercado();
-        }
+        });
 
         function iniciarSimulacionMercado() {
             setInterval(() => {
                 let btc = 81500 + (Math.random() * 200 - 100);
-                if(document.getElementById('mktBtc')) document.getElementById('mktBtc').innerText = btc.toFixed(2);
+                let el = document.getElementById('mktBtc');
+                if(el) el.innerText = btc.toFixed(2);
             }, 3500);
         }
 
@@ -685,7 +716,8 @@
                     let h = Math.floor(r / (1000 * 60 * 60));
                     let m = Math.floor((r % (1000 * 60 * 60)) / (1000 * 60));
                     let s = Math.floor((r % (1000 * 60)) / 1000);
-                    document.getElementById('lblCountdownTimer').innerText = (h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
+                    let lbl = document.getElementById('lblCountdownTimer');
+                    if(lbl) lbl.innerText = (h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
                 }, 1000);
             } else { container.style.display = 'none'; }
         }
@@ -758,20 +790,26 @@
                 c.innerHTML = `
                     <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:8px;">Red de Depósito (Mínimo 4 USDT)</div>
                     <code style="font-size:9px; background:#fff; padding:8px; display:block; word-break:break-all; border:1px solid var(--border-color); margin-bottom:8px;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
-                    <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet copiada');" style="padding:8px; font-size:10px; margin-bottom:10px;">Copiar Wallet</button>
-                    <form onsubmit="reportarDep(event)">
+                    <button class="btn btn-green" id="btnCopyWallet" style="padding:8px; font-size:10px; margin-bottom:10px;">Copiar Wallet</button>
+                    <form id="depForm">
                         <div class="input-group"><label>Monto</label><input type="number" id="depM" required min="4" step="0.01"></div>
                         <div class="input-group"><label>Hash / ID</label><input type="text" id="depH" required placeholder="0x..."></div>
                         <button type="submit" class="btn btn-green" style="padding:9px; font-size:11px;">Enviar Reporte al CEO</button>
                     </form>`;
+                document.getElementById('btnCopyWallet').addEventListener('click', () => {
+                    navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069');
+                    mostrarAlertaPro('Copiado','Wallet copiada');
+                });
+                document.getElementById('depForm').addEventListener('submit', reportarDep);
             } else {
                 c.innerHTML = `
-                    <form onsubmit="solicitarRetiro(event)">
+                    <form id="witForm">
                         <div class="input-group"><label>Wallet Destino</label><input type="text" id="wW" required placeholder="0x..."></div>
                         <div class="input-group"><label>Monto</label><input type="number" id="wM" required min="1" step="0.01"></div>
                         <div class="input-group"><label>Contraseña</label><input type="password" id="wP" required></div>
                         <button type="submit" class="btn btn-green" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>
                     </form>`;
+                document.getElementById('witForm').addEventListener('submit', solicitarRetiro);
             }
         }
 
@@ -874,7 +912,38 @@
             await renderAdmin();
         }
 
-        async function toggleAdminUser(email) {
+        async function renderAdmin() {
+            let db = await obtenerUsuariosCloud();
+            
+            let usersArr = Object.values(db.users || {});
+            let uHtml = usersArr.map(u => `
+                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
+                    <div style="display:flex; gap:4px;">
+                        <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">${u.isAdmin?'Quitar':'Admin'}</button>
+                        <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e;color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">Eliminar</button>
+                    </div>
+                </div>`).join('');
+            if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
+
+            let deps = (db.deposits || []).filter(x => x.status === 'Pendiente');
+            let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
+                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
+                    <b>${x.user}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Hash: ${x.hash}</span><br>
+                    <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
+                </div>`).join('');
+            if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
+
+            let wits = (db.withdrawals || []).filter(x => x.status === 'Pendiente');
+            let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
+                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
+                    <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${x.wallet}</span><br>
+                    <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
+                </div>`).join('');
+            if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
+        }
+
+        window.toggleAdminUser = async function(email) {
             let db = await obtenerUsuariosCloud();
             let target = db.users[email];
             if(target) {
@@ -886,9 +955,9 @@
                 await guardarUsuariosCloud(db);
                 await renderAdmin();
             }
-        }
+        };
 
-        async function eliminarUsuarioAdmin(email) {
+        window.eliminarUsuarioAdmin = async function(email) {
             let db = await obtenerUsuariosCloud();
             if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
                 mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
@@ -897,11 +966,38 @@
             delete db.users[email];
             await guardarUsuariosCloud(db);
             await renderAdmin();
-        }
+        };
 
-        async function renderAdmin() {
+        window.aprobarDep = async function(id) {
+            mostrarCargaPro("Aprobando depósito...");
             let db = await obtenerUsuariosCloud();
-            
-            let usersArr = Object.values(db.users || {});
-            let uHtml = usersArr.map(u => `
-                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-
+            let d = (db.deposits || []).find(x => x.id === id);
+            if(!d) { cerrarAlerta(); return; }
+            d.status = 'Aprobado';
+
+            if(db.users[d.user]) {
+                db.users[d.user].balance += d.monto;
+            }
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
+            await renderAdmin();
+        };
+
+        window.aprobarWit = async function(id) {
+            mostrarCargaPro("Aprobando retiro...");
+            let db = await obtenerUsuariosCloud();
+            let w = (db.withdrawals || []).find(x => x.id === id);
+            if(!w) { cerrarAlerta(); return; }
+            w.status = 'Aprobado';
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
+            await renderAdmin();
+        };
+
+        window.copiarEnlaceReferido = function() {
+            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + currentUser.code);
+            mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
+        };
+    </script>
+</body>
+</html>
