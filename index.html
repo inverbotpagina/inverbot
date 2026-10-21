@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Financial Asset Management</title>
+    <!-- Firebase SDK para Base de Datos Real en la Nube -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     <style>
         :root {
             --bg-main: #f4f6f8;
@@ -465,50 +468,65 @@
     </div>
 
     <script>
-        const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
-        const STORAGE_KEY = "inverbot_master_global_db_v21_secure";
+        // CONFIGURACIÓN DE FIREBASE (Base de datos real en la nube)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForInverbotPublicCloud99",
+            authDomain: "inverbot-global.firebaseapp.com",
+            databaseURL: "https://inverbot-global-default-rtdb.firebaseio.com",
+            projectId: "inverbot-global",
+            storageBucket: "inverbot-global.appspot.com",
+            messagingSenderId: "100000000000",
+            appId: "1:100000000000:web:abcdef123456"
+        };
 
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.database();
+
+        const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
+        let sessionEmail = localStorage.getItem("inverbot_session") || null;
         let tempEmail = "", tempPass = "", tempRef = "";
         let countdownInterval = null;
+        let cacheUsers = [];
+        let cacheDeps = [];
+        let cacheWits = [];
 
-        function obtenerBaseGlobal() {
-            let defaultUsers = [
-                { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
-                { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
-            ];
-            
-            // Motor maestro con doble respaldo en caché local para evitar cualquier pérdida de usuarios al actualizar
-            let stored = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("inverbot_master_global_db_v20") || localStorage.getItem("inverbot_master_global_db_v19");
-            
-            if (!stored) { 
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultUsers)); 
-                return defaultUsers; 
+        // Sincronización en Tiempo Real con Firebase
+        db.ref('users').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                cacheUsers = Object.values(data);
+            } else {
+                let defaultUsers = [
+                    { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
+                    { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
+                ];
+                defaultUsers.forEach(u => {
+                    db.ref('users/' + sanitizarEmail(u.email)).set(u);
+                });
+                cacheUsers = defaultUsers;
             }
-            try {
-                let parsed = JSON.parse(stored);
-                defaultUsers.forEach(def => {
-                    if(!parsed.some(u => u.email.toLowerCase() === def.email.toLowerCase())) {
-                        parsed.push(def);
-                    }
-                });
-                parsed.forEach(u => {
-                    if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(u.email.toLowerCase())) {
-                        u.isAdmin = true;
-                    }
-                    if(u.validRefCount === undefined) u.validRefCount = 0;
-                    if(u.teamDepositTotal === undefined) u.teamDepositTotal = 0;
-                    if(u.commissionTotal === undefined) u.commissionTotal = 0;
-                });
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-                return parsed;
-            } catch(e) { return defaultUsers; }
+            if(sessionEmail) entrarDashboardDirecto();
+        });
+
+        db.ref('deposits').on('value', (snapshot) => {
+            const data = snapshot.val();
+            cacheDeps = data ? Object.values(data) : [];
+        });
+
+        db.ref('withdrawals').on('value', (snapshot) => {
+            const data = snapshot.val();
+            cacheWits = data ? Object.values(data) : [];
+        });
+
+        function sanitizarEmail(email) {
+            return email.toLowerCase().replace(/\./g, '_dot_').replace(/@/g, '_at_');
         }
 
-        function guardarBaseGlobal(u) { 
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(u)); 
+        function guardarUsuarioCloud(u) {
+            db.ref('users/' + sanitizarEmail(u.email)).set(u);
         }
-
-        let sessionEmail = localStorage.getItem("inverbot_session") || null;
 
         function mostrarAlertaPro(titulo, mensaje, cb = null) {
             document.getElementById('customModalContainer').innerHTML = `
@@ -531,10 +549,8 @@
             let params = new URLSearchParams(window.location.search);
             let ref = params.get('ref');
             if(ref) document.getElementById('regRef').value = ref;
-            obtenerBaseGlobal();
             if(sessionEmail) {
-                let u = obtenerBaseGlobal().find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
-                if(u) entrarDashboardDirecto(); else cerrarSesion();
+                setTimeout(() => { entrarDashboardDirecto(); }, 500);
             }
             iniciarSimulacionMercado();
         }
@@ -575,7 +591,7 @@
                 return;
             }
 
-            if(obtenerBaseGlobal().some(u => u.email.toLowerCase() === tempEmail)) { 
+            if(cacheUsers.some(u => u.email.toLowerCase() === tempEmail)) { 
                 mostrarAlertaPro("Aviso", "Este correo ya está registrado en la base de datos central."); 
                 return; 
             }
@@ -603,18 +619,17 @@
                 dragging = false; document.removeEventListener('mousemove', onDrag); document.removeEventListener('touchmove', onDrag);
                 
                 setTimeout(() => {
-                    let users = obtenerBaseGlobal();
                     let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
                     let nu = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: false };
                     if(tempRef) { 
-                        let upline = users.find(u => u.code.toLowerCase() === tempRef.toLowerCase()); 
+                        let upline = cacheUsers.find(u => u.code.toLowerCase() === tempRef.toLowerCase()); 
                         if(upline) { 
                             upline.refCount++; 
                             nu.refBy = upline.email; 
+                            guardarUsuarioCloud(upline);
                         } 
                     }
-                    users.push(nu); 
-                    guardarBaseGlobal(users);
+                    guardarUsuarioCloud(nu);
                     sessionEmail = tempEmail; 
                     localStorage.setItem("inverbot_session", sessionEmail);
                     entrarDashboardDirecto();
@@ -627,8 +642,7 @@
             e.preventDefault();
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
-            let users = obtenerBaseGlobal();
-            let u = users.find(x => x.email.toLowerCase() === email && x.pass === pass);
+            let u = cacheUsers.find(x => x.email.toLowerCase() === email && x.pass === pass);
             if(!u) { mostrarAlertaPro("Error", "Credenciales incorrectas o usuario no encontrado."); return; }
             
             setTimeout(() => {
@@ -640,8 +654,7 @@
 
         function entrarDashboardDirecto() {
             setTimeout(() => {
-                let users = obtenerBaseGlobal();
-                let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
+                let u = cacheUsers.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
                 if(!u) { cerrarSesion(); return; }
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
@@ -723,8 +736,7 @@
         }
 
         function ejecutarCuantificacionOrb() {
-            let users = obtenerBaseGlobal();
-            let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
+            let u = cacheUsers.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             let ahora = Date.now();
             if(!u.vipActive || u.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con ninguna licencia VIP activa."); return; }
             if(ahora - u.lastClaim < 24*3600*1000) { mostrarAlertaPro("Ciclo Activo", "Debe esperar a que finalice el contador de 24 horas."); return; }
@@ -735,7 +747,7 @@
             fill.style.height = "100%";
 
             setTimeout(() => {
-                u.balance += rec; u.lastClaim = ahora; guardarBaseGlobal(users);
+                u.balance += rec; u.lastClaim = ahora; guardarUsuarioCloud(u);
                 document.getElementById('lblEstadoOrb').innerText = "INICIAR";
                 fill.style.height = "0%";
                 mostrarAlertaPro("Rendimiento Acreditado", `Se han sumado con éxito:\n+${rec} USDT`);
@@ -744,15 +756,19 @@
         }
 
         function comprarVip(nivel, precio) {
-            let users = obtenerBaseGlobal();
-            let u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
+            let u = cacheUsers.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             if(u.balance < precio) { mostrarAlertaPro("Saldo Insuficiente", `Requiere un mínimo de ${precio} USDT.`); return; }
             u.balance -= precio; u.vipActive = nivel; u.vipExpiry = Date.now() + (35*24*3600*1000); u.lastClaim = 0;
             if(u.refBy) {
-                let up = users.find(x => x.email.toLowerCase() === u.refBy.toLowerCase());
-                if(up) { let com = nivel===1?1:(nivel===2?2:(nivel===3?10:(nivel===4?30:600))); up.balance += com; up.commissionTotal = (up.commissionTotal || 0) + com; }
+                let up = cacheUsers.find(x => x.email.toLowerCase() === u.refBy.toLowerCase());
+                if(up) { 
+                    let com = nivel===1?1:(nivel===2?2:(nivel===3?10:(nivel===4?30:600))); 
+                    up.balance += com; 
+                    up.commissionTotal = (up.commissionTotal || 0) + com; 
+                    guardarUsuarioCloud(up);
+                }
             }
-            guardarBaseGlobal(users);
+            guardarUsuarioCloud(u);
             mostrarAlertaPro("Licencia Activada", `¡Nivel VIP ${nivel} adquirido correctamente!`);
             entrarDashboardDirecto();
         }
@@ -772,12 +788,7 @@
         function eliminarCuentaPropia() {
             mostrarAlertaPro("Confirmar Eliminación", "¿Está seguro de eliminar su cuenta permanentemente de la base de datos?", () => {
                 setTimeout(() => {
-                    let users = obtenerBaseGlobal();
-                    let index = users.findIndex(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
-                    if(index !== -1) {
-                        users.splice(index, 1);
-                        guardarBaseGlobal(users);
-                    }
+                    db.ref('users/' + sanitizarEmail(sessionEmail)).remove();
                     cerrarSesion();
                     mostrarAlertaPro("Cuenta Eliminada", "Su cuenta ha sido eliminada permanentemente.");
                 }, 600);
@@ -860,10 +871,11 @@
                 return;
             }
 
-            let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
-            deps.push({ user: sessionEmail.toLowerCase(), red: red, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() });
-            localStorage.setItem("inverbot_global_deps_db", JSON.stringify(deps));
-            mostrarAlertaPro("Éxito", "Depósito reportado al CEO correctamente."); 
+            let newDepKey = db.ref('deposits').push().key;
+            let depData = { id: newDepKey, user: sessionEmail.toLowerCase(), red: red, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+            db.ref('deposits/' + newDepKey).set(depData);
+
+            mostrarAlertaPro("Éxito", "Depósito reportado al CEO correctamente en la nube."); 
             document.getElementById('subAccionContainer').style.display = 'none';
         }
 
@@ -878,16 +890,16 @@
                 return;
             }
 
-            let users = obtenerBaseGlobal(), u = users.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
+            let u = cacheUsers.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             if(u.pass !== p) { mostrarAlertaPro("Error", "Contraseña incorrecta."); return; }
             if(u.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente para este retiro."); return; }
             
             u.balance -= m; 
-            guardarBaseGlobal(users);
+            guardarUsuarioCloud(u);
             
-            let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
-            wits.push({ user: sessionEmail.toLowerCase(), wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() });
-            localStorage.setItem("inverbot_global_wits_db", JSON.stringify(wits));
+            let newWitKey = db.ref('withdrawals').push().key;
+            let witData = { id: newWitKey, user: sessionEmail.toLowerCase(), wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+            db.ref('withdrawals/' + newWitKey).set(witData);
             
             mostrarAlertaPro("Éxito", "Solicitud de retiro enviada al CEO."); 
             entrarDashboardDirecto();
@@ -895,8 +907,7 @@
 
         function verHistorialDeps() {
             setTimeout(() => {
-                let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
-                let misDeps = deps.filter(d => d.user.toLowerCase() === sessionEmail.toLowerCase());
+                let misDeps = cacheDeps.filter(d => d.user.toLowerCase() === sessionEmail.toLowerCase());
                 if(misDeps.length === 0) { mostrarAlertaPro("Historial de Depósitos", "No tienes registros de depósitos."); return; }
                 let html = misDeps.map(d => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>+${d.monto} USDT</b> (${d.red})<br><span style="color:gray;">Hash: ${d.hash}</span><br><span style="color:gray;">Estado: <b>${d.status}</b></span></div>`).join('');
                 mostrarAlertaPro("Historial de Depósitos", html);
@@ -905,8 +916,7 @@
 
         function verHistorialWits() {
             setTimeout(() => {
-                let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
-                let misWits = wits.filter(w => w.user.toLowerCase() === sessionEmail.toLowerCase());
+                let misWits = cacheWits.filter(w => w.user.toLowerCase() === sessionEmail.toLowerCase());
                 if(misWits.length === 0) { mostrarAlertaPro("Historial de Retiros", "No tienes registros de retiros."); return; }
                 let html = misWits.map(w => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>-${w.monto} USDT</b><br><span style="color:gray;">Wallet: ${w.wallet}</span><br><span style="color:gray;">Estado: <b>${w.status}</b></span></div>`).join('');
                 mostrarAlertaPro("Historial de Retiros", html);
@@ -931,49 +941,43 @@
         
         function hacerAdminCorreo() {
             let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
-            let users = obtenerBaseGlobal();
-            let target = users.find(x => x.email.toLowerCase() === mail);
+            let target = cacheUsers.find(x => x.email.toLowerCase() === mail);
             if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado en la base de datos."); return; }
             target.isAdmin = true; 
-            guardarBaseGlobal(users); 
+            guardarUsuarioCloud(target); 
             mostrarAlertaPro("Éxito", "Permiso de administrador otorgado a " + target.email); 
             renderAdmin();
         }
 
         function toggleAdminUser(email) {
-            let users = obtenerBaseGlobal();
-            let target = users.find(x => x.email.toLowerCase() === email.toLowerCase());
+            let target = cacheUsers.find(x => x.email.toLowerCase() === email.toLowerCase());
             if(target) {
                 if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
                     mostrarAlertaPro("Aviso", "No se puede revocar privilegios al administrador principal del sistema.");
                     return;
                 }
                 target.isAdmin = !target.isAdmin;
-                guardarBaseGlobal(users);
+                guardarUsuarioCloud(target);
                 renderAdmin();
             }
         }
 
         function eliminarUsuarioAdmin(email) {
             mostrarAlertaPro("Confirmar", "¿Eliminar este usuario de la base de datos?", () => {
-                let users = obtenerBaseGlobal();
-                let index = users.findIndex(x => x.email.toLowerCase() === email.toLowerCase());
-                if(index !== -1) {
-                    if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(users[index].email.toLowerCase())) {
+                let target = cacheUsers.find(x => x.email.toLowerCase() === email.toLowerCase());
+                if(target) {
+                    if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
                         mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
                         return;
                     }
-                    users.splice(index, 1);
-                    guardarBaseGlobal(users);
+                    db.ref('users/' + sanitizarEmail(target.email)).remove();
                     renderAdmin();
                 }
             });
         }
 
         function renderAdmin() {
-            let users = obtenerBaseGlobal(), deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [], wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
-            
-            document.getElementById('listaAdminUsers').innerHTML = users.map(u => `
+            document.getElementById('listaAdminUsers').innerHTML = cacheUsers.map(u => `
                 <div style="font-size:10px; padding:8px; background:#f7f9fc; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0; display:flex; justify-content:space-between; align-items:center;">
                     <div>
                         <b>Correo:</b> ${u.email}<br><b>Saldo:</b> $${u.balance.toFixed(2)} ${u.isAdmin ? '<b>[ADMIN]</b>' : ''}
@@ -985,36 +989,37 @@
                 </div>
             `).join('');
 
-            let pDeps = deps.filter(d => d.status === 'Pendiente');
-            document.getElementById('listaAdminDeps').innerHTML = pDeps.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin depósitos pendientes</p>" : deps.map((d, i) => d.status === 'Pendiente' ? `
+            let pDeps = cacheDeps.filter(d => d.status === 'Pendiente');
+            document.getElementById('listaAdminDeps').innerHTML = pDeps.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin depósitos pendientes</p>" : cacheDeps.map((d) => d.status === 'Pendiente' ? `
                 <div style="font-size:10px; background:#f7f9fc; padding:8px; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0;">
                     <b>${d.user}</b> (${d.red}): +$${d.monto} USDT<br><span style="color:gray; font-size:9px;">ID/Hash: ${d.hash}</span><br>
                     <div style="margin-top:6px; display:flex; gap:6px;">
-                        <button onclick="aprobarDep(${i})" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
-                        <button onclick="cancelarDep(${i})" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
+                        <button onclick="aprobarDep('${d.id}')" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
+                        <button onclick="cancelarDep('${d.id}')" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
                     </div>
                 </div>` : '').join('');
 
-            let pWits = wits.filter(w => w.status === 'Pendiente');
-            document.getElementById('listaAdminWits').innerHTML = pWits.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin retiros pendientes</p>" : wits.map((w, i) => w.status === 'Pendiente' ? `
+            let pWits = cacheWits.filter(w => w.status === 'Pendiente');
+            document.getElementById('listaAdminWits').innerHTML = pWits.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin retiros pendientes</p>" : cacheWits.map((w) => w.status === 'Pendiente' ? `
                 <div style="font-size:10px; background:#f7f9fc; padding:8px; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0;">
                     <b>${w.user}</b>: -$${w.monto} USDT<br><span style="color:gray; font-size:9px;">Wallet: ${w.wallet}</span><br>
                     <div style="margin-top:6px; display:flex; gap:6px;">
-                        <button onclick="aprobarWit(${i})" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
-                        <button onclick="cancelarWit(${i})" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
+                        <button onclick="aprobarWit('${w.id}')" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
+                        <button onclick="cancelarWit('${w.id}')" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
                     </div>
                 </div>` : '').join('');
         }
 
-        function aprobarDep(i) {
-            let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [], users = obtenerBaseGlobal();
-            let d = deps[i], u = users.find(x => x.email.toLowerCase() === d.user.toLowerCase());
+        function aprobarDep(depId) {
+            let d = cacheDeps.find(x => x.id === depId);
+            if (!d) return;
+            let u = cacheUsers.find(x => x.email.toLowerCase() === d.user.toLowerCase());
             if(u) { 
                 u.balance += d.monto; 
                 d.status = 'Aprobado'; 
                 
                 if(u.refBy) {
-                    let upline = users.find(x => x.email.toLowerCase() === u.refBy.toLowerCase());
+                    let upline = cacheUsers.find(x => x.email.toLowerCase() === u.refBy.toLowerCase());
                     if(upline) {
                         if(!u.hasDeposited) {
                             upline.validRefCount = (upline.validRefCount || 0) + 1;
@@ -1024,29 +1029,45 @@
                         let comDep = d.monto * 0.05;
                         upline.balance += comDep;
                         upline.commissionTotal = (upline.commissionTotal || 0) + comDep;
+                        guardarUsuarioCloud(upline);
                     }
                 }
 
-                guardarBaseGlobal(users); 
-                localStorage.setItem("inverbot_global_deps_db", JSON.stringify(deps)); 
+                guardarUsuarioCloud(u); 
+                db.ref('deposits/' + depId).set(d);
                 renderAdmin(); 
             }
         }
-        function cancelarDep(i) {
-            let deps = JSON.parse(localStorage.getItem("inverbot_global_deps_db")) || [];
-            deps[i].status = 'Cancelado'; localStorage.setItem("inverbot_global_deps_db", JSON.stringify(deps)); renderAdmin();
+        function cancelarDep(depId) {
+            let d = cacheDeps.find(x => x.id === depId);
+            if(d) {
+                d.status = 'Cancelado'; 
+                db.ref('deposits/' + depId).set(d); 
+                renderAdmin();
+            }
         }
-        function aprobarWit(i) {
-            let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [];
-            wits[i].status = 'Aprobado'; localStorage.setItem("inverbot_global_wits_db", JSON.stringify(wits)); renderAdmin();
+        function aprobarWit(witId) {
+            let w = cacheWits.find(x => x.id === witId);
+            if(w) {
+                w.status = 'Aprobado'; 
+                db.ref('withdrawals/' + witId).set(w); 
+                renderAdmin();
+            }
         }
-        function cancelarWit(i) {
-            let wits = JSON.parse(localStorage.getItem("inverbot_global_wits_db")) || [], users = obtenerBaseGlobal();
-            let w = wits[i], u = users.find(x => x.email.toLowerCase() === w.user.toLowerCase());
-            if(u) { u.balance += w.monto; w.status = 'Cancelado'; guardarBaseGlobal(users); localStorage.setItem("inverbot_global_wits_db", JSON.stringify(wits)); renderAdmin(); }
+        function cancelarWit(witId) {
+            let w = cacheWits.find(x => x.id === witId);
+            if(!w) return;
+            let u = cacheUsers.find(x => x.email.toLowerCase() === w.user.toLowerCase());
+            if(u) { 
+                u.balance += w.monto; 
+                w.status = 'Cancelado'; 
+                guardarUsuarioCloud(u); 
+                db.ref('withdrawals/' + witId).set(w); 
+                renderAdmin(); 
+            }
         }
         function copiarEnlaceReferido() {
-            let u = obtenerBaseGlobal().find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
+            let u = cacheUsers.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
             navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + u.code);
             mostrarAlertaPro("Copiado", "Enlace institucional copiado al portapapeles.");
         }
