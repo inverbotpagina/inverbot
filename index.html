@@ -155,6 +155,13 @@
         .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
         .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
 
+        /* Animación de carga profesional corporativa */
+        .loading-spinner {
+            width: 32px; height: 32px; border: 3px solid #e2e8f0; border-top: 3px solid var(--primary-green);
+            border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
             background: linear-gradient(135deg, #00b96b, #008449); color: #fff;
@@ -480,6 +487,18 @@
             }
         }
 
+        function mostrarCargaPro(mensaje = "Sincronizando con la red...") {
+            document.getElementById('customModalContainer').innerHTML = `
+                <div class="modal-overlay">
+                    <div class="modal-card">
+                        <div class="loading-spinner"></div>
+                        <h3 class="modal-title" style="font-size:13px;">PROCESANDO</h3>
+                        <p class="modal-msg" style="text-align:center; margin-bottom:0;">${mensaje}</p>
+                    </div>
+                </div>
+            `;
+        }
+
         function mostrarAlertaPro(titulo, mensaje, cb = null) {
             document.getElementById('customModalContainer').innerHTML = `
                 <div class="modal-overlay">
@@ -533,9 +552,12 @@
 
             if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
+            mostrarCargaPro("Registrando cuenta en la red global...");
+
             let db = await obtenerUsuariosCloud();
             if(!db.users) db.users = {};
             if(db.users[email]) {
+                cerrarAlerta();
                 mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
                 return;
             }
@@ -561,6 +583,7 @@
 
             sessionEmail = email;
             localStorage.setItem("inverbot_session", sessionEmail);
+            cerrarAlerta();
             entrarDashboardDirecto();
         }
 
@@ -569,7 +592,11 @@
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
             
+            mostrarCargaPro("Verificando credenciales...");
+
             let db = await obtenerUsuariosCloud();
+            cerrarAlerta();
+
             if(!db.users || !db.users[email]) {
                 mostrarAlertaPro("Error", "Credenciales incorrectas o usuario no encontrado.");
                 return;
@@ -677,10 +704,12 @@
 
         async function comprarVip(nivel, precio) {
             if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
+            mostrarCargaPro("Procesando licencia VIP...");
             let db = await obtenerUsuariosCloud();
             currentUser.balance -= precio; currentUser.vipActive = nivel; currentUser.vipExpiry = Date.now() + (35*24*3600*1000); currentUser.lastClaim = 0;
             db.users[currentUser.email] = currentUser;
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
 
             mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
             entrarDashboardDirecto();
@@ -698,9 +727,11 @@
 
         async function eliminarCuentaPropia() {
             mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente?", async () => {
+                mostrarCargaPro("Eliminando cuenta...");
                 let db = await obtenerUsuariosCloud();
                 delete db.users[currentUser.email];
                 await guardarUsuariosCloud(db);
+                cerrarAlerta();
                 cerrarSesion();
             });
         }
@@ -739,11 +770,13 @@
             let m = parseFloat(document.getElementById('depM').value);
             let h = document.getElementById('depH').value.trim();
             
+            mostrarCargaPro("Enviando reporte de depósito...");
             let db = await obtenerUsuariosCloud();
             if(!db.deposits) db.deposits = [];
             let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
             db.deposits.push(newDep);
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
 
             mostrarAlertaPro("Éxito", "Depósito reportado al CEO correctamente.");
             document.getElementById('subAccionContainer').style.display = 'none';
@@ -757,6 +790,7 @@
             if(currentUser.pass !== p) { mostrarAlertaPro("Error", "Contraseña incorrecta."); return; }
             if(currentUser.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             
+            mostrarCargaPro("Procesando solicitud de retiro...");
             currentUser.balance -= m;
             
             let db = await obtenerUsuariosCloud();
@@ -765,6 +799,7 @@
             let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
             db.withdrawals.push(newWit);
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
 
             mostrarAlertaPro("Éxito", "Retiro solicitado y enviado al CEO.");
             entrarDashboardDirecto();
@@ -800,11 +835,13 @@
             let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
             let monto = parseFloat(document.getElementById('acreditarMonto').value);
             
+            mostrarCargaPro("Acreditando saldo...");
             let db = await obtenerUsuariosCloud();
             let target = db.users[mail];
-            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
+            if(!target) { cerrarAlerta(); mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
             target.balance += monto;
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
 
             document.getElementById('acreditarEmail').value = '';
             document.getElementById('acreditarMonto').value = '';
@@ -814,11 +851,13 @@
 
         async function hacerAdminCorreo() {
             let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
+            mostrarCargaPro("Actualizando privilegios...");
             let db = await obtenerUsuariosCloud();
             let target = db.users[mail];
-            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
+            if(!target) { cerrarAlerta(); mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
             target.isAdmin = true;
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
 
             document.getElementById('novoAdminEmail').value = '';
             mostrarAlertaPro("Éxito", `Privilegio de administrador otorgado a ${target.email}`);
@@ -882,31 +921,30 @@
         }
 
         async function aprobarDep(id) {
+            mostrarCargaPro("Aprobando depósito...");
             let db = await obtenerUsuariosCloud();
             let d = (db.deposits || []).find(x => x.id === id);
-            if(!d) return;
+            if(!d) { cerrarAlerta(); return; }
             d.status = 'Aprobado';
 
             if(db.users[d.user]) {
                 db.users[d.user].balance += d.monto;
             }
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
             await renderAdmin();
         }
 
         async function aprobarWit(id) {
+            mostrarCargaPro("Aprobando retiro...");
             let db = await obtenerUsuariosCloud();
             let w = (db.withdrawals || []).find(x => x.id === id);
-            if(!w) return;
+            if(!w) { cerrarAlerta(); return; }
             w.status = 'Aprobado';
             await guardarUsuariosCloud(db);
+            cerrarAlerta();
             await renderAdmin();
         }
 
         function copiarEnlaceReferido() {
-            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + currentUser.code);
-            mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
-        }
-    </script>
-</body>
-</html>
+            navigator
