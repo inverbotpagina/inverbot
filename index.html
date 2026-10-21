@@ -460,7 +460,12 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // PETICIÓN REST NATIVA DIRECTA A SUPABASE CLOUD
+        // FUNCIONES GLOBALES ASEGURADAS
+        window.cambiarVistaAuth = function(isLog) {
+            document.getElementById('registerView').style.display = isLog ? 'none' : 'block';
+            document.getElementById('loginView').style.display = isLog ? 'block' : 'none';
+        };
+
         async function cloudFetch(tabla, metodo = 'GET', query = '', bodyData = null) {
             let url = `${SUPABASE_URL}/rest/v1/${tabla}${query}`;
             let options = {
@@ -502,7 +507,7 @@
             });
         }
 
-        function mostrarAlertaPro(titulo, mensaje, cb = null) {
+        window.mostrarAlertaPro = function(titulo, mensaje, cb = null) {
             document.getElementById('customModalContainer').innerHTML = `
                 <div class="modal-overlay">
                     <div class="modal-card">
@@ -510,14 +515,17 @@
                         <p class="modal-msg">${mensaje}</p>
                         <div style="display:flex; gap:6px; margin-top:12px;">
                             ${cb ? `<button class="btn btn-green" id="modalAceptar">Aceptar</button>` : ``}
-                            <button class="btn btn-green" onclick="cerrarAlerta()" style="margin:0;">Cerrar</button>
+                            <button class="btn btn-green" onclick="window.cerrarAlerta()" style="margin:0;">Cerrar</button>
                         </div>
                     </div>
                 </div>
             `;
-            if(cb) document.getElementById('modalAceptar').onclick = () => { cerrarAlerta(); cb(); };
-        }
-        function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
+            if(cb) document.getElementById('modalAceptar').onclick = () => { window.cerrarAlerta(); cb(); };
+        };
+
+        window.cerrarAlerta = function() { 
+            document.getElementById('customModalContainer').innerHTML = ''; 
+        };
 
         function mostrarPantallaCongeladaCarga(texto) {
             document.getElementById('fullScreenLoading').innerHTML = `
@@ -556,15 +564,15 @@
                     if (currentUser) {
                         await entrarDashboardDirecto();
                     } else {
-                        cerrarSesion();
+                        window.cerrarSesion();
                     }
                 } else {
-                    cerrarSesion();
+                    window.cerrarSesion();
                 }
             } catch (err) {
                 console.error("Error conectando a la nube:", err);
-                mostrarAlertaPro("Aviso de Red", "Verifica tu conexión a internet para acceder a la base de datos.");
-                cerrarSesion();
+                window.mostrarAlertaPro("Aviso de Red", "Verifica tu conexión a internet para acceder a la base de datos.");
+                window.cerrarSesion();
             } finally {
                 ocultarPantallaCongeladaCarga();
             }
@@ -579,25 +587,20 @@
             }, 3500);
         }
 
-        function cambiarVistaAuth(isLog) {
-            document.getElementById('registerView').style.display = isLog ? 'none' : 'block';
-            document.getElementById('loginView').style.display = isLog ? 'block' : 'none';
-        }
-
-        async function ejecutarRegistroCloud() {
+        window.ejecutarRegistroCloud = async function() {
             let email = document.getElementById('regEmail').value.trim().toLowerCase();
             let pass = document.getElementById('regPass').value.trim();
             let passConfirm = document.getElementById('regPassConfirm').value.trim();
             let refCode = document.getElementById('regRef').value.trim();
 
-            if(!email || !pass) { mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
-            if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
+            if(!email || !pass) { window.mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
+            if(pass !== passConfirm) { window.mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
             try {
                 mostrarPantallaCongeladaCarga("Registrando en la nube...");
                 let existente = await obtenerUsuarioPorEmail(email);
                 if(existente) {
-                    mostrarAlertaPro("Aviso", "Este correo ya está registrado en la nube.");
+                    window.mostrarAlertaPro("Aviso", "Este correo ya está registrado en la nube.");
                     return;
                 }
 
@@ -629,28 +632,28 @@
                 
                 await entrarDashboardDirecto();
             } catch (err) {
-                mostrarAlertaPro("Error de Registro", err.message);
+                window.mostrarAlertaPro("Error de Registro", err.message);
             } finally {
                 ocultarPantallaCongeladaCarga();
             }
-        }
+        };
 
-        async function ejecutarLoginCloud() {
+        window.ejecutarLoginCloud = async function() {
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
             
-            if(!email || !pass) { mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
+            if(!email || !pass) { window.mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
 
             try {
                 mostrarPantallaCongeladaCarga("Autenticando en la nube...");
                 let u = await obtenerUsuarioPorEmail(email);
 
                 if(!u) {
-                    mostrarAlertaPro("Error", "El usuario no existe en la nube.");
+                    window.mostrarAlertaPro("Error", "El usuario no existe en la nube.");
                     return;
                 }
                 if(u.pass !== pass) {
-                    mostrarAlertaPro("Error", "Contraseña incorrecta.");
+                    window.mostrarAlertaPro("Error", "Contraseña incorrecta.");
                     return;
                 }
 
@@ -660,11 +663,11 @@
 
                 await entrarDashboardDirecto();
             } catch (err) {
-                mostrarAlertaPro("Error de Conexión", err.message);
+                window.mostrarAlertaPro("Error de Conexión", err.message);
             } finally {
                 ocultarPantallaCongeladaCarga();
             }
-        }
+        };
 
         async function entrarDashboardDirecto() {
             if(!currentUser || !currentUser.email) return;
@@ -737,10 +740,10 @@
             } else { container.style.display = 'none'; }
         }
 
-        async function ejecutarCuantificacionOrb() {
+        window.ejecutarCuantificacionOrb = async function() {
             let ahora = Date.now();
-            if(!currentUser.vip_active || currentUser.vip_expiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con licencia VIP activa."); return; }
-            if(ahora - (currentUser.last_claim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso", "Espera a que finalice el contador."); return; }
+            if(!currentUser.vip_active || currentUser.vip_expiry < ahora) { window.mostrarAlertaPro("Aviso", "No cuentas con licencia VIP activa."); return; }
+            if(ahora - (currentUser.last_claim || 0) < 24*3600*1000) { window.mostrarAlertaPro("Aviso", "Espera a que finalice el contador."); return; }
             
             let rec = currentUser.vip_active === 1 ? 1.5 : (currentUser.vip_active === 2 ? 6.5 : (currentUser.vip_active === 3 ? 42.2 : (currentUser.vip_active === 4 ? 88.5 : 1600.0)));
             
@@ -755,18 +758,18 @@
 
                 setTimeout(() => {
                     if(batteryFill) batteryFill.style.height = "0%";
-                    mostrarAlertaPro("Éxito", `+${rec} USDT acreditados en la nube.`);
+                    window.mostrarAlertaPro("Éxito", `+${rec} USDT acreditados en la nube.`);
                     entrarDashboardDirecto();
                 }, 1500);
             } catch (err) {
-                mostrarAlertaPro("Error", err.message);
+                window.mostrarAlertaPro("Error", err.message);
             } finally {
                 ocultarPantallaCongeladaCarga();
             }
-        }
+        };
 
-        async function comprarVip(nivel, precio) {
-            if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
+        window.comprarVip = async function(nivel, precio) {
+            if(currentUser.balance < precio) { window.mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             
             try {
                 mostrarPantallaCongeladaCarga("Actualizando VIP en la nube...");
@@ -776,16 +779,16 @@
                 currentUser.last_claim = 0;
                 await actualizarUsuarioCloud(currentUser);
 
-                mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
+                window.mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
                 await entrarDashboardDirecto();
             } catch (err) {
-                mostrarAlertaPro("Error", err.message);
+                window.mostrarAlertaPro("Error", err.message);
             } finally {
                 ocultarPantallaCongeladaCarga();
             }
-        }
+        };
 
-        function cerrarSesion() {
+        window.cerrarSesion = function() {
             sessionEmail = null; 
             currentUser = null;
             sessionStorage.removeItem("inverbot_session");
@@ -794,41 +797,281 @@
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('authScreen').style.display = 'block';
-            cambiarVistaAuth(true);
-        }
+            window.cambiarVistaAuth(true);
+        };
 
-        async function eliminarCuentaPropia() {
+        window.eliminarCuentaPropia = async function() {
             let emailActual = currentUser.email.toLowerCase();
             if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(emailActual)) {
-                mostrarAlertaPro("Acción Denegada", "Las cuentas de CEO están protegidas.");
+                window.mostrarAlertaPro("Acción Denegada", "Las cuentas de CEO están protegidas.");
                 return;
             }
-            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente de la nube?", async () => {
+            window.mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente de la nube?", async () => {
                 try {
                     mostrarPantallaCongeladaCarga("Eliminando cuenta...");
                     await cloudFetch("usuarios", "DELETE", `?email=eq.${encodeURIComponent(currentUser.email)}`);
-                    cerrarSesion();
+                    window.cerrarSesion();
                 } catch (err) {
-                    mostrarAlertaPro("Error", err.message);
+                    window.mostrarAlertaPro("Error", err.message);
                 } finally {
                     ocultarPantallaCongeladaCarga();
                 }
             });
-        }
+        };
 
-        function cambiarTab(tab, btn) {
+        window.cambiarTab = function(tab, btn) {
             ['Hogar', 'Cuantificar', 'Red', 'Ami'].forEach(t => { document.getElementById('tab' + t).style.display = (t === tab) ? 'block' : 'none'; });
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(btn) btn.classList.add('active');
-        }
+        };
 
-        function mostrarSeccion(tipo) {
+        window.mostrarSeccion = function(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
                 c.innerHTML = `
                     <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:8px;">Red de Depósito (Mínimo 4 USDT)</div>
                     <code style="font-size:9px; background:#fff; padding:8px; display:block; word-break:break-all; border:1px solid var(--border-color); margin-bottom:8px;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
-                    <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet copiada');" style="padding:8px; font-size:10px; margin-bottom:10px;">Copiar Wallet</button>
+                    <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); window.mostrarAlertaPro('Copiado','Wallet copiada');" style="padding:8px; font-size:10px; margin-bottom:10px;">Copiar Wallet</button>
                     <div class="input-group"><label>Monto</label><input type="number" id="depM" min="4" step="0.01"></div>
                     <div class="input-group"><label>Hash / ID</label><input type="text" id="depH" placeholder="0x..."></div>
-                    <button type="
+                    <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:9px; font-size:11px;">Enviar Reporte al CEO</button>`;
+            } else {
+                c.innerHTML = `
+                    <div class="input-group"><label>Wallet Destino</label><input type="text" id="wW" placeholder="0x..."></div>
+                    <div class="input-group"><label>Monto</label><input type="number" id="wM" min="1" step="0.01"></div>
+                    <div class="input-group"><label>Contraseña</label><input type="password" id="wP"></div>
+                    <button type="button" class="btn btn-green" onclick="solicitarRetiro()" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>`;
+            }
+        };
+
+        window.reportarDep = async function() {
+            let m = parseFloat(document.getElementById('depM').value);
+            let h = document.getElementById('depH').value.trim();
+            if(!m || !h) { window.mostrarAlertaPro("Error", "Complete los campos del depósito."); return; }
+            
+            try {
+                mostrarPantallaCongeladaCarga("Guardando reporte...");
+                await cloudFetch("deposits", "POST", "", {
+                    id: 'DEP-' + Date.now(),
+                    user_email: currentUser.email,
+                    monto: m,
+                    hash: h,
+                    status: 'Pendiente',
+                    fecha: new Date().toLocaleDateString()
+                });
+
+                window.mostrarAlertaPro("Éxito", "Depósito reportado correctamente a la nube.");
+                document.getElementById('subAccionContainer').style.display = 'none';
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
+            }
+        };
+
+        window.solicitarRetiro = async function() {
+            let w = document.getElementById('wW').value.trim();
+            let m = parseFloat(document.getElementById('wM').value);
+            let p = document.getElementById('wP').value.trim();
+            if(!w || !m || !p) { window.mostrarAlertaPro("Error", "Complete los campos de retiro."); return; }
+            if(currentUser.pass !== p) { window.mostrarAlertaPro("Error", "Contraseña incorrecta."); return; }
+            if(currentUser.balance < m) { window.mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
+            
+            try {
+                mostrarPantallaCongeladaCarga("Procesando retiro...");
+                currentUser.balance -= m;
+                await actualizarUsuarioCloud(currentUser);
+
+                await cloudFetch("withdrawals", "POST", "", {
+                    id: 'WIT-' + Date.now(),
+                    user_email: currentUser.email,
+                    wallet: w,
+                    monto: m,
+                    status: 'Pendiente',
+                    fecha: new Date().toLocaleDateString()
+                });
+
+                window.mostrarAlertaPro("Éxito", "Retiro solicitado.");
+                await entrarDashboardDirecto();
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
+            }
+        };
+
+        window.verHistorialDeps = async function() {
+            try {
+                let deps = await cloudFetch("deposits", "GET", `?user_email=eq.${encodeURIComponent(currentUser.email)}`);
+                if(deps.length === 0) { window.mostrarAlertaPro("Historial", "Sin registros."); return; }
+                window.mostrarAlertaPro("Historial Depósitos", deps.map(x => `+${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            }
+        };
+
+        window.verHistorialWits = async function() {
+            try {
+                let wits = await cloudFetch("withdrawals", "GET", `?user_email=eq.${encodeURIComponent(currentUser.email)}`);
+                if(wits.length === 0) { window.mostrarAlertaPro("Historial", "Sin registros."); return; }
+                window.mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            }
+        };
+
+        window.abrirPanelAdmin = async function() {
+            document.getElementById('userDashboard').style.display = 'none';
+            document.getElementById('bottomNavBar').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            await renderAdmin();
+        };
+
+        window.cerrarPanelAdmin = function() {
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('userDashboard').style.display = 'block';
+            document.getElementById('bottomNavBar').style.display = 'flex';
+        };
+
+        window.acreditarSaldoPorCorreo = async function() {
+            let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
+            let monto = parseFloat(document.getElementById('acreditarMonto').value);
+            
+            try {
+                mostrarPantallaCongeladaCarga("Acreditando saldo...");
+                let target = await obtenerUsuarioPorEmail(mail);
+                if(!target) { 
+                    window.mostrarAlertaPro("Error", "Usuario no encontrado."); 
+                    return; 
+                }
+                target.balance += monto;
+                await actualizarUsuarioCloud(target);
+
+                document.getElementById('acreditarEmail').value = '';
+                document.getElementById('acreditarMonto').value = '';
+                window.mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
+                await renderAdmin();
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
+            }
+        };
+
+        window.hacerAdminCorreo = async function() {
+            let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
+            try {
+                mostrarPantallaCongeladaCarga("Actualizando permisos...");
+                let target = await obtenerUsuarioPorEmail(mail);
+                if(!target) { 
+                    window.mostrarAlertaPro("Error", "Usuario no encontrado."); 
+                    return; 
+                }
+                await cloudFetch("usuarios", "PATCH", `?email=eq.${encodeURIComponent(target.email)}`, { is_admin: true });
+
+                document.getElementById('novoAdminEmail').value = '';
+                window.mostrarAlertaPro("Éxito", `Privilegio otorgado a ${target.email}`);
+                await renderAdmin();
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
+            }
+        };
+
+        async function renderAdmin() {
+            try {
+                let usersArr = await cloudFetch("usuarios", "GET", "");
+                let uHtml = usersArr.map(u => `
+                    <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${(u.balance || 0).toFixed(2)} ${u.is_admin ? '[ADMIN]' : ''}</div>
+                        <div style="display:flex; gap:4px;">
+                            <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.is_admin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">${u.is_admin?'Quitar':'Admin'}</button>
+                            <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e;color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">Eliminar</button>
+                        </div>
+                    </div>`).join('');
+                if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
+
+                let deps = await cloudFetch("deposits", "GET", "?status=eq.Pendiente");
+                let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
+                    <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
+                        <b>${x.user_email}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Hash: ${x.hash}</span><br>
+                        <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
+                    </div>`).join('');
+                if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
+
+                let wits = await cloudFetch("withdrawals", "GET", "?status=eq.Pendiente");
+                let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
+                    <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
+                        <b>${x.user_email}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${x.wallet}</span><br>
+                        <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
+                    </div>`).join('');
+                if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        window.toggleAdminUser = async function(email) {
+            try {
+                let target = await obtenerUsuarioPorEmail(email);
+                if(target) {
+                    if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
+                        window.mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
+                        return;
+                    }
+                    await cloudFetch("usuarios", "PATCH", `?email=eq.${encodeURIComponent(email)}`, { is_admin: !target.is_admin });
+                    await renderAdmin();
+                }
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            }
+        };
+
+        window.eliminarUsuarioAdmin = async function(email) {
+            try {
+                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
+                    window.mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
+                    return;
+                }
+                await cloudFetch("usuarios", "DELETE", `?email=eq.${encodeURIComponent(email)}`);
+                await renderAdmin();
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            }
+        };
+
+        window.aprobarDep = async function(id) {
+            try {
+                let deps = await cloudFetch("deposits", "GET", `?id=eq.${id}`);
+                if(deps.length === 0) return;
+                let d = deps[0];
+                
+                await cloudFetch("deposits", "PATCH", `?id=eq.${id}`, { status: 'Aprobado' });
+                let u = await obtenerUsuarioPorEmail(d.user_email);
+                if(u) {
+                    u.balance = (u.balance || 0) + d.monto;
+                    await actualizarUsuarioCloud(u);
+                }
+                await renderAdmin();
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            }
+        };
+
+        window.aprobarWit = async function(id) {
+            try {
+                await cloudFetch("withdrawals", "PATCH", `?id=eq.${id}`, { status: 'Aprobado' });
+                await renderAdmin();
+            } catch (err) {
+                window.mostrarAlertaPro("Error", err.message);
+            }
+        };
+
+        window.copiarEnlaceReferido = function() {
+            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + (currentUser.code || ''));
+            window.mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
+        };
+    </script>
+</body>
+</html>
