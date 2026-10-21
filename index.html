@@ -15,7 +15,7 @@
             --accent-gold: #fbbf24;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -44,14 +44,9 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .header-banner::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0,230,118,0.08), transparent);
-            animation: shimmer 4s infinite;
-        }
-        @keyframes shimmer { 100% { left: 100%; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         .header-banner h1 { font-size: 22px; font-weight: 800; letter-spacing: 1.5px; margin-bottom: 6px; color: var(--primary-green); }
         .header-banner p { font-size: 11px; color: var(--text-muted); letter-spacing: 0.8px; text-transform: uppercase; }
@@ -111,6 +106,7 @@
             display: inline-block; margin-bottom: 14px; font-family: monospace; letter-spacing: 1px;
         }
 
+        /* NÚCLEO ENERGÉTICO PROFESIONAL CON ANIMACIÓN FLUIDA */
         .quant-battery {
             width: 110px; height: 150px; margin: 0 auto 12px auto; background: var(--bg-input);
             border: 2px solid var(--primary-green); border-radius: 14px;
@@ -124,7 +120,7 @@
         
         .battery-fill {
             width: 100%; height: 0%; background: linear-gradient(180deg, var(--primary-green), var(--primary-green-dark));
-            transition: height 2.5s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
+            transition: height 3s cubic-bezier(0.16, 1, 0.3, 1); position: relative;
         }
 
         .vip-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 18px; margin-bottom: 12px; transition: var(--transition-smooth); }
@@ -142,26 +138,26 @@
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 8, 15, 0.8); backdrop-filter: blur(8px);
+            background: rgba(5, 8, 15, 0.85); backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
-            animation: fadeIn 0.3s ease-out;
+            animation: fadeInOverlay 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInOverlay { from { opacity: 0; backdrop-filter: blur(0px); } to { opacity: 1; backdrop-filter: blur(10px); } }
 
         .modal-card {
             background: var(--bg-card); border: 1px solid var(--border-color);
-            padding: 24px; border-radius: 18px; width: 100%; max-width: 340px; text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 26px; border-radius: 18px; width: 100%; max-width: 340px; text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+            animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @keyframes scaleUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
 
         .modal-title { font-size: 16px; font-weight: 800; color: var(--primary-green); margin-bottom: 10px; letter-spacing: 0.5px; }
         .modal-msg { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; text-align: left; max-height: 220px; overflow-y: auto; }
 
         .loading-spinner {
-            width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--primary-green);
-            border-radius: 50%; animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; margin: 0 auto 14px auto;
+            width: 44px; height: 44px; border: 3px solid rgba(255,255,255,0.08); border-top: 3px solid var(--primary-green);
+            border-radius: 50%; animation: spin 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite; margin: 0 auto 16px auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -471,7 +467,7 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // Conexión REST directa a Supabase (Garantizado sin fallos de SDK)
+        // Conexión REST directa a Supabase (Garantizado sin bloqueos de red)
         async function obtenerUsuariosCloud() {
             try {
                 let res = await fetch(`${SUPABASE_URL}/rest/v1/inverbot_db?id=eq.1&select=*`, {
@@ -714,22 +710,29 @@
             if(ahora - (currentUser.lastClaim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso Institucional", "El ciclo operativo diario aún está en curso. Espera que finalice el contador."); return; }
             
             let rec = currentUser.vipActive === 1 ? 1.5 : (currentUser.vipActive === 2 ? 6.5 : (currentUser.vipActive === 3 ? 42.2 : (currentUser.vipActive === 4 ? 88.5 : 1600.0)));
-            document.getElementById('lblEstadoOrb').innerText = "PROCESANDO";
-            document.getElementById('batteryFill').style.height = "100%";
+            
+            // ANIMACIÓN PROFESIONAL FLUIDA DE CARGA
+            let estadoOrb = document.getElementById('lblEstadoOrb');
+            let batteryFill = document.getElementById('batteryFill');
+            if(estadoOrb) estadoOrb.innerText = "PROCESANDO";
+            if(batteryFill) batteryFill.style.height = "100%";
 
             mostrarCargaPro("Ejecutando algoritmo de cuantificación cuantitativa...");
+            
             let db = await obtenerUsuariosCloud();
-            currentUser.balance += rec; currentUser.lastClaim = ahora;
+            currentUser.balance += rec; 
+            currentUser.lastClaim = ahora;
             db.users[currentUser.email] = currentUser;
             await guardarUsuariosCloud(db);
+            
             cerrarAlerta();
 
             setTimeout(() => {
-                document.getElementById('lblEstadoOrb').innerText = "INICIAR";
-                document.getElementById('batteryFill').style.height = "0%";
+                if(estadoOrb) estadoOrb.innerText = "INICIAR";
+                if(batteryFill) batteryFill.style.height = "0%";
                 mostrarAlertaPro("Rendimiento Exitoso", `+${rec} USDT acreditados a su balance principal.`);
                 entrarDashboardDirecto();
-            }, 1000);
+            }, 1200);
         }
 
         async function comprarVip(nivel, precio) {
@@ -822,4 +825,161 @@
             let db = await obtenerUsuariosCloud();
             db.users[currentUser.email] = currentUser;
             if(!db.withdrawals) db.withdrawals = [];
-            let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email,
+            let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+            db.withdrawals.push(newWit);
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
+
+            mostrarAlertaPro("Retiro Solicitado", "Su solicitud fue enviada al panel ejecutivo.");
+            entrarDashboardDirecto();
+        }
+
+        async function verHistorialDeps() {
+            let db = await obtenerUsuariosCloud();
+            let deps = (db.deposits || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
+            if(deps.length === 0) { mostrarAlertaPro("Historial", "No hay registros de depósitos."); return; }
+            mostrarAlertaPro("Historial de Depósitos", deps.map(x => `+${x.monto} USDT — <b>${x.status}</b>`).join('<br>'));
+        }
+
+        async function verHistorialWits() {
+            let db = await obtenerUsuariosCloud();
+            let wits = (db.withdrawals || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
+            if(wits.length === 0) { mostrarAlertaPro("Historial", "No hay registros de retiros."); return; }
+            mostrarAlertaPro("Historial de Retiros", wits.map(x => `-${x.monto} USDT — <b>${x.status}</b>`).join('<br>'));
+        }
+
+        async function abrirPanelAdmin() {
+            document.getElementById('userDashboard').style.display = 'none';
+            document.getElementById('bottomNavBar').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            await renderAdmin();
+        }
+        function cerrarPanelAdmin() {
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('userDashboard').style.display = 'block';
+            document.getElementById('bottomNavBar').style.display = 'flex';
+        }
+
+        async function acreditarSaldoPorCorreo() {
+            let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
+            let monto = parseFloat(document.getElementById('acreditarMonto').value);
+            if(!mail || isNaN(monto)) { mostrarAlertaPro("Error", "Ingrese un correo y monto válidos."); return; }
+            
+            mostrarCargaPro("Acreditando saldo institucional...");
+            let db = await obtenerUsuariosCloud();
+            let target = db.users[mail];
+            if(!target) { cerrarAlerta(); mostrarAlertaPro("Error", "Socio no encontrado en la base de datos."); return; }
+            target.balance += monto;
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
+
+            document.getElementById('acreditarEmail').value = '';
+            document.getElementById('acreditarMonto').value = '';
+            mostrarAlertaPro("Éxito", `Acreditados +$${monto} USDT a ${target.email}`);
+            await renderAdmin();
+        }
+
+        async function hacerAdminCorreo() {
+            let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
+            if(!mail) { mostrarAlertaPro("Error", "Ingrese un correo válido."); return; }
+            
+            mostrarCargaPro("Actualizando privilegios...");
+            let db = await obtenerUsuariosCloud();
+            let target = db.users[mail];
+            if(!target) { cerrarAlerta(); mostrarAlertaPro("Error", "Socio no encontrado."); return; }
+            target.isAdmin = true;
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
+
+            document.getElementById('novoAdminEmail').value = '';
+            mostrarAlertaPro("Éxito", `Privilegio ejecutivo otorgado a ${target.email}`);
+            await renderAdmin();
+        }
+
+        async function renderAdmin() {
+            let db = await obtenerUsuariosCloud();
+            if(!db) return;
+            
+            let usersArr = Object.values(db.users || {});
+            let uHtml = usersArr.map(u => `
+                <div style="background:var(--bg-card); padding:8px 10px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
+                    <div style="display:flex; gap:4px;">
+                        <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d97706':'var(--primary-green)'};color:#0b0f19;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:700;">${u.isAdmin?'Quitar':'Admin'}</button>
+                        <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:rgba(239,68,68,0.2);color:#ef4444;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:700;">Eliminar</button>
+                    </div>
+                </div>`).join('');
+            if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
+
+            let deps = (db.deposits || []).filter(x => x.status === 'Pendiente');
+            let dHtml = deps.length === 0 ? "<div style='font-size:11px; color:var(--text-muted);'>Sin depósitos pendientes</div>" : deps.map(x => `
+                <div style="background:var(--bg-card); padding:8px 10px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:8px;">
+                    <b>${x.user}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:var(--text-muted);">Hash: ${x.hash}</span><br>
+                    <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-green);color:#0b0f19;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;margin-top:6px;font-size:10px;font-weight:800;">Aprobar Depósito</button>
+                </div>`).join('');
+            if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
+
+            let wits = (db.withdrawals || []).filter(x => x.status === 'Pendiente');
+            let wHtml = wits.length === 0 ? "<div style='font-size:11px; color:var(--text-muted);'>Sin retiros pendientes</div>" : wits.map(x => `
+                <div style="background:var(--bg-card); padding:8px 10px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:8px;">
+                    <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:var(--text-muted);">Wallet: ${x.wallet}</span><br>
+                    <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-green);color:#0b0f19;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;margin-top:6px;font-size:10px;font-weight:800;">Aprobar Retiro</button>
+                </div>`).join('');
+            if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
+        }
+
+        window.toggleAdminUser = async function(email) {
+            let db = await obtenerUsuariosCloud();
+            let target = db.users[email];
+            if(target) {
+                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
+                    mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
+                    return;
+                }
+                target.isAdmin = !target.isAdmin;
+                await guardarUsuariosCloud(db);
+                await renderAdmin();
+            }
+        };
+
+        window.eliminarUsuarioAdmin = async function(email) {
+            let db = await obtenerUsuariosCloud();
+            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
+                mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
+                return;
+            }
+            delete db.users[email];
+            await guardarUsuariosCloud(db);
+            await renderAdmin();
+        };
+
+        window.aprobarDep = async function(id) {
+            mostrarCargaPro("Aprobando transacción...");
+            let db = await obtenerUsuariosCloud();
+            let d = (db.deposits || []).find(x => x.id === id);
+            if(!d) { cerrarAlerta(); return; }
+            d.status = 'Aprobado';
+            if(db.users[d.user]) { db.users[d.user].balance += d.monto; }
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
+            await renderAdmin();
+        };
+
+        window.aprobarWit = async function(id) {
+            mostrarCargaPro("Aprobando retiro oficial...");
+            let db = await obtenerUsuariosCloud();
+            let w = (db.withdrawals || []).find(x => x.id === id);
+            if(!w) { cerrarAlerta(); return; }
+            w.status = 'Aprobado';
+            await guardarUsuariosCloud(db);
+            cerrarAlerta();
+            await renderAdmin();
+        };
+
+        window.copiarEnlaceReferido = function() {
+            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + currentUser.code);
+            mostrarAlertaPro("Copiado", "Enlace de referido institucional copiado.");
+        };
+    </script>
+</body>
+</html>
