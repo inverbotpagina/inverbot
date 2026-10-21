@@ -405,6 +405,15 @@
                 <button class="btn btn-green" onclick="acreditarSaldoPorCorreo()" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
             </div>
 
+            <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green-dark); margin-bottom: 8px; text-transform: uppercase;">Otorgar Privilegio de Administrador</div>
+                <div class="input-group"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
+                <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
+            </div>
+
+            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Lista General de Usuarios</div>
+            <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 120px; overflow-y: auto;"></div>
+
             <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Depósitos Pendientes</div>
             <div id="listaAdminDeps" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
 
@@ -447,10 +456,12 @@
                 return masters;
             } else {
                 let parsed = JSON.parse(u);
-                // Asegurar que las cuentas admin siempre existan en la lista
                 masters.forEach(m => {
-                    if(!parsed.some(x => x.email.toLowerCase() === m.email.toLowerCase())) {
+                    let idx = parsed.findIndex(x => x.email.toLowerCase() === m.email.toLowerCase());
+                    if(idx === -1) {
                         parsed.push(m);
+                    } else {
+                        parsed[idx].isAdmin = true; // Asegurar privilegios admin
                     }
                 });
                 localStorage.setItem("inverbot_users", JSON.stringify(parsed));
@@ -583,6 +594,11 @@
 
         function entrarDashboardDirecto() {
             if(!currentUser) return;
+            // Sincronizar datos frescos del usuario
+            let users = obtenerUsuarios();
+            let fresh = users.find(x => x.email.toLowerCase() === currentUser.email.toLowerCase());
+            if(fresh) currentUser = fresh;
+
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
@@ -794,11 +810,60 @@
             if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
             target.balance += monto;
             guardarUsuarios(users);
+            document.getElementById('acreditarEmail').value = '';
+            document.getElementById('acreditarMonto').value = '';
             mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
             renderAdmin();
         }
 
+        function hacerAdminCorreo() {
+            let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
+            let users = obtenerUsuarios();
+            let target = users.find(x => x.email.toLowerCase() === mail);
+            if(!target) { mostrarAlertaPro("Error", "Usuario no encontrado."); return; }
+            target.isAdmin = true;
+            guardarUsuarios(users);
+            document.getElementById('novoAdminEmail').value = '';
+            mostrarAlertaPro("Éxito", `Privilegio de administrador otorgado a ${target.email}`);
+            renderAdmin();
+        }
+
+        function toggleAdminUser(email) {
+            let users = obtenerUsuarios();
+            let target = users.find(x => x.email.toLowerCase() === email.toLowerCase());
+            if(target) {
+                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
+                    mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
+                    return;
+                }
+                target.isAdmin = !target.isAdmin;
+                guardarUsuarios(users);
+                renderAdmin();
+            }
+        }
+
+        function eliminarUsuarioAdmin(email) {
+            let users = obtenerUsuarios();
+            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
+                mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
+                return;
+            }
+            users = users.filter(x => x.email.toLowerCase() !== email.toLowerCase());
+            guardarUsuarios(users);
+            renderAdmin();
+        }
+
         function renderAdmin() {
+            let users = obtenerUsuarios();
+            document.getElementById('listaAdminUsers').innerHTML = users.map(u => `
+                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
+                    <div style="display:flex; gap:4px;">
+                        <button onclick="toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">${u.isAdmin?'Quitar':'Admin'}</button>
+                        <button onclick="eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e;color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">Eliminar</button>
+                    </div>
+                </div>`).join('');
+
             let deps = obtenerDeps().filter(x => x.status === 'Pendiente');
             document.getElementById('listaAdminDeps').innerHTML = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
                 <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
