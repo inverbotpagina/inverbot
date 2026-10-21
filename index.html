@@ -432,6 +432,8 @@
 
     <script>
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
+        const CEO_PASSWORD = "soporteinverbot@";
+        
         let sessionEmail = sessionStorage.getItem("inverbot_session") || null;
         let currentUser = null;
         let countdownInterval = null;
@@ -495,12 +497,16 @@
                 let existe = usuarios.find(u => u.email.toLowerCase() === ceoMail.toLowerCase());
                 if(!existe) {
                     usuarios.push({
-                        email: ceoMail.toLowerCase(), pass: "123456", balance: 5000,
+                        email: ceoMail.toLowerCase(), pass: CEO_PASSWORD, balance: 5000,
                         code: "REF-" + ceoMail.substring(0,3).toUpperCase(),
                         ref_count: 0, valid_ref_count: 0, team_deposit_total: 0,
                         commission_total: 0, vip_active: null, vip_expiry: 0, last_claim: 0,
                         is_admin: true
                     });
+                } else {
+                    // Forzar contraseña de CEO actualizada
+                    existe.pass = CEO_PASSWORD;
+                    existe.is_admin = true;
                 }
             }
             guardarBaseUsuarios(usuarios);
