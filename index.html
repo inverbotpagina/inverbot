@@ -214,7 +214,7 @@
             </div>
 
             <div id="registerView">
-                <form onsubmit="iniciarVerificacionPuzzle(event)">
+                <form onsubmit="registrarUsuarioDirecto(event)">
                     <div class="input-group"><label>Correo Electrónico Institucional</label><input type="email" id="regEmail" required placeholder="trader@gmail.com"></div>
                     <div class="input-group"><label>Contraseña Segura</label><input type="password" id="regPass" required placeholder="••••••••"></div>
                     <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" required placeholder="••••••••"></div>
@@ -222,15 +222,6 @@
                     <button type="submit" class="btn btn-green">Registrarse</button>
                 </form>
                 <div class="auth-switch"><p>¿Ya posee una cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
-            </div>
-
-            <div id="puzzleView" style="display: none; text-align: center;">
-                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-weight: 700;">Verificación de Seguridad Criptográfica</p>
-                <div style="background: var(--bg-input); border: 1px dashed var(--primary-green); border-radius: 8px; height: 50px; position: relative; margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: var(--primary-green); font-size: 11px; font-weight: 700; letter-spacing: 0.5px;">➔ Deslice lentamente para verificar</span>
-                    <div id="puzzleSlider" style="width: 36px; height: 36px; background: var(--primary-green); border-radius: 6px; position: absolute; left: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold;" ontouchstart="iniciarDrag(event)" onmousedown="iniciarDrag(event)">➔</div>
-                </div>
-                <button type="button" class="btn btn-red" onclick="cancelarPuzzle()">Cancelar</button>
             </div>
 
             <div id="loginView" style="display: none;">
@@ -493,23 +484,21 @@
 
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
         let sessionEmail = localStorage.getItem("inverbot_session") || null;
-        let tempEmail = "", tempPass = "", tempRef = "";
         let countdownInterval = null;
         let cacheUsers = [];
         let cacheDeps = [];
         let cacheWits = [];
 
-        // Inicializar cuentas maestras por defecto si la base de datos está vacía
+        // Forzar la creación de cuentas admin maestras y asegurar que nunca se pierdan
         db.ref('users').once('value', (snapshot) => {
-            if (!snapshot.exists()) {
-                let defaultUsers = [
-                    { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
-                    { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
-                ];
-                defaultUsers.forEach(u => {
-                    db.ref('users/' + sanitizarEmail(u.email)).set(u);
-                });
-            }
+            let defaultUsers = [
+                { email: "soporteinverbot@gmail.com", pass: "lester2010jj", balance: 1000.0, code: "CEO-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true },
+                { email: "ajc229op@gmail.com", pass: "jan123", balance: 1000.0, code: "AJC-MASTER", refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: true }
+            ];
+            
+            defaultUsers.forEach(def => {
+                db.ref('users/' + sanitizarEmail(def.email)).update(def);
+            });
         });
 
         // Sincronización en tiempo real
@@ -584,74 +573,66 @@
 
         function cambiarVistaAuth(isLog) {
             document.getElementById('registerView').style.display = isLog ? 'none' : 'block';
-            document.getElementById('puzzleView').style.display = 'none';
             document.getElementById('loginView').style.display = isLog ? 'block' : 'none';
         }
 
-        function iniciarVerificacionPuzzle(e) {
+        function registrarUsuarioDirecto(e) {
             e.preventDefault();
-            tempEmail = document.getElementById('regEmail').value.trim().toLowerCase();
-            tempPass = document.getElementById('regPass').value.trim();
+            let email = document.getElementById('regEmail').value.trim().toLowerCase();
+            let pass = document.getElementById('regPass').value.trim();
             let passConfirm = document.getElementById('regPassConfirm').value.trim();
-            tempRef = document.getElementById('regRef').value.trim();
+            let refCode = document.getElementById('regRef').value.trim();
 
-            if(tempPass !== passConfirm) {
-                mostrarAlertaPro("Error de Registro", "Las contraseñas institucionales no coinciden.");
+            if(pass !== passConfirm) {
+                mostrarAlertaPro("Error", "Las contraseñas no coinciden.");
                 return;
             }
 
-            db.ref('users/' + sanitizarEmail(tempEmail)).once('value', (snapshot) => {
+            db.ref('users/' + sanitizarEmail(email)).once('value', (snapshot) => {
                 if (snapshot.exists()) {
-                    mostrarAlertaPro("Aviso", "Este correo ya está registrado en la base de datos central.");
+                    mostrarAlertaPro("Aviso", "Este correo ya está registrado en la base de datos.");
                 } else {
-                    document.getElementById('registerView').style.display = 'none';
-                    document.getElementById('puzzleView').style.display = 'block';
+                    let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
+                    let nu = { 
+                        email: email, 
+                        pass: pass, 
+                        balance: 0.0, 
+                        code: myCode, 
+                        refBy: null, 
+                        refCount: 0, 
+                        validRefCount: 0, 
+                        teamDepositTotal: 0, 
+                        commissionTotal: 0, 
+                        vipActive: null, 
+                        vipExpiry: 0, 
+                        lastClaim: 0, 
+                        isAdmin: ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)
+                    };
+
+                    if(refCode) {
+                        db.ref('users').orderByChild('code').equalTo(refCode.toUpperCase()).once('value', (snap) => {
+                            let uplineData = snap.val();
+                            if(uplineData) {
+                                let uplineKey = Object.keys(uplineData)[0];
+                                let upline = uplineData[uplineKey];
+                                upline.refCount = (upline.refCount || 0) + 1;
+                                nu.refBy = upline.email;
+                                db.ref('users/' + uplineKey).set(upline);
+                            }
+                            guardarUsuarioCloud(nu);
+                            sessionEmail = email;
+                            localStorage.setItem("inverbot_session", sessionEmail);
+                            entrarDashboardDirecto();
+                        });
+                    } else {
+                        guardarUsuarioCloud(nu);
+                        sessionEmail = email;
+                        localStorage.setItem("inverbot_session", sessionEmail);
+                        entrarDashboardDirecto();
+                    }
                 }
             });
         }
-        function cancelarPuzzle() { 
-            document.getElementById('puzzleView').style.display = 'none'; 
-            document.getElementById('registerView').style.display = 'block'; 
-        }
-
-        let dragging = false, startX = 0;
-        function iniciarDrag(e) { dragging = true; startX = e.clientX || (e.touches ? e.touches[0].clientX : 0); document.addEventListener('mousemove', onDrag); document.addEventListener('touchmove', onDrag); document.addEventListener('mouseup', stopDrag); document.addEventListener('touchend', stopDrag); }
-        function onDrag(e) {
-            if(!dragging) return;
-            let cx = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-            let diff = cx - startX; if(diff < 0) diff = 0; if(diff > 230) diff = 230;
-            document.getElementById('puzzleSlider').style.transform = `translateX(${diff}px)`;
-            if(diff >= 220) {
-                dragging = false; document.removeEventListener('mousemove', onDrag); document.removeEventListener('touchmove', onDrag);
-                document.getElementById('puzzleSlider').style.transform = `translateX(4px)`;
-                
-                let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-                let nu = { email: tempEmail, pass: tempPass, balance: 0.0, code: myCode, refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, isAdmin: false };
-                
-                if(tempRef) {
-                    db.ref('users').orderByChild('code').equalTo(tempRef.toUpperCase()).once('value', (snapshot) => {
-                        let uplineData = snapshot.val();
-                        if(uplineData) {
-                            let uplineKey = Object.keys(uplineData)[0];
-                            let upline = uplineData[uplineKey];
-                            upline.refCount = (upline.refCount || 0) + 1;
-                            nu.refBy = upline.email;
-                            db.ref('users/' + uplineKey).set(upline);
-                        }
-                        guardarUsuarioCloud(nu);
-                        sessionEmail = tempEmail; 
-                        localStorage.setItem("inverbot_session", sessionEmail);
-                        entrarDashboardDirecto();
-                    });
-                } else {
-                    guardarUsuarioCloud(nu);
-                    sessionEmail = tempEmail; 
-                    localStorage.setItem("inverbot_session", sessionEmail);
-                    entrarDashboardDirecto();
-                }
-            }
-        }
-        function stopDrag() { dragging = false; }
 
         function iniciarSesion(e) {
             e.preventDefault();
@@ -916,17 +897,23 @@
         }
 
         function verHistorialDeps() {
-            let misDeps = cacheDeps.filter(d => d.user.toLowerCase() === sessionEmail.toLowerCase());
-            if(misDeps.length === 0) { mostrarAlertaPro("Historial de Depósitos", "No tienes registros de depósitos."); return; }
-            let html = misDeps.map(d => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>+${d.monto} USDT</b> (${d.red})<br><span style="color:gray;">Hash: ${d.hash}</span><br><span style="color:gray;">Estado: <b>${d.status}</b></span></div>`).join('');
-            mostrarAlertaPro("Historial de Depósitos", html);
+            db.ref('deposits').once('value', (snapshot) => {
+                let allDeps = snapshot.val() ? Object.values(snapshot.val()) : [];
+                let misDeps = allDeps.filter(d => d.user.toLowerCase() === sessionEmail.toLowerCase());
+                if(misDeps.length === 0) { mostrarAlertaPro("Historial de Depósitos", "No tienes registros de depósitos."); return; }
+                let html = misDeps.map(d => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>+${d.monto} USDT</b> (${d.red})<br><span style="color:gray;">Hash: ${d.hash}</span><br><span style="color:gray;">Estado: <b>${d.status}</b></span></div>`).join('');
+                mostrarAlertaPro("Historial de Depósitos", html);
+            });
         }
 
         function verHistorialWits() {
-            let misWits = cacheWits.filter(w => w.user.toLowerCase() === sessionEmail.toLowerCase());
-            if(misWits.length === 0) { mostrarAlertaPro("Historial de Retiros", "No tienes registros de retiros."); return; }
-            let html = misWits.map(w => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>-${w.monto} USDT</b><br><span style="color:gray;">Wallet: ${w.wallet}</span><br><span style="color:gray;">Estado: <b>${w.status}</b></span></div>`).join('');
-            mostrarAlertaPro("Historial de Retiros", html);
+            db.ref('withdrawals').once('value', (snapshot) => {
+                let allWits = snapshot.val() ? Object.values(snapshot.val()) : [];
+                let misWits = allWits.filter(w => w.user.toLowerCase() === sessionEmail.toLowerCase());
+                if(misWits.length === 0) { mostrarAlertaPro("Historial de Retiros", "No tienes registros de retiros."); return; }
+                let html = misWits.map(w => `<div style="border-bottom:1px solid #cbd5e0; padding:8px 0; font-size:10px;"><b>-${w.monto} USDT</b><br><span style="color:gray;">Wallet: ${w.wallet}</span><br><span style="color:gray;">Estado: <b>${w.status}</b></span></div>`).join('');
+                mostrarAlertaPro("Historial de Retiros", html);
+            });
         }
 
         function abrirPanelAdmin() {
@@ -1006,99 +993,116 @@
         }
 
         function renderAdmin() {
-            document.getElementById('listaAdminUsers').innerHTML = cacheUsers.map(u => `
-                <div style="font-size:10px; padding:8px; background:#f7f9fc; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <b>Correo:</b> ${u.email}<br><b>Saldo:</b> $${u.balance.toFixed(2)} ${u.isAdmin ? '<b>[ADMIN]</b>' : ''}
+            db.ref('users').once('value', (uSnap) => {
+                let usersList = uSnap.val() ? Object.values(uSnap.val()) : [];
+                document.getElementById('listaAdminUsers').innerHTML = usersList.map(u => `
+                    <div style="font-size:10px; padding:8px; background:#f7f9fc; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <b>Correo:</b> ${u.email}<br><b>Saldo:</b> $${u.balance.toFixed(2)} ${u.isAdmin ? '<b>[ADMIN]</b>' : ''}
+                        </div>
+                        <div style="display:flex; gap:4px;">
+                            <button onclick="toggleAdminUser('${u.email}')" style="background:${u.isAdmin ? '#d69e2e' : 'var(--primary-green)'}; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:9px; font-weight:700;">${u.isAdmin ? 'Quitar Admin' : 'Hacer Admin'}</button>
+                            <button onclick="eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:9px; font-weight:700;">Eliminar</button>
+                        </div>
                     </div>
-                    <div style="display:flex; gap:4px;">
-                        <button onclick="toggleAdminUser('${u.email}')" style="background:${u.isAdmin ? '#d69e2e' : 'var(--primary-green)'}; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:9px; font-weight:700;">${u.isAdmin ? 'Quitar Admin' : 'Hacer Admin'}</button>
-                        <button onclick="eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:9px; font-weight:700;">Eliminar</button>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            });
 
-            let pDeps = cacheDeps.filter(d => d.status === 'Pendiente');
-            document.getElementById('listaAdminDeps').innerHTML = pDeps.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin depósitos pendientes</p>" : cacheDeps.map((d) => d.status === 'Pendiente' ? `
-                <div style="font-size:10px; background:#f7f9fc; padding:8px; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0;">
-                    <b>${d.user}</b> (${d.red}): +$${d.monto} USDT<br><span style="color:gray; font-size:9px;">ID/Hash: ${d.hash}</span><br>
-                    <div style="margin-top:6px; display:flex; gap:6px;">
-                        <button onclick="aprobarDep('${d.id}')" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
-                        <button onclick="cancelarDep('${d.id}')" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
-                    </div>
-                </div>` : '').join('');
+            db.ref('deposits').once('value', (dSnap) => {
+                let depsList = dSnap.val() ? Object.values(dSnap.val()) : [];
+                let pDeps = depsList.filter(d => d.status === 'Pendiente');
+                document.getElementById('listaAdminDeps').innerHTML = pDeps.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin depósitos pendientes</p>" : pDeps.map((d) => `
+                    <div style="font-size:10px; background:#f7f9fc; padding:8px; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0;">
+                        <b>${d.user}</b> (${d.red}): +$${d.monto} USDT<br><span style="color:gray; font-size:9px;">ID/Hash: ${d.hash}</span><br>
+                        <div style="margin-top:6px; display:flex; gap:6px;">
+                            <button onclick="aprobarDep('${d.id}')" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
+                            <button onclick="cancelarDep('${d.id}')" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
+                        </div>
+                    </div>`).join('');
+            });
 
-            let pWits = cacheWits.filter(w => w.status === 'Pendiente');
-            document.getElementById('listaAdminWits').innerHTML = pWits.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin retiros pendientes</p>" : cacheWits.map((w) => w.status === 'Pendiente' ? `
-                <div style="font-size:10px; background:#f7f9fc; padding:8px; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0;">
-                    <b>${w.user}</b>: -$${w.monto} USDT<br><span style="color:gray; font-size:9px;">Wallet: ${w.wallet}</span><br>
-                    <div style="margin-top:6px; display:flex; gap:6px;">
-                        <button onclick="aprobarWit('${w.id}')" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
-                        <button onclick="cancelarWit('${w.id}')" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
-                    </div>
-                </div>` : '').join('');
+            db.ref('withdrawals').once('value', (wSnap) => {
+                let witsList = wSnap.val() ? Object.values(wSnap.val()) : [];
+                let pWits = witsList.filter(w => w.status === 'Pendiente');
+                document.getElementById('listaAdminWits').innerHTML = pWits.length === 0 ? "<p style='font-size:10px; color:gray;'>Sin retiros pendientes</p>" : pWits.map((w) => `
+                    <div style="font-size:10px; background:#f7f9fc; padding:8px; margin-bottom:6px; border-radius:6px; border:1px solid #cbd5e0;">
+                        <b>${w.user}</b>: -$${w.monto} USDT<br><span style="color:gray; font-size:9px;">Wallet: ${w.wallet}</span><br>
+                        <div style="margin-top:6px; display:flex; gap:6px;">
+                            <button onclick="aprobarWit('${w.id}')" style="background:var(--primary-green); color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Aprobar</button>
+                            <button onclick="cancelarWit('${w.id}')" style="background:#e53e3e; color:#fff; border:none; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:700;">Cancelar</button>
+                        </div>
+                    </div>`).join('');
+            });
         }
 
         function aprobarDep(depId) {
-            let d = cacheDeps.find(x => x.id === depId);
-            if (!d) return;
-            db.ref('users/' + sanitizarEmail(d.user)).once('value', (snapshot) => {
-                let u = snapshot.val();
-                if(u) { 
-                    u.balance += d.monto; 
-                    d.status = 'Aprobado'; 
-                    
-                    if(u.refBy) {
-                        db.ref('users/' + sanitizarEmail(u.refBy)).once('value', (upSnap) => {
-                            let upline = upSnap.val();
-                            if(upline) {
-                                if(!u.hasDeposited) {
-                                    upline.validRefCount = (upline.validRefCount || 0) + 1;
-                                    u.hasDeposited = true;
+            db.ref('deposits/' + depId).once('value', (dSnap) => {
+                let d = dSnap.val();
+                if (!d) return;
+                db.ref('users/' + sanitizarEmail(d.user)).once('value', (uSnap) => {
+                    let u = uSnap.val();
+                    if(u) { 
+                        u.balance += d.monto; 
+                        d.status = 'Aprobado'; 
+                        
+                        if(u.refBy) {
+                            db.ref('users/' + sanitizarEmail(u.refBy)).once('value', (upSnap) => {
+                                let upline = upSnap.val();
+                                if(upline) {
+                                    if(!u.hasDeposited) {
+                                        upline.validRefCount = (upline.validRefCount || 0) + 1;
+                                        u.hasDeposited = true;
+                                    }
+                                    upline.teamDepositTotal = (upline.teamDepositTotal || 0) + d.monto;
+                                    let comDep = d.monto * 0.05;
+                                    upline.balance += comDep;
+                                    upline.commissionTotal = (upline.commissionTotal || 0) + comDep;
+                                    guardarUsuarioCloud(upline);
                                 }
-                                upline.teamDepositTotal = (upline.teamDepositTotal || 0) + d.monto;
-                                let comDep = d.monto * 0.05;
-                                upline.balance += comDep;
-                                upline.commissionTotal = (upline.commissionTotal || 0) + comDep;
-                                guardarUsuarioCloud(upline);
-                            }
-                        });
-                    }
+                            });
+                        }
 
-                    guardarUsuarioCloud(u); 
-                    db.ref('deposits/' + depId).set(d);
-                    renderAdmin(); 
-                }
+                        guardarUsuarioCloud(u); 
+                        db.ref('deposits/' + depId).set(d);
+                        renderAdmin(); 
+                    }
+                });
             });
         }
         function cancelarDep(depId) {
-            let d = cacheDeps.find(x => x.id === depId);
-            if(d) {
-                d.status = 'Cancelado'; 
-                db.ref('deposits/' + depId).set(d); 
-                renderAdmin();
-            }
+            db.ref('deposits/' + depId).once('value', (dSnap) => {
+                let d = dSnap.val();
+                if(d) {
+                    d.status = 'Cancelado'; 
+                    db.ref('deposits/' + depId).set(d); 
+                    renderAdmin();
+                }
+            });
         }
         function aprobarWit(witId) {
-            let w = cacheWits.find(x => x.id === witId);
-            if(w) {
-                w.status = 'Aprobado'; 
-                db.ref('withdrawals/' + witId).set(w); 
-                renderAdmin();
-            }
+            db.ref('withdrawals/' + witId).once('value', (wSnap) => {
+                let w = wSnap.val();
+                if(w) {
+                    w.status = 'Aprobado'; 
+                    db.ref('withdrawals/' + witId).set(w); 
+                    renderAdmin();
+                }
+            });
         }
         function cancelarWit(witId) {
-            let w = cacheWits.find(x => x.id === witId);
-            if(!w) return;
-            db.ref('users/' + sanitizarEmail(w.user)).once('value', (snapshot) => {
-                let u = snapshot.val();
-                if(u) { 
-                    u.balance += w.monto; 
-                    w.status = 'Cancelado'; 
-                    guardarUsuarioCloud(u); 
-                    db.ref('withdrawals/' + witId).set(w); 
-                    renderAdmin(); 
-                }
+            db.ref('withdrawals/' + witId).once('value', (wSnap) => {
+                let w = wSnap.val();
+                if(!w) return;
+                db.ref('users/' + sanitizarEmail(w.user)).once('value', (uSnap) => {
+                    let u = uSnap.val();
+                    if(u) { 
+                        u.balance += w.monto; 
+                        w.status = 'Cancelado'; 
+                        guardarUsuarioCloud(u); 
+                        db.ref('withdrawals/' + witId).set(w); 
+                        renderAdmin(); 
+                    }
+                });
             });
         }
         function copiarEnlaceReferido() {
