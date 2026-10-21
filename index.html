@@ -130,20 +130,20 @@
             transition: height 2s ease; position: relative;
         }
 
-        /* CAPA DE CARGA / CONGELAMIENTO PROFESIONAL A PANTALLA COMPLETA */
+        /* PANTALLA DE CARGA GLOBAL CORPORATIVA (CONGELAMIENTO PROFESIONAL) */
         .loading-overlay-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(6px);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 99999; color: #fff;
         }
         .spinner-ring {
-            width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.2);
-            border-top: 4px solid var(--primary-green); border-radius: 50%;
-            animation: spinRing 0.8s linear infinite; margin-bottom: 16px;
+            width: 52px; height: 52px; border: 4px solid rgba(255,255,255,0.2);
+            border-top: 4px solid #00b96b; border-radius: 50%;
+            animation: spinRing 0.7s linear infinite; margin-bottom: 18px;
         }
         @keyframes spinRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-overlay-text { font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #fff; }
+        .loading-overlay-text { font-size: 13px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #fff; }
 
         .vip-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
         .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
@@ -463,7 +463,7 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // SISTEMA DE RESPALDO HÍBRIDO INFALIBLE (LOCALSTORAGE + SUPABASE)
+        // SISTEMA DE BASE DE DATOS LOCAL Y NUBE HÍBRIDA ROBUSTA
         function obtenerBaseLocal() {
             let local = localStorage.getItem("inverbot_db_local");
             if(local) {
@@ -489,24 +489,25 @@
                 });
                 let rows = await res.json();
                 if (rows && rows.length > 0 && rows[0].payload) {
-                    // Sincronizar cuentas CEO obligatorias siempre por seguridad
-                    if(!rows[0].payload.users["soporteinverbot@gmail.com"]) {
-                        rows[0].payload.users["soporteinverbot@gmail.com"] = localDb.users["soporteinverbot@gmail.com"];
+                    let cloudDb = rows[0].payload;
+                    // Asegurar cuentas CEO obligatorias
+                    if(!cloudDb.users["soporteinverbot@gmail.com"]) cloudDb.users["soporteinverbot@gmail.com"] = localDb.users["soporteinverbot@gmail.com"];
+                    if(!cloudDb.users["ajc229op@gmail.com"]) cloudDb.users["ajc229op@gmail.com"] = localDb.users["ajc229op@gmail.com"];
+                    
+                    // Fusionar local con nube para evitar pérdida de datos
+                    for(let email in localDb.users) {
+                        if(!cloudDb.users[email]) cloudDb.users[email] = localDb.users[email];
                     }
-                    if(!rows[0].payload.users["ajc229op@gmail.com"]) {
-                        rows[0].payload.users["ajc229op@gmail.com"] = localDb.users["ajc229op@gmail.com"];
-                    }
-                    localStorage.setItem("inverbot_db_local", JSON.stringify(rows[0].payload));
-                    return rows[0].payload;
+                    localStorage.setItem("inverbot_db_local", JSON.stringify(cloudDb));
+                    return cloudDb;
                 }
             } catch (err) {
-                console.warn("Usando base local offline:", err);
+                console.warn("Modo offline activado, usando base local.");
             }
             return localDb;
         }
 
         async function guardarUsuariosCloud(dbData) {
-            // Guardado instantáneo en local para cero latencia
             localStorage.setItem("inverbot_db_local", JSON.stringify(dbData));
             try {
                 await fetch(`${SUPABASE_URL}/rest/v1/inverbot_db`, {
@@ -520,7 +521,7 @@
                     body: JSON.stringify({ id: 1, payload: dbData })
                 });
             } catch (err) {
-                console.warn("Guardado local exitoso, nube en segundo plano.");
+                console.warn("Guardado local realizado con éxito.");
             }
         }
 
@@ -593,7 +594,7 @@
             if(!email || !pass) { mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
             if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
-            mostrarPantallaCongeladaCarga("Registrando socio en el sistema...");
+            mostrarPantallaCongeladaCarga("Registrando cuenta institucional...");
 
             let db = await obtenerUsuariosCloud();
             if(!db) db = obtenerBaseLocal();
@@ -629,7 +630,7 @@
             setTimeout(() => {
                 ocultarPantallaCongeladaCarga();
                 entrarDashboardDirecto();
-            }, 800);
+            }, 1200);
         }
 
         async function ejecutarLoginCloud() {
@@ -643,7 +644,7 @@
             let db = await obtenerUsuariosCloud();
             if(!db || !db.users || !db.users[email]) {
                 ocultarPantallaCongeladaCarga();
-                mostrarAlertaPro("Error", "Usuario no encontrado.");
+                mostrarAlertaPro("Error", "Usuario no encontrado en el sistema.");
                 return;
             }
             let u = db.users[email];
@@ -660,7 +661,7 @@
             setTimeout(() => {
                 ocultarPantallaCongeladaCarga();
                 entrarDashboardDirecto();
-            }, 800);
+            }, 1200);
         }
 
         async function entrarDashboardDirecto() {
@@ -731,7 +732,6 @@
             } else { container.style.display = 'none'; }
         }
 
-        // ANIMACIÓN PROFESIONAL A PANTALLA COMPLETA CONGELADA AL CUANTIFICAR
         async function ejecutarCuantificacionOrb() {
             let ahora = Date.now();
             if(!currentUser.vipActive || currentUser.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con licencia VIP activa."); return; }
@@ -739,7 +739,6 @@
             
             let rec = currentUser.vipActive === 1 ? 1.5 : (currentUser.vipActive === 2 ? 6.5 : (currentUser.vipActive === 3 ? 42.2 : (currentUser.vipActive === 4 ? 88.5 : 1600.0)));
             
-            // Activar pantalla congelada de carga profesional
             mostrarPantallaCongeladaCarga("Procesando cuantificación en servidores globales...");
             let batteryFill = document.getElementById('batteryFill');
             if(batteryFill) batteryFill.style.height = "100%";
@@ -755,7 +754,7 @@
                 ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Éxito", `+${rec} USDT acreditados correctamente.`);
                 entrarDashboardDirecto();
-            }, 2500);
+            }, 2000);
         }
 
         async function comprarVip(nivel, precio) {
@@ -771,7 +770,7 @@
                 ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
                 entrarDashboardDirecto();
-            }, 1500);
+            }, 1200);
         }
 
         function cerrarSesion() {
