@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Financial Asset Management | Inverbot</title>
-    <!-- Importar cliente oficial de Supabase para evitar bloqueos de fetch en móviles -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --bg-main: #f4f6f8;
@@ -457,35 +455,59 @@
         const SUPABASE_URL = "https://noakyexlfvblduomfca.supabase.co";
         const SUPABASE_KEY = "sb_publishable_ztwRueaYThf2D_CiAwIy0Q_9ebIRAP_";
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
-
-        // Inicializar cliente oficial de Supabase SDK
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
         let sessionEmail = sessionStorage.getItem("inverbot_session") || null;
         let currentUser = null;
         let countdownInterval = null;
 
-        async function obtenerUsuariosCloud() {
-            let { data, error } = await supabaseClient
-                .from("inverbot-db")
-                .select("payload")
-                .eq("id", 1)
-                .single();
-            
-            if (error) throw new Error("Error conectando con Supabase: " + error.message);
-            if (!data || !data.payload) {
-                throw new Error("La tabla en Supabase está vacía o no existe el registro id=1.");
+        async function fetchSupabaseRest(endpoint, method = 'GET', bodyData = null) {
+            let url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
+            let options = {
+                method: method,
+                headers: {
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": `Bearer ${SUPABASE_KEY}`,
+                    "Content-Type": "application/json",
+                    "Prefer": method === 'POST' ? "resolution=merge-duplicates" : "return=representation"
+                },
+                mode: 'cors',
+                cache: 'no-cache'
+            };
+            if (bodyData) {
+                options.body = JSON.stringify(bodyData);
             }
-            
-            return data.payload;
+
+            try {
+                let response = await fetch(url, options);
+                if (!response.ok) {
+                    let errText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errText}`);
+                }
+                let textRes = await response.text();
+                return textRes ? JSON.parse(textRes) : null;
+            } catch (err) {
+                throw new Error(err.message || "Failed to fetch");
+            }
+        }
+
+        async function obtenerUsuariosCloud() {
+            try {
+                let rows = await fetchSupabaseRest("inverbot-db?id=eq.1&select=*");
+                if (!rows || rows.length === 0 || !rows[0].payload) {
+                    throw new Error("La tabla en Supabase está vacía o no existe el registro id=1.");
+                }
+                return rows[0].payload;
+            } catch (e) {
+                throw new Error("Error conectando con Supabase: " + e.message);
+            }
         }
 
         async function guardarUsuariosCloud(dbData) {
-            let { error } = await supabaseClient
-                .from("inverbot-db")
-                .upsert({ id: 1, payload: dbData });
-                
-            if (error) throw new Error("Error al guardar en Supabase: " + error.message);
+            try {
+                await fetchSupabaseRest("inverbot-db", "POST", { id: 1, payload: dbData });
+            } catch (e) {
+                throw new Error("Error al guardar en Supabase: " + e.message);
+            }
         }
 
         function mostrarAlertaPro(titulo, mensaje, cb = null) {
