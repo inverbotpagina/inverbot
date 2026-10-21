@@ -460,48 +460,75 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // CONEXIÓN PURA A LA NUBE DE SUPABASE
-        async function sbFetch(tabla, metodo = 'GET', query = '', bodyData = null) {
-            let url = `${SUPABASE_URL}/rest/v1/${tabla}${query}`;
+        function obtenerDatosLocalSeguro() {
+            let local = localStorage.getItem("inverbot_db_local");
+            if (!local) {
+                let initial = {
+                    users: {
+                        "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "123456", balance: 5000, code: "REF-CEO1", isAdmin: true },
+                        "ajc229op@gmail.com": { email: "ajc229op@gmail.com", pass: "123456", balance: 5000, code: "REF-CEO2", isAdmin: true }
+                    },
+                    deposits: [],
+                    withdrawals: []
+                };
+                localStorage.setItem("inverbot_db_local", JSON.stringify(initial));
+                return initial;
+            }
+            return JSON.parse(local);
+        }
+
+        function guardarDatosLocalSeguro(dbData) {
+            localStorage.setItem("inverbot_db_local", JSON.stringify(dbData));
+        }
+
+        async function fetchSupabaseRest(endpoint, method = 'GET', bodyData = null) {
+            let url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
             let options = {
-                method: metodo,
+                method: method,
                 headers: {
                     "apikey": SUPABASE_KEY,
                     "Authorization": `Bearer ${SUPABASE_KEY}`,
                     "Content-Type": "application/json",
-                    "Prefer": "return=representation"
+                    "Prefer": method === 'POST' ? "resolution=merge-duplicates" : "return=representation"
                 },
                 mode: 'cors',
                 cache: 'no-cache'
             };
-            if (bodyData) options.body = JSON.stringify(bodyData);
-
-            let res = await fetch(url, options);
-            if (!res.ok) {
-                let errText = await res.text();
-                throw new Error(`Supabase Cloud Error (${res.status}): ${errText}`);
+            if (bodyData) {
+                options.body = JSON.stringify(bodyData);
             }
-            let text = await res.text();
-            return text ? JSON.parse(text) : [];
+
+            let response = await fetch(url, options);
+            if (!response.ok) {
+                let errText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errText}`);
+            }
+            let textRes = await response.text();
+            if (!textRes || textRes.trim() === "") return {};
+            return JSON.parse(textRes);
         }
 
-        async function obtenerUsuarioPorEmail(email) {
-            let rows = await sbFetch("usuarios", "GET", `?email=eq.${encodeURIComponent(email)}`);
-            return rows.length > 0 ? rows[0] : null;
+        async function obtenerUsuariosCloud() {
+            try {
+                let rows = await fetchSupabaseRest("inverbot-db?id=eq.1&select=*");
+                if (!rows || rows.length === 0 || !rows[0].payload) {
+                    return obtenerDatosLocalSeguro();
+                }
+                guardarDatosLocalSeguro(rows[0].payload);
+                return rows[0].payload;
+            } catch (e) {
+                console.warn("Modo offline activado por fallo de red:", e.message);
+                return obtenerDatosLocalSeguro();
+            }
         }
 
-        async function actualizarUsuarioSupabase(u) {
-            await sbFetch("usuarios", "PATCH", `?email=eq.${encodeURIComponent(u.email)}`, {
-                balance: u.balance,
-                ref_count: u.ref_count,
-                valid_ref_count: u.valid_ref_count,
-                team_deposit_total: u.team_deposit_total,
-                commission_total: u.commission_total,
-                vip_active: u.vip_active,
-                vip_expiry: u.vip_expiry,
-                last_claim: u.last_claim,
-                is_admin: u.is_admin
-            });
+        async function guardarUsuariosCloud(dbData) {
+            guardarDatosLocalSeguro(dbData);
+            try {
+                await fetchSupabaseRest("inverbot-db", "POST", { id: 1, payload: dbData });
+            } catch (e) {
+                console.warn("No se pudo sincronizar con la nube, operando localmente:", e.message);
+            }
         }
 
         function mostrarAlertaPro(titulo, mensaje, cb = null) {
@@ -542,32 +569,23 @@
             if(ref && document.getElementById('regRef')) document.getElementById('regRef').value = ref;
 
             try {
-                mostrarPantallaCongeladaCarga("Conectando con Supabase...");
-                
-                // Asegurar cuentas CEO directamente en la nube
-                for(let ceoMail of ADMIN_EMAILS) {
-                    let exists = await obtenerUsuarioPorEmail(ceoMail);
-                    if(!exists) {
-                        await sbFetch("usuarios", "POST", "", {
-                            email: ceoMail, pass: "123456", balance: 5000, code: "REF-" + ceoMail.substring(0,3).toUpperCase(), is_admin: true
-                        });
-                    }
-                }
+                mostrarPantallaCongeladaCarga("Iniciando Inverbot...");
+                let db = await obtenerUsuariosCloud();
 
-                if (sessionEmail) {
-                    currentUser = await obtenerUsuarioPorEmail(sessionEmail);
-                    if (currentUser) {
-                        await entrarDashboardDirecto();
-                    } else {
-                        cerrarSesion();
-                    }
+                if (sessionEmail && db && db.users && db.users[sessionEmail]) {
+                    currentUser = db.users[sessionEmail];
+                    await entrarDashboardDirecto();
                 } else {
                     cerrarSesion();
                 }
             } catch (err) {
-                console.error("Error conectando a la nube:", err);
-                mostrarAlertaPro("Error de Conexión Nube", "No se pudo conectar a Supabase. Verifica tu red o las políticas de la base de datos.");
-                cerrarSesion();
+                let db = obtenerDatosLocalSeguro();
+                if (sessionEmail && db.users && db.users[sessionEmail]) {
+                    currentUser = db.users[sessionEmail];
+                    await entrarDashboardDirecto();
+                } else {
+                    cerrarSesion();
+                }
             } finally {
                 ocultarPantallaCongeladaCarga();
             }
@@ -597,36 +615,33 @@
             if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
             try {
-                mostrarPantallaCongeladaCarga("Registrando en la nube...");
-                let existente = await obtenerUsuarioPorEmail(email);
-                if(existente) {
-                    mostrarAlertaPro("Aviso", "Este correo ya está registrado en la nube.");
+                mostrarPantallaCongeladaCarga("Registrando cuenta...");
+                let db = await obtenerUsuariosCloud();
+
+                if(db.users[email]) {
+                    mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
                     return;
                 }
 
                 let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-                let isAdmin = ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email);
-
-                let nuevoUser = {
-                    email: email, pass: pass, balance: 0.0, code: myCode,
-                    ref_by: null, ref_count: 0, valid_ref_count: 0, team_deposit_total: 0,
-                    commission_total: 0, vip_active: null, vip_expiry: 0, last_claim: 0,
-                    is_admin: isAdmin
+                currentUser = { 
+                    email: email, pass: pass, balance: 0.0, code: myCode, 
+                    refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, 
+                    commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, 
+                    isAdmin: ADMIN_EMAILS.map(em=>em.toLowerCase()).includes(email)
                 };
 
                 if(refCode) {
-                    let rowsUpline = await sbFetch("usuarios", "GET", `?code=eq.${encodeURIComponent(refCode)}`);
-                    if(rowsUpline.length > 0) {
-                        let upline = rowsUpline[0];
-                        nuevoUser.ref_by = upline.email;
-                        await sbFetch("usuarios", "PATCH", `?email=eq.${encodeURIComponent(upline.email)}`, {
-                            ref_count: (upline.ref_count || 0) + 1
-                        });
+                    let uplineKey = Object.keys(db.users).find(k => db.users[k].code.toUpperCase() === refCode.toUpperCase());
+                    if(uplineKey) {
+                        db.users[uplineKey].refCount = (db.users[uplineKey].refCount || 0) + 1;
+                        currentUser.refBy = db.users[uplineKey].email;
                     }
                 }
 
-                await sbFetch("usuarios", "POST", "", nuevoUser);
-                currentUser = nuevoUser;
+                db.users[email] = currentUser;
+                await guardarUsuariosCloud(db);
+
                 sessionEmail = email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
                 
@@ -645,13 +660,14 @@
             if(!email || !pass) { mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
 
             try {
-                mostrarPantallaCongeladaCarga("Autenticando en la nube...");
-                let u = await obtenerUsuarioPorEmail(email);
+                mostrarPantallaCongeladaCarga("Iniciando sesión...");
+                let db = await obtenerUsuariosCloud();
 
-                if(!u) {
-                    mostrarAlertaPro("Error", "El usuario no existe en la nube.");
+                if(!db || !db.users || !db.users[email]) {
+                    mostrarAlertaPro("Error", "El usuario no existe.");
                     return;
                 }
+                let u = db.users[email];
                 if(u.pass !== pass) {
                     mostrarAlertaPro("Error", "Contraseña incorrecta.");
                     return;
@@ -672,7 +688,11 @@
         async function entrarDashboardDirecto() {
             if(!currentUser || !currentUser.email) return;
             try {
-                currentUser = await obtenerUsuarioPorEmail(currentUser.email);
+                let db = await obtenerUsuariosCloud();
+
+                if(db && db.users && db.users[currentUser.email]) {
+                    currentUser = db.users[currentUser.email];
+                }
 
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
@@ -684,14 +704,14 @@
                 document.getElementById('lblBalanceAmi').innerText = b;
                 document.getElementById('lblBalanceCuantificar').innerText = b;
                 
-                document.getElementById('lblTeamComision').innerText = (currentUser.commission_total || 0).toFixed(2);
-                document.getElementById('lblTeamTotalRef').innerText = currentUser.ref_count || 0;
-                document.getElementById('lblTeamValidRef').innerText = currentUser.valid_ref_count || 0;
-                document.getElementById('lblTeamDepEquipo').innerText = (currentUser.team_deposit_total || 0).toFixed(2);
+                document.getElementById('lblTeamComision').innerText = (currentUser.commissionTotal || 0).toFixed(2);
+                document.getElementById('lblTeamTotalRef').innerText = currentUser.refCount || 0;
+                document.getElementById('lblTeamValidRef').innerText = currentUser.validRefCount || 0;
+                document.getElementById('lblTeamDepEquipo').innerText = (currentUser.teamDepositTotal || 0).toFixed(2);
 
                 document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + (currentUser.code || '');
                 
-                let esAdmin = currentUser.is_admin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase());
+                let esAdmin = currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase());
                 document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
 
                 actualizarVips(currentUser);
@@ -704,7 +724,7 @@
         function actualizarVips(u) {
             let ahora = Date.now();
             for(let i=1; i<=5; i++) {
-                let activo = (u.vip_active === i && u.vip_expiry > ahora);
+                let activo = (u.vipActive === i && u.vipExpiry > ahora);
                 let st = document.getElementById('vip' + i + 'StatusText');
                 if(st) { st.innerText = activo ? "Activado" : "Inactivo"; st.style.background = activo ? "#e6f9f0" : "#edf2f7"; st.style.color = activo ? "var(--primary-green)" : "var(--text-muted)"; }
                 let act = document.getElementById('vip' + i + 'ActionArea');
@@ -723,13 +743,13 @@
         function iniciarContadorCuantificacion(u) {
             if(countdownInterval) clearInterval(countdownInterval);
             let ahora = Date.now();
-            let restante = (24 * 3600 * 1000) - (ahora - (u.last_claim || 0));
+            let restante = (24 * 3600 * 1000) - (ahora - (u.lastClaim || 0));
             let container = document.getElementById('countdownContainer');
             
-            if(restante > 0 && u.last_claim > 0) {
+            if(restante > 0 && u.lastClaim > 0) {
                 container.style.display = 'block';
                 countdownInterval = setInterval(() => {
-                    let r = (24 * 3600 * 1000) - (Date.now() - u.last_claim);
+                    let r = (24 * 3600 * 1000) - (Date.now() - u.lastClaim);
                     if(r <= 0) { container.style.display = 'none'; clearInterval(countdownInterval); return; }
                     let h = Math.floor(r / (1000 * 60 * 60));
                     let m = Math.floor((r % (1000 * 60 * 60)) / (1000 * 60));
@@ -742,23 +762,25 @@
 
         async function ejecutarCuantificacionOrb() {
             let ahora = Date.now();
-            if(!currentUser.vip_active || currentUser.vip_expiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con licencia VIP activa."); return; }
-            if(ahora - (currentUser.last_claim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso", "Espera a que finalice el contador."); return; }
+            if(!currentUser.vipActive || currentUser.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con licencia VIP activa."); return; }
+            if(ahora - (currentUser.lastClaim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso", "Espera a que finalice el contador."); return; }
             
-            let rec = currentUser.vip_active === 1 ? 1.5 : (currentUser.vip_active === 2 ? 6.5 : (currentUser.vip_active === 3 ? 42.2 : (currentUser.vip_active === 4 ? 88.5 : 1600.0)));
+            let rec = currentUser.vipActive === 1 ? 1.5 : (currentUser.vipActive === 2 ? 6.5 : (currentUser.vipActive === 3 ? 42.2 : (currentUser.vipActive === 4 ? 88.5 : 1600.0)));
             
             try {
-                mostrarPantallaCongeladaCarga("Procesando en la nube...");
+                mostrarPantallaCongeladaCarga("Procesando cuantificación...");
                 let batteryFill = document.getElementById('batteryFill');
                 if(batteryFill) batteryFill.style.height = "100%";
 
+                let db = await obtenerUsuariosCloud();
                 currentUser.balance += rec; 
-                currentUser.last_claim = ahora;
-                await actualizarUsuarioSupabase(currentUser);
+                currentUser.lastClaim = ahora;
+                db.users[currentUser.email] = currentUser;
+                await guardarUsuariosCloud(db);
 
                 setTimeout(() => {
                     if(batteryFill) batteryFill.style.height = "0%";
-                    mostrarAlertaPro("Éxito", `+${rec} USDT acreditados en la nube.`);
+                    mostrarAlertaPro("Éxito", `+${rec} USDT acreditados.`);
                     entrarDashboardDirecto();
                 }, 1500);
             } catch (err) {
@@ -772,12 +794,11 @@
             if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             
             try {
-                mostrarPantallaCongeladaCarga("Actualizando VIP en la nube...");
-                currentUser.balance -= precio; 
-                currentUser.vip_active = nivel; 
-                currentUser.vip_expiry = Date.now() + (35*24*3600*1000); 
-                currentUser.last_claim = 0;
-                await actualizarUsuarioSupabase(currentUser);
+                mostrarPantallaCongeladaCarga("Actualizando VIP...");
+                let db = await obtenerUsuariosCloud();
+                currentUser.balance -= precio; currentUser.vipActive = nivel; currentUser.vipExpiry = Date.now() + (35*24*3600*1000); currentUser.lastClaim = 0;
+                db.users[currentUser.email] = currentUser;
+                await guardarUsuariosCloud(db);
 
                 mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
                 await entrarDashboardDirecto();
@@ -806,10 +827,12 @@
                 mostrarAlertaPro("Acción Denegada", "Las cuentas de CEO están protegidas.");
                 return;
             }
-            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente de la nube?", async () => {
+            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente?", async () => {
                 try {
                     mostrarPantallaCongeladaCarga("Eliminando cuenta...");
-                    await sbFetch("usuarios", "DELETE", `?email=eq.${encodeURIComponent(currentUser.email)}`);
+                    let db = await obtenerUsuariosCloud();
+                    delete db.users[currentUser.email];
+                    await guardarUsuariosCloud(db);
                     cerrarSesion();
                 } catch (err) {
                     mostrarAlertaPro("Error", err.message);
@@ -851,14 +874,11 @@
             
             try {
                 mostrarPantallaCongeladaCarga("Guardando reporte...");
-                await sbFetch("deposits", "POST", "", {
-                    id: 'DEP-' + Date.now(),
-                    user_email: currentUser.email,
-                    monto: m,
-                    hash: h,
-                    status: 'Pendiente',
-                    fecha: new Date().toLocaleDateString()
-                });
+                let db = await obtenerUsuariosCloud();
+                if(!db.deposits) db.deposits = [];
+                let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+                db.deposits.push(newDep);
+                await guardarUsuariosCloud(db);
 
                 mostrarAlertaPro("Éxito", "Depósito reportado correctamente.");
                 document.getElementById('subAccionContainer').style.display = 'none';
@@ -880,16 +900,12 @@
             try {
                 mostrarPantallaCongeladaCarga("Procesando retiro...");
                 currentUser.balance -= m;
-                await actualizarUsuarioSupabase(currentUser);
-
-                await sbFetch("withdrawals", "POST", "", {
-                    id: 'WIT-' + Date.now(),
-                    user_email: currentUser.email,
-                    wallet: w,
-                    monto: m,
-                    status: 'Pendiente',
-                    fecha: new Date().toLocaleDateString()
-                });
+                let db = await obtenerUsuariosCloud();
+                db.users[currentUser.email] = currentUser;
+                if(!db.withdrawals) db.withdrawals = [];
+                let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+                db.withdrawals.push(newWit);
+                await guardarUsuariosCloud(db);
 
                 mostrarAlertaPro("Éxito", "Retiro solicitado.");
                 await entrarDashboardDirecto();
@@ -902,7 +918,8 @@
 
         async function verHistorialDeps() {
             try {
-                let deps = await sbFetch("deposits", "GET", `?user_email=eq.${encodeURIComponent(currentUser.email)}`);
+                let db = await obtenerUsuariosCloud();
+                let deps = (db.deposits || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
                 if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
                 mostrarAlertaPro("Historial Depósitos", deps.map(x => `+${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
             } catch (err) {
@@ -912,7 +929,8 @@
 
         async function verHistorialWits() {
             try {
-                let wits = await sbFetch("withdrawals", "GET", `?user_email=eq.${encodeURIComponent(currentUser.email)}`);
+                let db = await obtenerUsuariosCloud();
+                let wits = (db.withdrawals || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
                 if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
                 mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
             } catch (err) {
@@ -938,13 +956,14 @@
             
             try {
                 mostrarPantallaCongeladaCarga("Acreditando saldo...");
-                let target = await obtenerUsuarioPorEmail(mail);
+                let db = await obtenerUsuariosCloud();
+                let target = db.users[mail];
                 if(!target) { 
                     mostrarAlertaPro("Error", "Usuario no encontrado."); 
                     return; 
                 }
                 target.balance += monto;
-                await actualizarUsuarioSupabase(target);
+                await guardarUsuariosCloud(db);
 
                 document.getElementById('acreditarEmail').value = '';
                 document.getElementById('acreditarMonto').value = '';
@@ -961,12 +980,14 @@
             let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
             try {
                 mostrarPantallaCongeladaCarga("Actualizando permisos...");
-                let target = await obtenerUsuarioPorEmail(mail);
+                let db = await obtenerUsuariosCloud();
+                let target = db.users[mail];
                 if(!target) { 
                     mostrarAlertaPro("Error", "Usuario no encontrado."); 
                     return; 
                 }
-                await sbFetch("usuarios", "PATCH", `?email=eq.${encodeURIComponent(target.email)}`, { is_admin: true });
+                target.isAdmin = true;
+                await guardarUsuariosCloud(db);
 
                 document.getElementById('novoAdminEmail').value = '';
                 mostrarAlertaPro("Éxito", `Privilegio otorgado a ${target.email}`);
@@ -980,29 +1001,32 @@
 
         async function renderAdmin() {
             try {
-                let usersArr = await sbFetch("usuarios", "GET", "");
+                let db = await obtenerUsuariosCloud();
+                if(!db) return;
+                
+                let usersArr = Object.values(db.users || {});
                 let uHtml = usersArr.map(u => `
                     <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
-                        <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${(u.balance || 0).toFixed(2)} ${u.is_admin ? '[ADMIN]' : ''}</div>
+                        <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${(u.balance || 0).toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
                         <div style="display:flex; gap:4px;">
-                            <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.is_admin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">${u.is_admin?'Quitar':'Admin'}</button>
+                            <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">${u.isAdmin?'Quitar':'Admin'}</button>
                             <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e;color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">Eliminar</button>
                         </div>
                     </div>`).join('');
                 if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
 
-                let deps = await sbFetch("deposits", "GET", "?status=eq.Pendiente");
+                let deps = (db.deposits || []).filter(x => x.status === 'Pendiente');
                 let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
                     <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
-                        <b>${x.user_email}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Hash: ${x.hash}</span><br>
+                        <b>${x.user}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Hash: ${x.hash}</span><br>
                         <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
                     </div>`).join('');
                 if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
 
-                let wits = await sbFetch("withdrawals", "GET", "?status=eq.Pendiente");
+                let wits = (db.withdrawals || []).filter(x => x.status === 'Pendiente');
                 let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
                     <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
-                        <b>${x.user_email}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${x.wallet}</span><br>
+                        <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${x.wallet}</span><br>
                         <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
                     </div>`).join('');
                 if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
@@ -1013,13 +1037,15 @@
 
         window.toggleAdminUser = async function(email) {
             try {
-                let target = await obtenerUsuarioPorEmail(email);
+                let db = await obtenerUsuariosCloud();
+                let target = db.users[email];
                 if(target) {
                     if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
                         mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
                         return;
                     }
-                    await sbFetch("usuarios", "PATCH", `?email=eq.${encodeURIComponent(email)}`, { is_admin: !target.is_admin });
+                    target.isAdmin = !target.isAdmin;
+                    await guardarUsuariosCloud(db);
                     await renderAdmin();
                 }
             } catch (err) {
@@ -1029,11 +1055,13 @@
 
         window.eliminarUsuarioAdmin = async function(email) {
             try {
+                let db = await obtenerUsuariosCloud();
                 if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
                     mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
                     return;
                 }
-                await sbFetch("usuarios", "DELETE", `?email=eq.${encodeURIComponent(email)}`);
+                delete db.users[email];
+                await guardarUsuariosCloud(db);
                 await renderAdmin();
             } catch (err) {
                 mostrarAlertaPro("Error", err.message);
@@ -1042,16 +1070,12 @@
 
         window.aprobarDep = async function(id) {
             try {
-                let deps = await sbFetch("deposits", "GET", `?id=eq.${id}`);
-                if(deps.length === 0) return;
-                let d = deps[0];
-                
-                await sbFetch("deposits", "PATCH", `?id=eq.${id}`, { status: 'Aprobado' });
-                let u = await obtenerUsuarioPorEmail(d.user_email);
-                if(u) {
-                    u.balance = (u.balance || 0) + d.monto;
-                    await actualizarUsuarioSupabase(u);
-                }
+                let db = await obtenerUsuariosCloud();
+                let d = (db.deposits || []).find(x => x.id === id);
+                if(!d) return;
+                d.status = 'Aprobado';
+                if(db.users[d.user]) { db.users[d.user].balance = (db.users[d.user].balance || 0) + d.monto; }
+                await guardarUsuariosCloud(db);
                 await renderAdmin();
             } catch (err) {
                 mostrarAlertaPro("Error", err.message);
@@ -1060,7 +1084,11 @@
 
         window.aprobarWit = async function(id) {
             try {
-                await sbFetch("withdrawals", "PATCH", `?id=eq.${id}`, { status: 'Aprobado' });
+                let db = await obtenerUsuariosCloud();
+                let w = (db.withdrawals || []).find(x => x.id === id);
+                if(!w) return;
+                w.status = 'Aprobado';
+                await guardarUsuariosCloud(db);
                 await renderAdmin();
             } catch (err) {
                 mostrarAlertaPro("Error", err.message);
