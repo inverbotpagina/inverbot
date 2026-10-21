@@ -460,6 +460,7 @@
         let currentUser = null;
         let countdownInterval = null;
 
+        // CONEXIÓN PURA A LA NUBE DE SUPABASE
         async function sbFetch(tabla, metodo = 'GET', query = '', bodyData = null) {
             let url = `${SUPABASE_URL}/rest/v1/${tabla}${query}`;
             let options = {
@@ -468,7 +469,7 @@
                     "apikey": SUPABASE_KEY,
                     "Authorization": `Bearer ${SUPABASE_KEY}`,
                     "Content-Type": "application/json",
-                    "Prefer": metodo === 'POST' ? "return=representation" : "return=representation"
+                    "Prefer": "return=representation"
                 },
                 mode: 'cors',
                 cache: 'no-cache'
@@ -477,8 +478,8 @@
 
             let res = await fetch(url, options);
             if (!res.ok) {
-                let err = await res.text();
-                throw new Error(`Supabase Error: ${err}`);
+                let errText = await res.text();
+                throw new Error(`Supabase Cloud Error (${res.status}): ${errText}`);
             }
             let text = await res.text();
             return text ? JSON.parse(text) : [];
@@ -541,9 +542,9 @@
             if(ref && document.getElementById('regRef')) document.getElementById('regRef').value = ref;
 
             try {
-                mostrarPantallaCongeladaCarga("Iniciando Inverbot...");
+                mostrarPantallaCongeladaCarga("Conectando con Supabase...");
                 
-                // Asegurar cuentas CEO por defecto en Supabase si no existen
+                // Asegurar cuentas CEO directamente en la nube
                 for(let ceoMail of ADMIN_EMAILS) {
                     let exists = await obtenerUsuarioPorEmail(ceoMail);
                     if(!exists) {
@@ -564,7 +565,8 @@
                     cerrarSesion();
                 }
             } catch (err) {
-                console.error("Error de inicialización:", err);
+                console.error("Error conectando a la nube:", err);
+                mostrarAlertaPro("Error de Conexión Nube", "No se pudo conectar a Supabase. Verifica tu red o las políticas de la base de datos.");
                 cerrarSesion();
             } finally {
                 ocultarPantallaCongeladaCarga();
@@ -595,10 +597,10 @@
             if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
             try {
-                mostrarPantallaCongeladaCarga("Registrando cuenta...");
+                mostrarPantallaCongeladaCarga("Registrando en la nube...");
                 let existente = await obtenerUsuarioPorEmail(email);
                 if(existente) {
-                    mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
+                    mostrarAlertaPro("Aviso", "Este correo ya está registrado en la nube.");
                     return;
                 }
 
@@ -643,11 +645,11 @@
             if(!email || !pass) { mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
 
             try {
-                mostrarPantallaCongeladaCarga("Iniciando sesión...");
+                mostrarPantallaCongeladaCarga("Autenticando en la nube...");
                 let u = await obtenerUsuarioPorEmail(email);
 
                 if(!u) {
-                    mostrarAlertaPro("Error", "El usuario no existe.");
+                    mostrarAlertaPro("Error", "El usuario no existe en la nube.");
                     return;
                 }
                 if(u.pass !== pass) {
@@ -746,7 +748,7 @@
             let rec = currentUser.vip_active === 1 ? 1.5 : (currentUser.vip_active === 2 ? 6.5 : (currentUser.vip_active === 3 ? 42.2 : (currentUser.vip_active === 4 ? 88.5 : 1600.0)));
             
             try {
-                mostrarPantallaCongeladaCarga("Procesando cuantificación...");
+                mostrarPantallaCongeladaCarga("Procesando en la nube...");
                 let batteryFill = document.getElementById('batteryFill');
                 if(batteryFill) batteryFill.style.height = "100%";
 
@@ -756,7 +758,7 @@
 
                 setTimeout(() => {
                     if(batteryFill) batteryFill.style.height = "0%";
-                    mostrarAlertaPro("Éxito", `+${rec} USDT acreditados.`);
+                    mostrarAlertaPro("Éxito", `+${rec} USDT acreditados en la nube.`);
                     entrarDashboardDirecto();
                 }, 1500);
             } catch (err) {
@@ -770,7 +772,7 @@
             if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             
             try {
-                mostrarPantallaCongeladaCarga("Actualizando VIP...");
+                mostrarPantallaCongeladaCarga("Actualizando VIP en la nube...");
                 currentUser.balance -= precio; 
                 currentUser.vip_active = nivel; 
                 currentUser.vip_expiry = Date.now() + (35*24*3600*1000); 
@@ -804,7 +806,7 @@
                 mostrarAlertaPro("Acción Denegada", "Las cuentas de CEO están protegidas.");
                 return;
             }
-            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente?", async () => {
+            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente de la nube?", async () => {
                 try {
                     mostrarPantallaCongeladaCarga("Eliminando cuenta...");
                     await sbFetch("usuarios", "DELETE", `?email=eq.${encodeURIComponent(currentUser.email)}`);
