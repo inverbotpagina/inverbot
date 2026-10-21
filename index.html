@@ -484,7 +484,9 @@
                     throw new Error(`HTTP ${response.status}: ${errText}`);
                 }
                 let textRes = await response.text();
-                return textRes ? JSON.parse(textRes) : null;
+                // Si la respuesta está vacía (como a veces ocurre en peticiones POST exitosas), retornamos un objeto vacío de forma segura
+                if (!textRes || textRes.trim() === "") return {};
+                return JSON.parse(textRes);
             } catch (err) {
                 throw new Error(err.message || "Failed to fetch");
             }
