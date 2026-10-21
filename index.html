@@ -460,7 +460,6 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // SISTEMA DE RESPALDO LOCAL INTELIGENTE (Anti-Failed to fetch)
         function obtenerDatosLocalSeguro() {
             let local = localStorage.getItem("inverbot_db_local");
             if (!local) {
@@ -515,18 +514,16 @@
                 if (!rows || rows.length === 0 || !rows[0].payload) {
                     return obtenerDatosLocalSeguro();
                 }
-                // Sincronizar con local para respaldo
                 guardarDatosLocalSeguro(rows[0].payload);
                 return rows[0].payload;
             } catch (e) {
-                // Si la red falla por completo, usamos el almacenamiento local automáticamente sin mostrar errores molestos
                 console.warn("Modo offline activado por fallo de red:", e.message);
                 return obtenerDatosLocalSeguro();
             }
         }
 
         async function guardarUsuariosCloud(dbData) {
-            guardarDatosLocalSeguro(dbData); // Guardar siempre en local primero
+            guardarDatosLocalSeguro(dbData);
             try {
                 await fetchSupabaseRest("inverbot-db", "POST", { id: 1, payload: dbData });
             } catch (e) {
@@ -574,23 +571,23 @@
             try {
                 mostrarPantallaCongeladaCarga("Iniciando Inverbot...");
                 let db = await obtenerUsuariosCloud();
-                ocultarPantallaCongeladaCarga();
 
                 if (db && sessionEmail && db.users && db.users[sessionEmail]) {
                     currentUser = db.users[sessionEmail];
-                    entrarDashboardDirecto();
+                    await entrarDashboardDirecto();
                 } else {
                     cerrarSesion();
                 }
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
                 let db = obtenerDatosLocalSeguro();
                 if (sessionEmail && db.users && db.users[sessionEmail]) {
                     currentUser = db.users[sessionEmail];
-                    entrarDashboardDirecto();
+                    await entrarDashboardDirecto();
                 } else {
                     cerrarSesion();
                 }
+            } finally {
+                ocultarPantallaCongeladaCarga();
             }
             iniciarSimulacionMercado();
         }
@@ -622,7 +619,6 @@
                 let db = await obtenerUsuariosCloud();
 
                 if(db.users[email]) {
-                    ocultarPantallaCongeladaCarga();
                     mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
                     return;
                 }
@@ -649,11 +645,11 @@
                 sessionEmail = email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
                 
-                ocultarPantallaCongeladaCarga();
-                entrarDashboardDirecto();
+                await entrarDashboardDirecto();
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Error de Registro", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
             }
         }
 
@@ -666,7 +662,6 @@
             try {
                 mostrarPantallaCongeladaCarga("Iniciando sesión...");
                 let db = await obtenerUsuariosCloud();
-                ocultarPantallaCongeladaCarga();
 
                 if(!db || !db.users || !db.users[email]) {
                     mostrarAlertaPro("Error", "El usuario no existe.");
@@ -682,19 +677,18 @@
                 sessionEmail = u.email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
 
-                entrarDashboardDirecto();
+                await entrarDashboardDirecto();
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Error de Conexión", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
             }
         }
 
         async function entrarDashboardDirecto() {
             if(!currentUser) return;
             try {
-                mostrarPantallaCongeladaCarga("Cargando panel...");
                 let db = await obtenerUsuariosCloud();
-                ocultarPantallaCongeladaCarga();
 
                 if(db && db.users && db.users[currentUser.email]) currentUser = db.users[currentUser.email];
 
@@ -721,7 +715,7 @@
                 actualizarVips(currentUser);
                 iniciarContadorCuantificacion(currentUser);
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
+                console.error(err);
             }
         }
 
@@ -784,13 +778,13 @@
 
                 setTimeout(() => {
                     if(batteryFill) batteryFill.style.height = "0%";
-                    ocultarPantallaCongeladaCarga();
                     mostrarAlertaPro("Éxito", `+${rec} USDT acreditados.`);
                     entrarDashboardDirecto();
                 }, 1500);
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
             }
         }
 
@@ -804,12 +798,12 @@
                 db.users[currentUser.email] = currentUser;
                 await guardarUsuariosCloud(db);
 
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
-                entrarDashboardDirecto();
+                await entrarDashboardDirecto();
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
             }
         }
 
@@ -835,11 +829,11 @@
                     let db = await obtenerUsuariosCloud();
                     delete db.users[currentUser.email];
                     await guardarUsuariosCloud(db);
-                    ocultarPantallaCongeladaCarga();
                     cerrarSesion();
                 } catch (err) {
-                    ocultarPantallaCongeladaCarga();
                     mostrarAlertaPro("Error", err.message);
+                } finally {
+                    ocultarPantallaCongeladaCarga();
                 }
             });
         }
@@ -882,12 +876,12 @@
                 db.deposits.push(newDep);
                 await guardarUsuariosCloud(db);
 
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Éxito", "Depósito reportado correctamente.");
                 document.getElementById('subAccionContainer').style.display = 'none';
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
             }
         }
 
@@ -909,12 +903,12 @@
                 db.withdrawals.push(newWit);
                 await guardarUsuariosCloud(db);
 
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Éxito", "Retiro solicitado.");
-                entrarDashboardDirecto();
+                await entrarDashboardDirecto();
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
             }
         }
 
@@ -961,21 +955,20 @@
                 let db = await obtenerUsuariosCloud();
                 let target = db.users[mail];
                 if(!target) { 
-                    ocultarPantallaCongeladaCarga();
                     mostrarAlertaPro("Error", "Usuario no encontrado."); 
                     return; 
                 }
                 target.balance += monto;
                 await guardarUsuariosCloud(db);
 
-                ocultarPantallaCongeladaCarga();
                 document.getElementById('acreditarEmail').value = '';
                 document.getElementById('acreditarMonto').value = '';
                 mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
-                renderAdmin();
+                await renderAdmin();
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
             }
         }
 
@@ -986,20 +979,19 @@
                 let db = await obtenerUsuariosCloud();
                 let target = db.users[mail];
                 if(!target) { 
-                    ocultarPantallaCongeladaCarga();
                     mostrarAlertaPro("Error", "Usuario no encontrado."); 
                     return; 
                 }
                 target.isAdmin = true;
                 await guardarUsuariosCloud(db);
 
-                ocultarPantallaCongeladaCarga();
                 document.getElementById('novoAdminEmail').value = '';
                 mostrarAlertaPro("Éxito", `Privilegio otorgado a ${target.email}`);
-                renderAdmin();
+                await renderAdmin();
             } catch (err) {
-                ocultarPantallaCongeladaCarga();
                 mostrarAlertaPro("Error", err.message);
+            } finally {
+                ocultarPantallaCongeladaCarga();
             }
         }
 
