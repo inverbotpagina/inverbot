@@ -128,7 +128,6 @@
             transition: height 2s ease; position: relative;
         }
 
-        /* PANTALLA DE CARGA GLOBAL CORPORATIVA */
         .loading-overlay-screen {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(6px);
@@ -461,17 +460,21 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // CONSULTA DIRECTA USANDO EL NOMBRE EXACTO CON GUION MEDIO: inverbot-db
         async function obtenerUsuariosCloud() {
             try {
                 let res = await fetch(`${SUPABASE_URL}/rest/v1/inverbot-db?id=eq.1&select=*`, {
                     headers: { 
                         "apikey": SUPABASE_KEY, 
-                        "Authorization": `Bearer ${SUPABASE_KEY}` 
+                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Content-Type": "application/json"
                     }
                 });
                 
-                if (!res.ok) throw new Error("Error HTTP: " + res.status);
+                if (!res.ok) {
+                    let errText = await res.text();
+                    console.error("Fallo del servidor Supabase:", res.status, errText);
+                    throw new Error(`HTTP ${res.status}: ${errText}`);
+                }
 
                 let rows = await res.json();
                 if (!rows || rows.length === 0 || !rows[0].payload) {
