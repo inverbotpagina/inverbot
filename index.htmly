@@ -138,24 +138,33 @@
         }
         .quant-robot-badge img { width: 100%; height: 100%; object-fit: cover; }
 
-        .vip-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
-        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .vip-title { font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
-        .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #e6f0ff; color: var(--primary-blue); text-transform: uppercase; }
-        
-        .carga-thumb {
-            width: 48px; height: 48px; border-radius: 10px; overflow: hidden;
-            border: 1px solid var(--border-color); background: #fff; flex-shrink: 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        /* Estilo para que la foto sea el fondo completo de la tarjeta de carga */
+        .vip-card { 
+            border-radius: 12px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            background-size: cover; 
+            background-position: center; 
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-        .carga-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .card-bg-1 { background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('images/carga-1-azul.png'); }
+        .card-bg-2 { background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('images/carga-2-verde.png'); }
+        .card-bg-3 { background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('images/carga-3-oro.png'); }
+        .card-bg-4 { background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('images/carga-4-cyan.png'); }
+        .card-bg-5 { background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('images/carga-5-elite.png'); border: 2px solid var(--accent-gold); }
 
+        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .vip-title { font-size: 14px; font-weight: 800; color: #ffffff; display: flex; align-items: center; gap: 8px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: rgba(0,82,204,0.85); color: #ffffff; text-transform: uppercase; }
+        
         .vip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .vip-sub { background: var(--bg-input); padding: 9px; border-radius: 6px; border: 1px solid var(--border-color); }
-        .vip-sub-t { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
-        .vip-sub-v { font-size: 12px; font-weight: 800; color: var(--text-main); font-family: monospace; }
-        .vip-sub-v.blue { color: var(--primary-blue); }
-        .vip-sub-v.gold { color: #d69e2e; }
+        .vip-sub { background: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .vip-sub-t { font-size: 9px; color: #cbd5e0; text-transform: uppercase; font-weight: 700; margin-bottom: 2px; }
+        .vip-sub-v { font-size: 12px; font-weight: 800; color: #ffffff; font-family: monospace; }
+        .vip-sub-v.blue { color: #63b3ed; }
+        .vip-sub-v.gold { color: #f6e05e; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -300,12 +309,9 @@
                 </div>
 
                 <!-- CARGA 1 -->
-                <div class="vip-card">
+                <div class="vip-card card-bg-1">
                     <div class="vip-row">
-                        <div class="vip-title">
-                            <div class="carga-thumb"><img src="images/carga-1-azul.png" alt="Carga 1"></div>
-                            CARGA 1 (Level 1)
-                        </div>
+                        <div class="vip-title">CARGA 1 (Level 1)</div>
                         <span id="vip1StatusText" class="vip-tag">Inactivo</span>
                     </div>
                     <div class="vip-grid">
@@ -316,12 +322,9 @@
                 </div>
 
                 <!-- CARGA 2 -->
-                <div class="vip-card">
+                <div class="vip-card card-bg-2">
                     <div class="vip-row">
-                        <div class="vip-title">
-                            <div class="carga-thumb"><img src="images/carga-2-verde.png" alt="Carga 2"></div>
-                            CARGA 2 (Level 2)
-                        </div>
+                        <div class="vip-title">CARGA 2 (Level 2)</div>
                         <span id="vip2StatusText" class="vip-tag">Inactivo</span>
                     </div>
                     <div class="vip-grid">
@@ -332,12 +335,9 @@
                 </div>
 
                 <!-- CARGA 3 -->
-                <div class="vip-card">
+                <div class="vip-card card-bg-3">
                     <div class="vip-row">
-                        <div class="vip-title">
-                            <div class="carga-thumb"><img src="images/carga-3-oro.png" alt="Carga 3"></div>
-                            CARGA 3 (Level 3)
-                        </div>
+                        <div class="vip-title">CARGA 3 (Level 3)</div>
                         <span id="vip3StatusText" class="vip-tag">Inactivo</span>
                     </div>
                     <div class="vip-grid">
@@ -348,12 +348,9 @@
                 </div>
 
                 <!-- CARGA 4 -->
-                <div class="vip-card">
+                <div class="vip-card card-bg-4">
                     <div class="vip-row">
-                        <div class="vip-title">
-                            <div class="carga-thumb"><img src="images/carga-4-cyan.png" alt="Carga 4"></div>
-                            CARGA 4 (Level 4)
-                        </div>
+                        <div class="vip-title">CARGA 4 (Level 4)</div>
                         <span id="vip4StatusText" class="vip-tag">Inactivo</span>
                     </div>
                     <div class="vip-grid">
@@ -364,13 +361,10 @@
                 </div>
 
                 <!-- CARGA 5 ELITE -->
-                <div class="vip-card" style="border-color: var(--accent-gold);">
+                <div class="vip-card card-bg-5">
                     <div class="vip-row">
-                        <div class="vip-title" style="color:#b7791f;">
-                            <div class="carga-thumb" style="border-color: rgba(240,185,11,0.5);"><img src="images/carga-5-elite.png" alt="Carga 5 Elite"></div>
-                            CARGA 5 (Elite)
-                        </div>
-                        <span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span>
+                        <div class="vip-title" style="color:#f6e05e;">CARGA 5 (Elite)</div>
+                        <span id="vip5StatusText" class="vip-tag" style="background:rgba(240,185,11,0.9); color:#1a202c;">Inactivo</span>
                     </div>
                     <div class="vip-grid">
                         <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v gold">1,600.00 USDT</div></div>
@@ -670,11 +664,11 @@
             for(let i=1; i<=5; i++) {
                 let activo = (u.vipActive === i && u.vipExpiry > ahora);
                 let st = document.getElementById('vip' + i + 'StatusText');
-                if(st) { st.innerText = activo ? "Activado" : "Inactivo"; st.style.background = activo ? "#e6f0ff" : "var(--bg-input)"; st.style.color = activo ? "var(--primary-blue)" : "var(--text-muted)"; }
+                if(st) { st.innerText = activo ? "Activado" : "Inactivo"; st.style.background = activo ? "rgba(0,82,204,0.85)" : "rgba(0,0,0,0.5)"; st.style.color = "#fff"; }
                 let act = document.getElementById('vip' + i + 'ActionArea');
                 if(act) {
                     if (activo) {
-                        act.innerHTML = `<button class="btn" style="background:var(--bg-input); color:var(--text-muted); cursor:not-allowed; border:1px solid var(--border-color);" disabled>Activado</button>`;
+                        act.innerHTML = `<button class="btn" style="background:rgba(255,255,255,0.2); color:#fff; cursor:not-allowed; border:1px solid rgba(255,255,255,0.3);" disabled>Activado</button>`;
                     } else {
                         if(i === 5) act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir Carga 5 Elite</button>`;
                         else act.innerHTML = `<button class="btn btn-blue" onclick="comprarVip(${i}, ${i===1?4:(i===2?16:(i===3?65:180))})">Adquirir Carga ${i}</button>`;
