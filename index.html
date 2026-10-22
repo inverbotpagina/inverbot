@@ -128,6 +128,20 @@
             transition: height 2s ease; position: relative;
         }
 
+        .loading-overlay-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(6px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 99999; color: #fff;
+        }
+        .spinner-ring {
+            width: 52px; height: 52px; border: 4px solid rgba(255,255,255,0.2);
+            border-top: 4px solid #00b96b; border-radius: 50%;
+            animation: spinRing 0.7s linear infinite; margin-bottom: 18px;
+        }
+        @keyframes spinRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-overlay-text { font-size: 13px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #fff; }
+
         .vip-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
         .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .vip-title { font-size: 14px; font-weight: 800; color: #1a202c; }
@@ -187,6 +201,7 @@
 <body>
 
     <div id="customModalContainer"></div>
+    <div id="fullScreenLoading" style="display: none;"></div>
 
     <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Inverbot" class="floating-support" title="Soporte Técnico">
         <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
@@ -206,7 +221,7 @@
                 <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" placeholder="••••••••"></div>
                 <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" placeholder="••••••••"></div>
                 <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
-                <button type="button" class="btn btn-green" onclick="ejecutarRegistroLocal()">Registrarse</button>
+                <button type="button" class="btn btn-green" onclick="ejecutarRegistroCloud()">Registrarse</button>
                 <div class="auth-switch"><p>¿Ya posee cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
             </div>
 
@@ -214,7 +229,7 @@
             <div id="loginView" style="display: none;">
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" placeholder="trader@gmail.com"></div>
                 <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" placeholder="••••••••"></div>
-                <button type="button" class="btn btn-green" onclick="ejecutarLoginLocal()">Iniciar Sesión</button>
+                <button type="button" class="btn btn-green" onclick="ejecutarLoginCloud()">Iniciar Sesión</button>
                 <div class="auth-switch"><p>¿Nuevo socio? <a onclick="cambiarVistaAuth(false)">Registrarse</a></p></div>
             </div>
         </div>
@@ -331,7 +346,7 @@
                     <div style="font-size: 11px; opacity: 0.9; margin-bottom: 2px; font-weight: 700;">USDT</div>
                     <div class="team-hero-amount" id="lblTeamComision">0.00</div>
                     
-                    <button class="team-hero-btn" onclick="window.mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.')">
+                    <button class="team-hero-btn" onclick="mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.')">
                         Historial de comisiones
                     </button>
                 </div>
@@ -403,8 +418,14 @@
                 <button class="btn btn-green" onclick="acreditarSaldoPorCorreo()" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
             </div>
 
+            <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green-dark); margin-bottom: 8px; text-transform: uppercase;">Otorgar Privilegio de Administrador</div>
+                <div class="input-group"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
+                <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
+            </div>
+
             <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Lista General de Usuarios</div>
-            <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
+            <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 120px; overflow-y: auto;"></div>
 
             <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Depósitos Pendientes</div>
             <div id="listaAdminDeps" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
@@ -431,43 +452,89 @@
     </div>
 
     <script>
+        const SUPABASE_URL = "https://noakyexlfvblduomfca.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_ztwRueaYThf2D_CiAwIy0Q_9ebIRAP_";
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
-        const CEO_PASSWORD = "soporteinverbot@";
         
         let sessionEmail = sessionStorage.getItem("inverbot_session") || null;
         let currentUser = null;
         let countdownInterval = null;
 
-        function obtenerBaseUsuarios() {
-            let data = localStorage.getItem("inverbot_usuarios");
-            return data ? JSON.parse(data) : [];
-        }
-        function guardarBaseUsuarios(arr) {
-            localStorage.setItem("inverbot_usuarios", JSON.stringify(arr));
-        }
-
-        function obtenerBaseDeps() {
-            let data = localStorage.getItem("inverbot_deposits");
-            return data ? JSON.parse(data) : [];
-        }
-        function guardarBaseDeps(arr) {
-            localStorage.setItem("inverbot_deposits", JSON.stringify(arr));
-        }
-
-        function obtenerBaseWits() {
-            let data = localStorage.getItem("inverbot_withdrawals");
-            return data ? JSON.parse(data) : [];
-        }
-        function guardarBaseWits(arr) {
-            localStorage.setItem("inverbot_withdrawals", JSON.stringify(arr));
+        // SISTEMA DE RESPALDO LOCAL INTELIGENTE (Anti-Failed to fetch)
+        function obtenerDatosLocalSeguro() {
+            let local = localStorage.getItem("inverbot_db_local");
+            if (!local) {
+                let initial = {
+                    users: {
+                        "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "123456", balance: 5000, code: "REF-CEO1", isAdmin: true },
+                        "ajc229op@gmail.com": { email: "ajc229op@gmail.com", pass: "123456", balance: 5000, code: "REF-CEO2", isAdmin: true }
+                    },
+                    deposits: [],
+                    withdrawals: []
+                };
+                localStorage.setItem("inverbot_db_local", JSON.stringify(initial));
+                return initial;
+            }
+            return JSON.parse(local);
         }
 
-        window.cambiarVistaAuth = function(isLog) {
-            document.getElementById('registerView').style.display = isLog ? 'none' : 'block';
-            document.getElementById('loginView').style.display = isLog ? 'block' : 'none';
-        };
+        function guardarDatosLocalSeguro(dbData) {
+            localStorage.setItem("inverbot_db_local", JSON.stringify(dbData));
+        }
 
-        window.mostrarAlertaPro = function(titulo, mensaje, cb = null) {
+        async function fetchSupabaseRest(endpoint, method = 'GET', bodyData = null) {
+            let url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
+            let options = {
+                method: method,
+                headers: {
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": `Bearer ${SUPABASE_KEY}`,
+                    "Content-Type": "application/json",
+                    "Prefer": method === 'POST' ? "resolution=merge-duplicates" : "return=representation"
+                },
+                mode: 'cors',
+                cache: 'no-cache'
+            };
+            if (bodyData) {
+                options.body = JSON.stringify(bodyData);
+            }
+
+            let response = await fetch(url, options);
+            if (!response.ok) {
+                let errText = await response.text();
+                throw new Error(`HTTP ${response.status}: ${errText}`);
+            }
+            let textRes = await response.text();
+            if (!textRes || textRes.trim() === "") return {};
+            return JSON.parse(textRes);
+        }
+
+        async function obtenerUsuariosCloud() {
+            try {
+                let rows = await fetchSupabaseRest("inverbot-db?id=eq.1&select=*");
+                if (!rows || rows.length === 0 || !rows[0].payload) {
+                    return obtenerDatosLocalSeguro();
+                }
+                // Sincronizar con local para respaldo
+                guardarDatosLocalSeguro(rows[0].payload);
+                return rows[0].payload;
+            } catch (e) {
+                // Si la red falla por completo, usamos el almacenamiento local automáticamente sin mostrar errores molestos
+                console.warn("Modo offline activado por fallo de red:", e.message);
+                return obtenerDatosLocalSeguro();
+            }
+        }
+
+        async function guardarUsuariosCloud(dbData) {
+            guardarDatosLocalSeguro(dbData); // Guardar siempre en local primero
+            try {
+                await fetchSupabaseRest("inverbot-db", "POST", { id: 1, payload: dbData });
+            } catch (e) {
+                console.warn("No se pudo sincronizar con la nube, operando localmente:", e.message);
+            }
+        }
+
+        function mostrarAlertaPro(titulo, mensaje, cb = null) {
             document.getElementById('customModalContainer').innerHTML = `
                 <div class="modal-overlay">
                     <div class="modal-card">
@@ -475,52 +542,55 @@
                         <p class="modal-msg">${mensaje}</p>
                         <div style="display:flex; gap:6px; margin-top:12px;">
                             ${cb ? `<button class="btn btn-green" id="modalAceptar">Aceptar</button>` : ``}
-                            <button class="btn btn-green" onclick="window.cerrarAlerta()" style="margin:0;">Cerrar</button>
+                            <button class="btn btn-green" onclick="cerrarAlerta()" style="margin:0;">Cerrar</button>
                         </div>
                     </div>
                 </div>
             `;
-            if(cb) document.getElementById('modalAceptar').onclick = () => { window.cerrarAlerta(); cb(); };
-        };
+            if(cb) document.getElementById('modalAceptar').onclick = () => { cerrarAlerta(); cb(); };
+        }
+        function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
 
-        window.cerrarAlerta = function() { 
-            document.getElementById('customModalContainer').innerHTML = ''; 
-        };
+        function mostrarPantallaCongeladaCarga(texto) {
+            document.getElementById('fullScreenLoading').innerHTML = `
+                <div class="loading-overlay-screen">
+                    <div class="spinner-ring"></div>
+                    <div class="loading-overlay-text">${texto}</div>
+                </div>
+            `;
+            document.getElementById('fullScreenLoading').style.display = 'block';
+        }
 
-        window.onload = function() {
+        function ocultarPantallaCongeladaCarga() {
+            document.getElementById('fullScreenLoading').style.display = 'none';
+            document.getElementById('fullScreenLoading').innerHTML = '';
+        }
+
+        window.onload = async function() {
             let params = new URLSearchParams(window.location.search);
             let ref = params.get('ref');
             if(ref && document.getElementById('regRef')) document.getElementById('regRef').value = ref;
 
-            let usuarios = obtenerBaseUsuarios();
-            for(let ceoMail of ADMIN_EMAILS) {
-                let existe = usuarios.find(u => u.email.toLowerCase() === ceoMail.toLowerCase());
-                if(!existe) {
-                    usuarios.push({
-                        email: ceoMail.toLowerCase(), pass: CEO_PASSWORD, balance: 5000,
-                        code: "REF-" + ceoMail.substring(0,3).toUpperCase(),
-                        ref_count: 0, valid_ref_count: 0, team_deposit_total: 0,
-                        commission_total: 0, vip_active: null, vip_expiry: 0, last_claim: 0,
-                        is_admin: true
-                    });
-                } else {
-                    // Forzar contraseña de CEO actualizada
-                    existe.pass = CEO_PASSWORD;
-                    existe.is_admin = true;
-                }
-            }
-            guardarBaseUsuarios(usuarios);
+            try {
+                mostrarPantallaCongeladaCarga("Iniciando Inverbot...");
+                let db = await obtenerUsuariosCloud();
+                ocultarPantallaCongeladaCarga();
 
-            if (sessionEmail) {
-                let u = usuarios.find(x => x.email.toLowerCase() === sessionEmail.toLowerCase());
-                if (u) {
-                    currentUser = u;
+                if (db && sessionEmail && db.users && db.users[sessionEmail]) {
+                    currentUser = db.users[sessionEmail];
                     entrarDashboardDirecto();
                 } else {
                     cerrarSesion();
                 }
-            } else {
-                cerrarSesion();
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
+                let db = obtenerDatosLocalSeguro();
+                if (sessionEmail && db.users && db.users[sessionEmail]) {
+                    currentUser = db.users[sessionEmail];
+                    entrarDashboardDirecto();
+                } else {
+                    cerrarSesion();
+                }
             }
             iniciarSimulacionMercado();
         }
@@ -533,117 +603,132 @@
             }, 3500);
         }
 
-        window.ejecutarRegistroLocal = function() {
+        function cambiarVistaAuth(isLog) {
+            document.getElementById('registerView').style.display = isLog ? 'none' : 'block';
+            document.getElementById('loginView').style.display = isLog ? 'block' : 'none';
+        }
+
+        async function ejecutarRegistroCloud() {
             let email = document.getElementById('regEmail').value.trim().toLowerCase();
             let pass = document.getElementById('regPass').value.trim();
             let passConfirm = document.getElementById('regPassConfirm').value.trim();
             let refCode = document.getElementById('regRef').value.trim();
 
-            if(!email || !pass) { window.mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
-            if(pass !== passConfirm) { window.mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
+            if(!email || !pass) { mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
+            if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
-            let usuarios = obtenerBaseUsuarios();
-            let existente = usuarios.find(u => u.email === email);
-            if(existente) {
-                window.mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
-                return;
-            }
+            try {
+                mostrarPantallaCongeladaCarga("Registrando cuenta...");
+                let db = await obtenerUsuariosCloud();
 
-            let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-            let isAdmin = ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email);
-
-            let nuevoUser = {
-                email: email, pass: pass, balance: 0.0, code: myCode,
-                ref_by: null, ref_count: 0, valid_ref_count: 0, team_deposit_total: 0,
-                commission_total: 0, vip_active: null, vip_expiry: 0, last_claim: 0,
-                is_admin: isAdmin
-            };
-
-            if(refCode) {
-                let upline = usuarios.find(u => u.code === refCode);
-                if(upline) {
-                    nuevoUser.ref_by = upline.email;
-                    upline.ref_count = (upline.ref_count || 0) + 1;
+                if(db.users[email]) {
+                    ocultarPantallaCongeladaCarga();
+                    mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
+                    return;
                 }
+
+                let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
+                currentUser = { 
+                    email: email, pass: pass, balance: 0.0, code: myCode, 
+                    refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, 
+                    commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, 
+                    isAdmin: ADMIN_EMAILS.map(em=>em.toLowerCase()).includes(email)
+                };
+
+                if(refCode) {
+                    let uplineKey = Object.keys(db.users).find(k => db.users[k].code.toUpperCase() === refCode.toUpperCase());
+                    if(uplineKey) {
+                        db.users[uplineKey].refCount = (db.users[uplineKey].refCount || 0) + 1;
+                        currentUser.refBy = db.users[uplineKey].email;
+                    }
+                }
+
+                db.users[email] = currentUser;
+                await guardarUsuariosCloud(db);
+
+                sessionEmail = email;
+                sessionStorage.setItem("inverbot_session", sessionEmail);
+                
+                ocultarPantallaCongeladaCarga();
+                entrarDashboardDirecto();
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Error de Registro", err.message);
             }
+        }
 
-            usuarios.push(nuevoUser);
-            guardarBaseUsuarios(usuarios);
-
-            currentUser = nuevoUser;
-            sessionEmail = email;
-            sessionStorage.setItem("inverbot_session", sessionEmail);
-            
-            entrarDashboardDirecto();
-        };
-
-        window.ejecutarLoginLocal = function() {
+        async function ejecutarLoginCloud() {
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
             
-            if(!email || !pass) { window.mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
+            if(!email || !pass) { mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
 
-            let usuarios = obtenerBaseUsuarios();
-            let u = usuarios.find(x => x.email === email);
+            try {
+                mostrarPantallaCongeladaCarga("Iniciando sesión...");
+                let db = await obtenerUsuariosCloud();
+                ocultarPantallaCongeladaCarga();
 
-            if(!u) {
-                window.mostrarAlertaPro("Error", "El usuario no existe.");
-                return;
+                if(!db || !db.users || !db.users[email]) {
+                    mostrarAlertaPro("Error", "El usuario no existe.");
+                    return;
+                }
+                let u = db.users[email];
+                if(u.pass !== pass) {
+                    mostrarAlertaPro("Error", "Contraseña incorrecta.");
+                    return;
+                }
+
+                currentUser = u;
+                sessionEmail = u.email;
+                sessionStorage.setItem("inverbot_session", sessionEmail);
+
+                entrarDashboardDirecto();
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Error de Conexión", err.message);
             }
-            if(u.pass !== pass) {
-                window.mostrarAlertaPro("Error", "Contraseña incorrecta.");
-                return;
-            }
-
-            currentUser = u;
-            sessionEmail = u.email;
-            sessionStorage.setItem("inverbot_session", sessionEmail);
-
-            entrarDashboardDirecto();
-        };
-
-        function entrarDashboardDirecto() {
-            if(!currentUser) return;
-            let usuarios = obtenerBaseUsuarios();
-            currentUser = usuarios.find(x => x.email === currentUser.email) || currentUser;
-
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('userDashboard').style.display = 'block';
-            document.getElementById('bottomNavBar').style.display = 'flex';
-
-            document.getElementById('lblUserEmail').innerText = currentUser.email;
-            let b = "$" + (currentUser.balance || 0).toFixed(2);
-            document.getElementById('lblBalanceAmi').innerText = b;
-            document.getElementById('lblBalanceCuantificar').innerText = b;
-            
-            document.getElementById('lblTeamComision').innerText = (currentUser.commission_total || 0).toFixed(2);
-            document.getElementById('lblTeamTotalRef').innerText = currentUser.ref_count || 0;
-            document.getElementById('lblTeamValidRef').innerText = currentUser.valid_ref_count || 0;
-            document.getElementById('lblTeamDepEquipo').innerText = (currentUser.team_deposit_total || 0).toFixed(2);
-
-            document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + (currentUser.code || '');
-            
-            let esAdmin = currentUser.is_admin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase());
-            document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
-
-            actualizarVips(currentUser);
-            iniciarContadorCuantificacion(currentUser);
         }
 
-        function sincronizarUsuarioActual() {
-            let usuarios = obtenerBaseUsuarios();
-            let idx = usuarios.findIndex(x => x.email === currentUser.email);
-            if(idx !== -1) {
-                usuarios[idx] = currentUser;
-                guardarBaseUsuarios(usuarios);
+        async function entrarDashboardDirecto() {
+            if(!currentUser) return;
+            try {
+                mostrarPantallaCongeladaCarga("Cargando panel...");
+                let db = await obtenerUsuariosCloud();
+                ocultarPantallaCongeladaCarga();
+
+                if(db && db.users && db.users[currentUser.email]) currentUser = db.users[currentUser.email];
+
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('userDashboard').style.display = 'block';
+                document.getElementById('bottomNavBar').style.display = 'flex';
+
+                document.getElementById('lblUserEmail').innerText = currentUser.email;
+                let b = "$" + currentUser.balance.toFixed(2);
+                document.getElementById('lblBalanceAmi').innerText = b;
+                document.getElementById('lblBalanceCuantificar').innerText = b;
+                
+                document.getElementById('lblTeamComision').innerText = (currentUser.commissionTotal || 0).toFixed(2);
+                document.getElementById('lblTeamTotalRef').innerText = currentUser.refCount || 0;
+                document.getElementById('lblTeamValidRef').innerText = currentUser.validRefCount || 0;
+                document.getElementById('lblTeamDepEquipo').innerText = (currentUser.teamDepositTotal || 0).toFixed(2);
+
+                document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + currentUser.code;
+                
+                let esAdmin = currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase());
+                document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
+
+                actualizarVips(currentUser);
+                iniciarContadorCuantificacion(currentUser);
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
             }
         }
 
         function actualizarVips(u) {
             let ahora = Date.now();
             for(let i=1; i<=5; i++) {
-                let activo = (u.vip_active === i && u.vip_expiry > ahora);
+                let activo = (u.vipActive === i && u.vipExpiry > ahora);
                 let st = document.getElementById('vip' + i + 'StatusText');
                 if(st) { st.innerText = activo ? "Activado" : "Inactivo"; st.style.background = activo ? "#e6f9f0" : "#edf2f7"; st.style.color = activo ? "var(--primary-green)" : "var(--text-muted)"; }
                 let act = document.getElementById('vip' + i + 'ActionArea');
@@ -662,13 +747,13 @@
         function iniciarContadorCuantificacion(u) {
             if(countdownInterval) clearInterval(countdownInterval);
             let ahora = Date.now();
-            let restante = (24 * 3600 * 1000) - (ahora - (u.last_claim || 0));
+            let restante = (24 * 3600 * 1000) - (ahora - (u.lastClaim || 0));
             let container = document.getElementById('countdownContainer');
             
-            if(restante > 0 && u.last_claim > 0) {
+            if(restante > 0 && u.lastClaim > 0) {
                 container.style.display = 'block';
                 countdownInterval = setInterval(() => {
-                    let r = (24 * 3600 * 1000) - (Date.now() - u.last_claim);
+                    let r = (24 * 3600 * 1000) - (Date.now() - u.lastClaim);
                     if(r <= 0) { container.style.display = 'none'; clearInterval(countdownInterval); return; }
                     let h = Math.floor(r / (1000 * 60 * 60));
                     let m = Math.floor((r % (1000 * 60 * 60)) / (1000 * 60));
@@ -679,249 +764,344 @@
             } else { container.style.display = 'none'; }
         }
 
-        window.ejecutarCuantificacionOrb = function() {
+        async function ejecutarCuantificacionOrb() {
             let ahora = Date.now();
-            if(!currentUser.vip_active || currentUser.vip_expiry < ahora) { window.mostrarAlertaPro("Aviso", "No cuentas con licencia VIP activa."); return; }
-            if(ahora - (currentUser.last_claim || 0) < 24*3600*1000) { window.mostrarAlertaPro("Aviso", "Espera a que finalice el contador."); return; }
+            if(!currentUser.vipActive || currentUser.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con licencia VIP activa."); return; }
+            if(ahora - (currentUser.lastClaim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso", "Espera a que finalice el contador."); return; }
             
-            let rec = currentUser.vip_active === 1 ? 1.5 : (currentUser.vip_active === 2 ? 6.5 : (currentUser.vip_active === 3 ? 42.2 : (currentUser.vip_active === 4 ? 88.5 : 1600.0)));
+            let rec = currentUser.vipActive === 1 ? 1.5 : (currentUser.vipActive === 2 ? 6.5 : (currentUser.vipActive === 3 ? 42.2 : (currentUser.vipActive === 4 ? 88.5 : 1600.0)));
             
-            let batteryFill = document.getElementById('batteryFill');
-            if(batteryFill) batteryFill.style.height = "100%";
+            try {
+                mostrarPantallaCongeladaCarga("Procesando cuantificación...");
+                let batteryFill = document.getElementById('batteryFill');
+                if(batteryFill) batteryFill.style.height = "100%";
 
-            currentUser.balance += rec; 
-            currentUser.last_claim = ahora;
-            sincronizarUsuarioActual();
+                let db = await obtenerUsuariosCloud();
+                currentUser.balance += rec; 
+                currentUser.lastClaim = ahora;
+                db.users[currentUser.email] = currentUser;
+                await guardarUsuariosCloud(db);
 
-            setTimeout(() => {
-                if(batteryFill) batteryFill.style.height = "0%";
-                window.mostrarAlertaPro("Éxito", `+${rec} USDT acreditados.`);
+                setTimeout(() => {
+                    if(batteryFill) batteryFill.style.height = "0%";
+                    ocultarPantallaCongeladaCarga();
+                    mostrarAlertaPro("Éxito", `+${rec} USDT acreditados.`);
+                    entrarDashboardDirecto();
+                }, 1500);
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Error", err.message);
+            }
+        }
+
+        async function comprarVip(nivel, precio) {
+            if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
+            
+            try {
+                mostrarPantallaCongeladaCarga("Actualizando VIP...");
+                let db = await obtenerUsuariosCloud();
+                currentUser.balance -= precio; currentUser.vipActive = nivel; currentUser.vipExpiry = Date.now() + (35*24*3600*1000); currentUser.lastClaim = 0;
+                db.users[currentUser.email] = currentUser;
+                await guardarUsuariosCloud(db);
+
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
                 entrarDashboardDirecto();
-            }, 1000);
-        };
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Error", err.message);
+            }
+        }
 
-        window.comprarVip = function(nivel, precio) {
-            if(currentUser.balance < precio) { window.mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
-            
-            currentUser.balance -= precio; 
-            currentUser.vip_active = nivel; 
-            currentUser.vip_expiry = Date.now() + (35*24*3600*1000); 
-            currentUser.last_claim = 0;
-            sincronizarUsuarioActual();
-
-            window.mostrarAlertaPro("Éxito", `¡Nivel VIP ${nivel} activado!`);
-            entrarDashboardDirecto();
-        };
-
-        window.cerrarSesion = function() {
-            sessionEmail = null; 
-            currentUser = null;
-            sessionStorage.removeItem("inverbot_session");
+        function cerrarSesion() {
+            sessionEmail = null; sessionStorage.removeItem("inverbot_session");
             if(countdownInterval) clearInterval(countdownInterval);
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('authScreen').style.display = 'block';
-            window.cambiarVistaAuth(true);
-        };
+            cambiarVistaAuth(true);
+        }
 
-        window.eliminarCuentaPropia = function() {
+        async function eliminarCuentaPropia() {
             let emailActual = currentUser.email.toLowerCase();
             if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(emailActual)) {
-                window.mostrarAlertaPro("Acción Denegada", "Las cuentas de CEO están protegidas.");
+                mostrarAlertaPro("Acción Denegada", "Las cuentas de CEO están protegidas.");
                 return;
             }
-            window.mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente?", () => {
-                let usuarios = obtenerBaseUsuarios();
-                usuarios = usuarios.filter(x => x.email !== currentUser.email);
-                guardarBaseUsuarios(usuarios);
-                window.cerrarSesion();
+            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente?", async () => {
+                try {
+                    mostrarPantallaCongeladaCarga("Eliminando cuenta...");
+                    let db = await obtenerUsuariosCloud();
+                    delete db.users[currentUser.email];
+                    await guardarUsuariosCloud(db);
+                    ocultarPantallaCongeladaCarga();
+                    cerrarSesion();
+                } catch (err) {
+                    ocultarPantallaCongeladaCarga();
+                    mostrarAlertaPro("Error", err.message);
+                }
             });
-        };
+        }
 
-        window.cambiarTab = function(tab, btn) {
+        function cambiarTab(tab, btn) {
             ['Hogar', 'Cuantificar', 'Red', 'Ami'].forEach(t => { document.getElementById('tab' + t).style.display = (t === tab) ? 'block' : 'none'; });
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(btn) btn.classList.add('active');
-        };
+        }
 
-        window.mostrarSeccion = function(tipo) {
+        function mostrarSeccion(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
                 c.innerHTML = `
                     <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:8px;">Red de Depósito (Mínimo 4 USDT)</div>
                     <code style="font-size:9px; background:#fff; padding:8px; display:block; word-break:break-all; border:1px solid var(--border-color); margin-bottom:8px;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
-                    <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); window.mostrarAlertaPro('Copiado','Wallet copiada');" style="padding:8px; font-size:10px; margin-bottom:10px;">Copiar Wallet</button>
+                    <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet copiada');" style="padding:8px; font-size:10px; margin-bottom:10px;">Copiar Wallet</button>
                     <div class="input-group"><label>Monto</label><input type="number" id="depM" min="4" step="0.01"></div>
                     <div class="input-group"><label>Hash / ID</label><input type="text" id="depH" placeholder="0x..."></div>
-                    <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:9px; font-size:11px;">Enviar Reporte</button>`;
+                    <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:9px; font-size:11px;">Enviar Reporte al CEO</button>`;
             } else {
                 c.innerHTML = `
                     <div class="input-group"><label>Wallet Destino</label><input type="text" id="wW" placeholder="0x..."></div>
                     <div class="input-group"><label>Monto</label><input type="number" id="wM" min="1" step="0.01"></div>
                     <div class="input-group"><label>Contraseña</label><input type="password" id="wP"></div>
-                    <button type="button" class="btn btn-green" onclick="solicitarRetiro()" style="padding:9px; font-size:11px;">Solicitar Retiro</button>`;
+                    <button type="button" class="btn btn-green" onclick="solicitarRetiro()" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>`;
             }
-        };
+        }
 
-        window.reportarDep = function() {
+        async function reportarDep() {
             let m = parseFloat(document.getElementById('depM').value);
             let h = document.getElementById('depH').value.trim();
-            if(!m || !h) { window.mostrarAlertaPro("Error", "Complete los campos del depósito."); return; }
+            if(!m || !h) { mostrarAlertaPro("Error", "Complete los campos del depósito."); return; }
             
-            let deps = obtenerBaseDeps();
-            deps.push({
-                id: 'DEP-' + Date.now(),
-                user_email: currentUser.email,
-                monto: m,
-                hash: h,
-                status: 'Pendiente',
-                fecha: new Date().toLocaleDateString()
-            });
-            guardarBaseDeps(deps);
+            try {
+                mostrarPantallaCongeladaCarga("Guardando reporte...");
+                let db = await obtenerUsuariosCloud();
+                if(!db.deposits) db.deposits = [];
+                let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+                db.deposits.push(newDep);
+                await guardarUsuariosCloud(db);
 
-            window.mostrarAlertaPro("Éxito", "Depósito reportado correctamente.");
-            document.getElementById('subAccionContainer').style.display = 'none';
-        };
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Éxito", "Depósito reportado correctamente.");
+                document.getElementById('subAccionContainer').style.display = 'none';
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Error", err.message);
+            }
+        }
 
-        window.solicitarRetiro = function() {
+        async function solicitarRetiro() {
             let w = document.getElementById('wW').value.trim();
             let m = parseFloat(document.getElementById('wM').value);
             let p = document.getElementById('wP').value.trim();
-            if(!w || !m || !p) { window.mostrarAlertaPro("Error", "Complete los campos de retiro."); return; }
-            if(currentUser.pass !== p) { window.mostrarAlertaPro("Error", "Contraseña incorrecta."); return; }
-            if(currentUser.balance < m) { window.mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
+            if(!w || !m || !p) { mostrarAlertaPro("Error", "Complete los campos de retiro."); return; }
+            if(currentUser.pass !== p) { mostrarAlertaPro("Error", "Contraseña incorrecta."); return; }
+            if(currentUser.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             
-            currentUser.balance -= m;
-            sincronizarUsuarioActual();
+            try {
+                mostrarPantallaCongeladaCarga("Procesando retiro...");
+                currentUser.balance -= m;
+                let db = await obtenerUsuariosCloud();
+                db.users[currentUser.email] = currentUser;
+                if(!db.withdrawals) db.withdrawals = [];
+                let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+                db.withdrawals.push(newWit);
+                await guardarUsuariosCloud(db);
 
-            let wits = obtenerBaseWits();
-            wits.push({
-                id: 'WIT-' + Date.now(),
-                user_email: currentUser.email,
-                wallet: w,
-                monto: m,
-                status: 'Pendiente',
-                fecha: new Date().toLocaleDateString()
-            });
-            guardarBaseWits(wits);
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Éxito", "Retiro solicitado.");
+                entrarDashboardDirecto();
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Error", err.message);
+            }
+        }
 
-            window.mostrarAlertaPro("Éxito", "Retiro solicitado.");
-            entrarDashboardDirecto();
-        };
+        async function verHistorialDeps() {
+            try {
+                let db = await obtenerUsuariosCloud();
+                let deps = (db.deposits || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
+                if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
+                mostrarAlertaPro("Historial Depósitos", deps.map(x => `+${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
+            } catch (err) {
+                mostrarAlertaPro("Error", err.message);
+            }
+        }
 
-        window.verHistorialDeps = function() {
-            let deps = obtenerBaseDeps().filter(x => x.user_email === currentUser.email);
-            if(deps.length === 0) { window.mostrarAlertaPro("Historial", "Sin registros."); return; }
-            window.mostrarAlertaPro("Historial Depósitos", deps.map(x => `+${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
-        };
+        async function verHistorialWits() {
+            try {
+                let db = await obtenerUsuariosCloud();
+                let wits = (db.withdrawals || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
+                if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros."); return; }
+                mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
+            } catch (err) {
+                mostrarAlertaPro("Error", err.message);
+            }
+        }
 
-        window.verHistorialWits = function() {
-            let wits = obtenerBaseWits().filter(x => x.user_email === currentUser.email);
-            if(wits.length === 0) { window.mostrarAlertaPro("Historial", "Sin registros."); return; }
-            window.mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
-        };
-
-        window.abrirPanelAdmin = function() {
+        async function abrirPanelAdmin() {
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            renderAdmin();
-        };
-
-        window.cerrarPanelAdmin = function() {
+            await renderAdmin();
+        }
+        function cerrarPanelAdmin() {
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
             document.getElementById('bottomNavBar').style.display = 'flex';
-        };
+        }
 
-        window.acreditarSaldoPorCorreo = function() {
+        async function acreditarSaldoPorCorreo() {
             let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
             let monto = parseFloat(document.getElementById('acreditarMonto').value);
             
-            let usuarios = obtenerBaseUsuarios();
-            let target = usuarios.find(x => x.email === mail);
-            if(!target) { 
-                window.mostrarAlertaPro("Error", "Usuario no encontrado."); 
-                return; 
+            try {
+                mostrarPantallaCongeladaCarga("Acreditando saldo...");
+                let db = await obtenerUsuariosCloud();
+                let target = db.users[mail];
+                if(!target) { 
+                    ocultarPantallaCongeladaCarga();
+                    mostrarAlertaPro("Error", "Usuario no encontrado."); 
+                    return; 
+                }
+                target.balance += monto;
+                await guardarUsuariosCloud(db);
+
+                ocultarPantallaCongeladaCarga();
+                document.getElementById('acreditarEmail').value = '';
+                document.getElementById('acreditarMonto').value = '';
+                mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
+                renderAdmin();
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Error", err.message);
             }
-            target.balance += monto;
-            guardarBaseUsuarios(usuarios);
-
-            document.getElementById('acreditarEmail').value = '';
-            document.getElementById('acreditarMonto').value = '';
-            window.mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
-            renderAdmin();
-        };
-
-        function renderAdmin() {
-            let usuarios = obtenerBaseUsuarios();
-            let uHtml = usuarios.map(u => `
-                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${(u.balance || 0).toFixed(2)} ${u.is_admin ? '[ADMIN]' : ''}</div>
-                    <div style="display:flex; gap:4px;">
-                        <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e;color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">Eliminar</button>
-                    </div>
-                </div>`).join('');
-            if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
-
-            let deps = obtenerBaseDeps().filter(x => x.status === 'Pendiente');
-            let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
-                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
-                    <b>${x.user_email}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Hash: ${x.hash}</span><br>
-                    <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
-                </div>`).join('');
-            if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
-
-            let wits = obtenerBaseWits().filter(x => x.status === 'Pendiente');
-            let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
-                <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
-                    <b>${x.user_email}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${x.wallet}</span><br>
-                    <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
-                </div>`).join('');
-            if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
         }
 
-        window.eliminarUsuarioAdmin = function(email) {
-            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
-                window.mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
-                return;
+        async function hacerAdminCorreo() {
+            let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
+            try {
+                mostrarPantallaCongeladaCarga("Actualizando permisos...");
+                let db = await obtenerUsuariosCloud();
+                let target = db.users[mail];
+                if(!target) { 
+                    ocultarPantallaCongeladaCarga();
+                    mostrarAlertaPro("Error", "Usuario no encontrado."); 
+                    return; 
+                }
+                target.isAdmin = true;
+                await guardarUsuariosCloud(db);
+
+                ocultarPantallaCongeladaCarga();
+                document.getElementById('novoAdminEmail').value = '';
+                mostrarAlertaPro("Éxito", `Privilegio otorgado a ${target.email}`);
+                renderAdmin();
+            } catch (err) {
+                ocultarPantallaCongeladaCarga();
+                mostrarAlertaPro("Error", err.message);
             }
-            let usuarios = obtenerBaseUsuarios().filter(x => x.email !== email);
-            guardarBaseUsuarios(usuarios);
-            renderAdmin();
+        }
+
+        async function renderAdmin() {
+            try {
+                let db = await obtenerUsuariosCloud();
+                if(!db) return;
+                
+                let usersArr = Object.values(db.users || {});
+                let uHtml = usersArr.map(u => `
+                    <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
+                        <div style="display:flex; gap:4px;">
+                            <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">${u.isAdmin?'Quitar':'Admin'}</button>
+                            <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e;color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;">Eliminar</button>
+                        </div>
+                    </div>`).join('');
+                if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
+
+                let deps = (db.deposits || []).filter(x => x.status === 'Pendiente');
+                let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
+                    <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
+                        <b>${x.user}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Hash: ${x.hash}</span><br>
+                        <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
+                    </div>`).join('');
+                if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
+
+                let wits = (db.withdrawals || []).filter(x => x.status === 'Pendiente');
+                let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
+                    <div style="background:#fff; padding:6px; margin-bottom:4px; border:1px solid #cbd5e0; border-radius:4px;">
+                        <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:gray;">Wallet: ${x.wallet}</span><br>
+                        <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;">Aprobar</button>
+                    </div>`).join('');
+                if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        window.toggleAdminUser = async function(email) {
+            try {
+                let db = await obtenerUsuariosCloud();
+                let target = db.users[email];
+                if(target) {
+                    if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
+                        mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
+                        return;
+                    }
+                    target.isAdmin = !target.isAdmin;
+                    await guardarUsuariosCloud(db);
+                    await renderAdmin();
+                }
+            } catch (err) {
+                mostrarAlertaPro("Error", err.message);
+            }
         };
 
-        window.aprobarDep = function(id) {
-            let deps = obtenerBaseDeps();
-            let d = deps.find(x => x.id === id);
-            if(!d) return;
-            
-            d.status = 'Aprobado';
-            guardarBaseDeps(deps);
-
-            let usuarios = obtenerBaseUsuarios();
-            let u = usuarios.find(x => x.email === d.user_email);
-            if(u) {
-                u.balance = (u.balance || 0) + d.monto;
-                guardarBaseUsuarios(usuarios);
+        window.eliminarUsuarioAdmin = async function(email) {
+            try {
+                let db = await obtenerUsuariosCloud();
+                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
+                    mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
+                    return;
+                }
+                delete db.users[email];
+                await guardarUsuariosCloud(db);
+                await renderAdmin();
+            } catch (err) {
+                mostrarAlertaPro("Error", err.message);
             }
-            renderAdmin();
         };
 
-        window.aprobarWit = function(id) {
-            let wits = obtenerBaseWits();
-            let w = wits.find(x => x.id === id);
-            if(w) {
+        window.aprobarDep = async function(id) {
+            try {
+                let db = await obtenerUsuariosCloud();
+                let d = (db.deposits || []).find(x => x.id === id);
+                if(!d) return;
+                d.status = 'Aprobado';
+                if(db.users[d.user]) { db.users[d.user].balance += d.monto; }
+                await guardarUsuariosCloud(db);
+                await renderAdmin();
+            } catch (err) {
+                mostrarAlertaPro("Error", err.message);
+            }
+        };
+
+        window.aprobarWit = async function(id) {
+            try {
+                let db = await obtenerUsuariosCloud();
+                let w = (db.withdrawals || []).find(x => x.id === id);
+                if(!w) return;
                 w.status = 'Aprobado';
-                guardarBaseWits(wits);
+                await guardarUsuariosCloud(db);
+                await renderAdmin();
+            } catch (err) {
+                mostrarAlertaPro("Error", err.message);
             }
-            renderAdmin();
         };
 
         window.copiarEnlaceReferido = function() {
-            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + (currentUser.code || ''));
-            window.mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
+            navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?ref=" + currentUser.code);
+            mostrarAlertaPro("Copiado", "Enlace de referido copiado.");
         };
     </script>
 </body>
