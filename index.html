@@ -460,7 +460,6 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // SISTEMA DE RESPALDO LOCAL INTELIGENTE (Anti-Failed to fetch)
         function obtenerDatosLocalSeguro() {
             let local = localStorage.getItem("inverbot_db_local");
             if (!local) {
@@ -847,7 +846,6 @@
             if(btn) btn.classList.add('active');
         }
 
-        // RESTAURADAS LAS 3 OPCIONES DE DEPÓSITO ORIGINALES CON SUS REDES
         function mostrarSeccion(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
