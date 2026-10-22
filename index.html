@@ -111,12 +111,21 @@
         .team-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .team-stat-value { font-size: 20px; font-weight: 800; color: var(--text-main); font-family: monospace; }
 
+        /* Cuantificar con fondo de foto completo y proporcionado */
         .quant-box {
-            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px 16px; text-align: center; margin-bottom: 12px;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('images/robot-quantify.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            padding: 24px 16px;
+            text-align: center;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .countdown-timer {
-            font-size: 12px; font-weight: 800; color: var(--market-red); background: #fff5f5;
+            font-size: 12px; font-weight: 800; color: #fff5f5; background: rgba(229, 62, 62, 0.85);
             border: 1px solid #fed7d7; padding: 5px 12px; border-radius: 6px;
             display: inline-block; margin-bottom: 12px; font-family: monospace;
         }
@@ -135,14 +144,7 @@
             display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.3rem; color: #fff;
         }
 
-        .quant-robot-badge {
-            width: 85px; height: 85px; border-radius: 12px; overflow: hidden;
-            border: 1px solid var(--primary-blue); box-shadow: 0 0 12px rgba(0,82,204,0.3);
-            background: #fff;
-        }
-        .quant-robot-badge img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Tarjetas con foto de fondo completa y filtro oscuro para legibilidad */
+        /* Tarjetas de Carga con fondo completo y proporcionado */
         .vip-card { 
             border-radius: 12px; 
             padding: 16px; 
@@ -296,20 +298,16 @@
 
                 <div class="quant-box">
                     <div id="countdownContainer" style="display: none;">
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">Próximo ciclo:</div>
+                        <div style="font-size: 10px; color: #cbd5e0; font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">Próximo ciclo:</div>
                         <div class="countdown-timer" id="lblCountdownTimer">23:59:59</div>
                     </div>
 
-                    <!-- Zona de Cuantificar con el Robot integrado -->
                     <div class="quant-robot-area">
                         <div class="quant-orb">I</div>
-                        <div class="quant-robot-badge">
-                            <img src="images/robot-quantify.png" alt="Robot Cuantificador">
-                        </div>
                     </div>
 
                     <button class="btn btn-blue" onclick="ejecutarCuantificacionOrb()" style="padding: 13px; font-size: 13px; font-weight: 800;">CUANTIFICAR AHORA</button>
-                    <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para procesar el rendimiento diario de su Carga activa.</p>
+                    <p style="font-size: 11px; color: #cbd5e0; font-weight: 600; margin-top: 10px;">Pulse para procesar el rendimiento diario de su Carga activa.</p>
                 </div>
 
                 <!-- CARGA 1 -->
