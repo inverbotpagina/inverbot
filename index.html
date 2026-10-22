@@ -139,13 +139,14 @@
         .quant-robot-badge img { width: 100%; height: 100%; object-fit: cover; }
 
         .vip-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
-        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .vip-title { font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-        .vip-tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: #e6f0ff; color: var(--primary-blue); text-transform: uppercase; }
+        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .vip-title { font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
+        .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #e6f0ff; color: var(--primary-blue); text-transform: uppercase; }
         
         .carga-thumb {
-            width: 40px; height: 40px; border-radius: 8px; overflow: hidden;
-            border: 1px solid rgba(0,82,204,0.3); background: #fff; flex-shrink: 0;
+            width: 48px; height: 48px; border-radius: 10px; overflow: hidden;
+            border: 1px solid var(--border-color); background: #fff; flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
         }
         .carga-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -286,11 +287,11 @@
                         <div class="countdown-timer" id="lblCountdownTimer">23:59:59</div>
                     </div>
 
-                    <!-- Zona de Cuantificar con el Robot Limpiapiscinas integrado -->
+                    <!-- Zona de Cuantificar con el Robot integrado -->
                     <div class="quant-robot-area">
                         <div class="quant-orb">I</div>
                         <div class="quant-robot-badge">
-                            <img src="./images/robot-quantify.png" alt="Robot Cuantificador">
+                            <img src="images/robot-quantify.png" alt="Robot Cuantificador">
                         </div>
                     </div>
 
@@ -302,7 +303,7 @@
                 <div class="vip-card">
                     <div class="vip-row">
                         <div class="vip-title">
-                            <div class="carga-thumb"><img src="./images/carga-1-azul.png" alt="Carga 1"></div>
+                            <div class="carga-thumb"><img src="images/carga-1-azul.png" alt="Carga 1"></div>
                             CARGA 1 (Level 1)
                         </div>
                         <span id="vip1StatusText" class="vip-tag">Inactivo</span>
@@ -318,7 +319,7 @@
                 <div class="vip-card">
                     <div class="vip-row">
                         <div class="vip-title">
-                            <div class="carga-thumb"><img src="./images/carga-2-verde.png" alt="Carga 2"></div>
+                            <div class="carga-thumb"><img src="images/carga-2-verde.png" alt="Carga 2"></div>
                             CARGA 2 (Level 2)
                         </div>
                         <span id="vip2StatusText" class="vip-tag">Inactivo</span>
@@ -334,7 +335,7 @@
                 <div class="vip-card">
                     <div class="vip-row">
                         <div class="vip-title">
-                            <div class="carga-thumb"><img src="./images/carga-3-oro.png" alt="Carga 3"></div>
+                            <div class="carga-thumb"><img src="images/carga-3-oro.png" alt="Carga 3"></div>
                             CARGA 3 (Level 3)
                         </div>
                         <span id="vip3StatusText" class="vip-tag">Inactivo</span>
@@ -350,7 +351,7 @@
                 <div class="vip-card">
                     <div class="vip-row">
                         <div class="vip-title">
-                            <div class="carga-thumb"><img src="./images/carga-4-cyan.png" alt="Carga 4"></div>
+                            <div class="carga-thumb"><img src="images/carga-4-cyan.png" alt="Carga 4"></div>
                             CARGA 4 (Level 4)
                         </div>
                         <span id="vip4StatusText" class="vip-tag">Inactivo</span>
@@ -366,7 +367,7 @@
                 <div class="vip-card" style="border-color: var(--accent-gold);">
                     <div class="vip-row">
                         <div class="vip-title" style="color:#b7791f;">
-                            <div class="carga-thumb" style="border-color: rgba(240,185,11,0.5);"><img src="./images/carga-5-elite.png" alt="Carga 5 Elite"></div>
+                            <div class="carga-thumb" style="border-color: rgba(240,185,11,0.5);"><img src="images/carga-5-elite.png" alt="Carga 5 Elite"></div>
                             CARGA 5 (Elite)
                         </div>
                         <span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span>
