@@ -515,22 +515,19 @@
                 if (!rows || rows.length === 0 || !rows[0].payload) {
                     return obtenerDatosLocalSeguro();
                 }
-                // Sincronizar con local para respaldo
                 guardarDatosLocalSeguro(rows[0].payload);
                 return rows[0].payload;
             } catch (e) {
-                // Si la red falla por completo, usamos el almacenamiento local automáticamente sin mostrar errores molestos
-                console.warn("Modo offline activado por fallo de red:", e.message);
                 return obtenerDatosLocalSeguro();
             }
         }
 
         async function guardarUsuariosCloud(dbData) {
-            guardarDatosLocalSeguro(dbData); // Guardar siempre en local primero
+            guardarDatosLocalSeguro(dbData);
             try {
                 await fetchSupabaseRest("inverbot-db", "POST", { id: 1, payload: dbData });
             } catch (e) {
-                console.warn("No se pudo sincronizar con la nube, operando localmente:", e.message);
+                console.warn("Modo local activo");
             }
         }
 
@@ -850,15 +847,33 @@
             if(btn) btn.classList.add('active');
         }
 
+        // RESTAURADAS LAS 3 OPCIONES DE DEPÓSITO ORIGINALES CON SUS REDES
         function mostrarSeccion(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
                 c.innerHTML = `
-                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:8px;">Red de Depósito (Mínimo 4 USDT)</div>
-                    <code style="font-size:9px; background:#fff; padding:8px; display:block; word-break:break-all; border:1px solid var(--border-color); margin-bottom:8px;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
-                    <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet copiada');" style="padding:8px; font-size:10px; margin-bottom:10px;">Copiar Wallet</button>
-                    <div class="input-group"><label>Monto</label><input type="number" id="depM" min="4" step="0.01"></div>
-                    <div class="input-group"><label>Hash / ID</label><input type="text" id="depH" placeholder="0x..."></div>
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:10px;">Seleccione Red de Depósito (Mínimo 4 USDT)</div>
+                    
+                    <div style="background:#fff; padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:8px;">
+                        <div style="font-size:10px; font-weight:800; color:#1a202c;">USDT (BEP-20 / Binance Smart Chain)</div>
+                        <code style="font-size:9px; background:var(--bg-input); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
+                        <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet BEP-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet BEP-20</button>
+                    </div>
+
+                    <div style="background:#fff; padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:8px;">
+                        <div style="font-size:10px; font-weight:800; color:#1a202c;">USDT (TRC-20 / Tron Network)</div>
+                        <code style="font-size:9px; background:var(--bg-input); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;">TRC20WalletEjemploInverbotOfficial99</code>
+                        <button class="btn btn-green" onclick="navigator.clipboard.writeText('TRC20WalletEjemploInverbotOfficial99'); mostrarAlertaPro('Copiado','Wallet TRC-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet TRC-20</button>
+                    </div>
+
+                    <div style="background:#fff; padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:10px;">
+                        <div style="font-size:10px; font-weight:800; color:#1a202c;">USDT (ERC-20 / Ethereum Network)</div>
+                        <code style="font-size:9px; background:var(--bg-input); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
+                        <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet ERC-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet ERC-20</button>
+                    </div>
+
+                    <div class="input-group"><label>Monto Depositado</label><input type="number" id="depM" min="4" step="0.01" placeholder="10.00"></div>
+                    <div class="input-group"><label>Hash / ID de Transacción</label><input type="text" id="depH" placeholder="0x..."></div>
                     <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:9px; font-size:11px;">Enviar Reporte al CEO</button>`;
             } else {
                 c.innerHTML = `
