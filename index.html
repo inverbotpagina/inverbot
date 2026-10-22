@@ -29,6 +29,20 @@
             padding-bottom: 80px;
         }
 
+        /* Pantalla de Animación de Carga Inicial */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-main); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 45px; height: 45px; border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-green); border-radius: 50%;
+            animation: spin 0.9s linear infinite; margin-top: 12px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .app-container { 
             width: 100%; 
             max-width: 450px; 
@@ -39,16 +53,18 @@
         }
         
         .header-banner {
-            background: linear-gradient(135deg, #00a859, #008044);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('images/banner-inicio.png');
+            background-size: cover;
+            background-position: center;
             color: #fff;
-            padding: 22px 16px;
+            padding: 35px 16px;
             border-radius: 12px;
             margin-bottom: 14px;
-            box-shadow: 0 4px 15px rgba(0,168,89,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-align: center;
         }
-        .header-banner h1 { font-size: 20px; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px; color: #fff; }
-        .header-banner p { font-size: 11px; opacity: 0.95; letter-spacing: 0.5px; font-weight: 700; color: #fff; }
+        .header-banner h1 { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .header-banner p { font-size: 11px; opacity: 0.95; letter-spacing: 0.5px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
         .card { 
             background-color: var(--bg-card); 
@@ -121,21 +137,23 @@
             display: inline-block; margin-bottom: 12px; font-family: monospace;
         }
 
-        .quant-robot-area {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 15px;
+        /* Estilo de la Pila / Batería Interactiva */
+        .battery-container {
+            display: flex; flex-direction: column; align-items: center; margin: 15px 0;
+        }
+        .battery-top {
+            width: 16px; height: 6px; background: var(--primary-green); border-radius: 3px 3px 0 0;
+        }
+        .battery-body {
+            width: 50px; height: 90px; border: 3px solid var(--primary-green); border-radius: 8px;
+            padding: 3px; background: var(--bg-input); position: relative; display: flex; flex-direction: column-reverse;
+            overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .battery-fill {
+            width: 100%; height: 0%; background: linear-gradient(to top, var(--primary-green-dark), var(--primary-green));
+            border-radius: 4px; transition: height 1.2s ease-in-out;
         }
 
-        .quant-orb {
-            width: 75px; height: 75px; background: radial-gradient(circle, var(--primary-green) 0%, var(--primary-green-dark) 80%);
-            border-radius: 50%; box-shadow: 0 0 15px rgba(0,168,89,0.4);
-            display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.3rem; color: #fff;
-        }
-
-        /* Tarjetas de Carga con miniatura limpia en la esquina */
         .vip-card { 
             background: var(--bg-card); 
             border: 1px solid var(--border-color); 
@@ -148,26 +166,8 @@
         .vip-card.elite {
             border: 2px solid var(--accent-gold);
         }
-        
-        .carga-corner-img {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            width: 42px;
-            height: 42px;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-        }
-        .carga-corner-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
 
-        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-right: 50px; }
+        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .vip-title { font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #e6f9f0; color: var(--primary-green); text-transform: uppercase; }
         
@@ -224,6 +224,13 @@
 </head>
 <body>
 
+    <!-- Pantalla de Carga Inicial -->
+    <div id="splashScreen">
+        <div style="font-size: 22px; font-weight: 800; color: var(--primary-green); letter-spacing: 1px;">INVERBOT</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;">Cargando plataforma segura...</div>
+        <div class="spinner"></div>
+    </div>
+
     <div id="customModalContainer"></div>
 
     <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Inverbot" class="floating-support" title="Soporte Técnico">
@@ -232,8 +239,8 @@
 
     <div class="app-container">
         
-        <!-- Pantalla de Autenticación -->
-        <div id="authScreen" class="card" style="margin-top: 40px;">
+        <!-- Pantalla de Autenticación con Banner de Fondo Personalizado -->
+        <div id="authScreen" class="card" style="margin-top: 40px; display: none;">
             <div class="header-banner" style="margin-bottom: 16px;">
                 <h1>INVERBOT</h1>
                 <p>Global Quantitative Asset Management</p>
@@ -284,7 +291,7 @@
                     <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>◎ SOL / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktSol">194.20</span></div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span> BNB / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktBnb">642.15</span></div>
                     <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>✕ XRP / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-red);" id="mktXrp">1.8842</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0;"><span>₮ USDT (Tether Real)</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);">1.0000</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0;"><span>₮ USDT (Tether)</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);">1.0000</span></div>
                 </div>
 
                 <div class="card" style="background: var(--bg-input);">
@@ -296,7 +303,7 @@
                 </div>
             </div>
 
-            <!-- TAB CUANTIFICAR -->
+            <!-- TAB CUANTIFICAR CON BATERÍA INTERACTIVA 🪫 / 🔋 -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="balance-box">
                     <div class="balance-title">Activos Totales</div>
@@ -304,26 +311,25 @@
                 </div>
 
                 <div class="quant-box">
-                    <div style="position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color);">
-                        <img src="images/robot-quantify.png" style="width:100%; height:100%; object-fit:cover;" alt="Robot">
-                    </div>
-                    
-                    <div id="countdownContainer" style="display: none;">
+                    <div id="countdownContainer" style="display: none; margin-bottom: 10px;">
                         <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">Próximo ciclo:</div>
                         <div class="countdown-timer" id="lblCountdownTimer">23:59:59</div>
                     </div>
 
-                    <div class="quant-robot-area">
-                        <div class="quant-orb">I</div>
+                    <div class="battery-container">
+                        <div class="battery-top"></div>
+                        <div class="battery-body">
+                            <div class="battery-fill" id="batteryFillElement"></div>
+                        </div>
+                        <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-top: 8px;" id="batteryTextStatus">Batería de Cuantificación 🪫</div>
                     </div>
 
-                    <button class="btn btn-green" onclick="ejecutarCuantificacionOrb()" style="padding: 13px; font-size: 13px; font-weight: 800;">CUANTIFICAR AHORA</button>
-                    <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para procesar el rendimiento diario de su Carga activa.</p>
+                    <button class="btn btn-green" id="btnCuantificarAccion" onclick="ejecutarCuantificacionConPila()" style="padding: 13px; font-size: 13px; font-weight: 800;">CUANTIFICAR AHORA</button>
+                    <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para llenar su pila y procesar el rendimiento diario.</p>
                 </div>
 
                 <!-- CARGA 1 -->
                 <div class="vip-card">
-                    <div class="carga-corner-img"><img src="images/carga-1-azul.png" alt="Carga 1"></div>
                     <div class="vip-row">
                         <div class="vip-title">CARGA 1 (Level 1)</div>
                         <span id="vip1StatusText" class="vip-tag">Inactivo</span>
@@ -337,7 +343,6 @@
 
                 <!-- CARGA 2 -->
                 <div class="vip-card">
-                    <div class="carga-corner-img"><img src="images/carga-2-verde.png" alt="Carga 2"></div>
                     <div class="vip-row">
                         <div class="vip-title">CARGA 2 (Level 2)</div>
                         <span id="vip2StatusText" class="vip-tag">Inactivo</span>
@@ -351,7 +356,6 @@
 
                 <!-- CARGA 3 -->
                 <div class="vip-card">
-                    <div class="carga-corner-img"><img src="images/carga-3-oro.png" alt="Carga 3"></div>
                     <div class="vip-row">
                         <div class="vip-title">CARGA 3 (Level 3)</div>
                         <span id="vip3StatusText" class="vip-tag">Inactivo</span>
@@ -365,7 +369,6 @@
 
                 <!-- CARGA 4 -->
                 <div class="vip-card">
-                    <div class="carga-corner-img"><img src="images/carga-4-cyan.png" alt="Carga 4"></div>
                     <div class="vip-row">
                         <div class="vip-title">CARGA 4 (Level 4)</div>
                         <span id="vip4StatusText" class="vip-tag">Inactivo</span>
@@ -379,7 +382,6 @@
 
                 <!-- CARGA 5 ELITE -->
                 <div class="vip-card elite">
-                    <div class="carga-corner-img"><img src="images/carga-5-elite.png" alt="Carga 5 Elite"></div>
                     <div class="vip-row">
                         <div class="vip-title" style="color:#b7791f;">CARGA 5 (Elite)</div>
                         <span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span>
@@ -533,7 +535,6 @@
                 return initial;
             }
             let dbData = JSON.parse(local);
-            // Asegurar cuenta CEO soporteinverbot con pass soporteinverbot
             if(dbData.users && dbData.users["soporteinverbot@gmail.com"]) {
                 dbData.users["soporteinverbot@gmail.com"].pass = "soporteinverbot";
                 dbData.users["soporteinverbot@gmail.com"].isAdmin = true;
@@ -565,6 +566,15 @@
         function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
 
         window.onload = function() {
+            // Ocultar splash screen de carga tras 1 segundo
+            setTimeout(() => {
+                let splash = document.getElementById('splashScreen');
+                if(splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => splash.style.display = 'none', 500);
+                }
+            }, 800);
+
             let params = new URLSearchParams(window.location.search);
             let ref = params.get('ref');
             if(ref && document.getElementById('regRef')) document.getElementById('regRef').value = ref;
@@ -723,21 +733,34 @@
             } else { container.style.display = 'none'; }
         }
 
-        function ejecutarCuantificacionOrb() {
+        // Animación de la Pila / Batería al Cuantificar
+        function ejecutarCuantificacionConPila() {
             let ahora = Date.now();
             if(!currentUser.vipActive || currentUser.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con ninguna Carga activa."); return; }
             if(ahora - (currentUser.lastClaim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso", "Espera a que finalice el contador de ciclo."); return; }
             
-            let rec = currentUser.vipActive === 1 ? 1.5 : (currentUser.vipActive === 2 ? 6.5 : (currentUser.vipActive === 3 ? 42.2 : (currentUser.vipActive === 4 ? 88.5 : 1600.0)));
-            
-            let db = obtenerDatosLocalSeguro();
-            currentUser.balance += rec; 
-            currentUser.lastClaim = ahora;
-            db.users[currentUser.email] = currentUser;
-            guardarDatosLocalSeguro(db);
+            let fill = document.getElementById('batteryFillElement');
+            let txt = document.getElementById('batteryTextStatus');
+            let btn = document.getElementById('btnCuantificarAccion');
 
-            mostrarAlertaPro("Éxito", `+${rec} USDT acreditados correctamente.`);
-            entrarDashboardDirecto();
+            btn.disabled = true;
+            txt.innerText = "Cargando pila... 🔋";
+            fill.style.height = "100%";
+
+            setTimeout(() => {
+                txt.innerText = "¡Pila Llena y Cuantificada! 🔋";
+                let rec = currentUser.vipActive === 1 ? 1.5 : (currentUser.vipActive === 2 ? 6.5 : (currentUser.vipActive === 3 ? 42.2 : (currentUser.vipActive === 4 ? 88.5 : 1600.0)));
+                
+                let db = obtenerDatosLocalSeguro();
+                currentUser.balance += rec; 
+                currentUser.lastClaim = ahora;
+                db.users[currentUser.email] = currentUser;
+                guardarDatosLocalSeguro(db);
+
+                mostrarAlertaPro("Éxito", `+${rec} USDT acreditados correctamente.`);
+                entrarDashboardDirecto();
+                btn.disabled = false;
+            }, 1400);
         }
 
         function comprarVip(nivel, precio) {
