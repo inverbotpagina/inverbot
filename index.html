@@ -12,6 +12,8 @@
             --border-color: #cbd5e0;
             --primary-blue: #0052cc;
             --primary-blue-dark: #003d99;
+            --market-green: #00b96b;
+            --market-red: #e53e3e;
             --accent-gold: #f0b90b;
             --text-main: #1a202c;
             --text-muted: #64748b;
@@ -110,7 +112,7 @@
         }
         
         .countdown-timer {
-            font-size: 12px; font-weight: 800; color: #e53e3e; background: #fff5f5;
+            font-size: 12px; font-weight: 800; color: var(--market-red); background: #fff5f5;
             border: 1px solid #fed7d7; padding: 5px 12px; border-radius: 6px;
             display: inline-block; margin-bottom: 12px; font-family: monospace;
         }
@@ -192,7 +194,7 @@
         
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 6px; }
         .btn-blue { background: var(--primary-blue); color: #fff; }
-        .btn-red { background: #e53e3e; color: #fff; }
+        .btn-red { background: var(--market-red); color: #fff; }
         
         .auth-switch { text-align: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
         .auth-switch a { color: var(--primary-blue); cursor: pointer; text-decoration: none; font-weight: 800; }
@@ -253,13 +255,13 @@
                 <div class="card">
                     <div style="font-size: 11px; font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;">
                         <span>Mercados Financieros Globales</span>
-                        <span style="font-size: 9px; color: var(--primary-blue); background: #e6f0ff; padding: 2px 6px; border-radius: 4px; font-weight: 700;">EN LÍNEA</span>
+                        <span style="font-size: 9px; color: var(--market-green); background: #e6f9f0; padding: 2px 6px; border-radius: 4px; font-weight: 700;">EN LÍNEA</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>BTC / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-blue);" id="mktBtc">81,598.50</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>ETH / USDT</span><span style="font-family: monospace; font-weight: 700; color: #e53e3e;" id="mktEth">2,387.48</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>SOL / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-blue);" id="mktSol">194.20</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>BNB / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--primary-blue);" id="mktBnb">642.15</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0;"><span>XRP / USDT</span><span style="font-family: monospace; font-weight: 700; color: #e53e3e;" id="mktXrp">1.8842</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>BTC / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktBtc">81,598.50</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>ETH / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-red);" id="mktEth">2,387.48</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>SOL / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktSol">194.20</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>BNB / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktBnb">642.15</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0;"><span>XRP / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-red);" id="mktXrp">1.8842</span></div>
                 </div>
 
                 <div class="card" style="background: var(--bg-input);">
@@ -288,7 +290,7 @@
                     <div class="quant-robot-area">
                         <div class="quant-orb">I</div>
                         <div class="quant-robot-badge">
-                            <img src="images/robot-quantify.png" alt="Robot Cuantificador">
+                            <img src="./images/robot-quantify.png" alt="Robot Cuantificador">
                         </div>
                     </div>
 
@@ -300,7 +302,7 @@
                 <div class="vip-card">
                     <div class="vip-row">
                         <div class="vip-title">
-                            <div class="carga-thumb"><img src="images/carga-1-azul.png" alt="Carga 1"></div>
+                            <div class="carga-thumb"><img src="./images/carga-1-azul.png" alt="Carga 1"></div>
                             CARGA 1 (Level 1)
                         </div>
                         <span id="vip1StatusText" class="vip-tag">Inactivo</span>
@@ -316,7 +318,7 @@
                 <div class="vip-card">
                     <div class="vip-row">
                         <div class="vip-title">
-                            <div class="carga-thumb"><img src="images/carga-2-verde.png" alt="Carga 2"></div>
+                            <div class="carga-thumb"><img src="./images/carga-2-verde.png" alt="Carga 2"></div>
                             CARGA 2 (Level 2)
                         </div>
                         <span id="vip2StatusText" class="vip-tag">Inactivo</span>
@@ -332,7 +334,7 @@
                 <div class="vip-card">
                     <div class="vip-row">
                         <div class="vip-title">
-                            <div class="carga-thumb"><img src="images/carga-3-oro.png" alt="Carga 3"></div>
+                            <div class="carga-thumb"><img src="./images/carga-3-oro.png" alt="Carga 3"></div>
                             CARGA 3 (Level 3)
                         </div>
                         <span id="vip3StatusText" class="vip-tag">Inactivo</span>
@@ -348,7 +350,7 @@
                 <div class="vip-card">
                     <div class="vip-row">
                         <div class="vip-title">
-                            <div class="carga-thumb"><img src="images/carga-4-cyan.png" alt="Carga 4"></div>
+                            <div class="carga-thumb"><img src="./images/carga-4-cyan.png" alt="Carga 4"></div>
                             CARGA 4 (Level 4)
                         </div>
                         <span id="vip4StatusText" class="vip-tag">Inactivo</span>
@@ -364,7 +366,7 @@
                 <div class="vip-card" style="border-color: var(--accent-gold);">
                     <div class="vip-row">
                         <div class="vip-title" style="color:#b7791f;">
-                            <div class="carga-thumb" style="border-color: rgba(240,185,11,0.5);"><img src="images/carga-5-elite.png" alt="Carga 5 Elite"></div>
+                            <div class="carga-thumb" style="border-color: rgba(240,185,11,0.5);"><img src="./images/carga-5-elite.png" alt="Carga 5 Elite"></div>
                             CARGA 5 (Elite)
                         </div>
                         <span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span>
@@ -473,7 +475,7 @@
             <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Depósitos Pendientes</div>
             <div id="listaAdminDeps" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; color: #e53e3e;">Retiros Pendientes</div>
+            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; color: var(--market-red);">Retiros Pendientes</div>
             <div id="listaAdminWits" style="max-height: 140px; overflow-y: auto;"></div>
         </div>
 
@@ -904,7 +906,7 @@
                     <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
                     <div style="display:flex; gap:4px;">
                         <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-blue)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">${u.isAdmin?'Quitar':'Admin'}</button>
-                        <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:#e53e3e;color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">Eliminar</button>
+                        <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:var(--market-red);color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">Eliminar</button>
                     </div>
                 </div>`).join('');
             if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
