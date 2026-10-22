@@ -6,17 +6,17 @@
     <title>Global Financial Asset Management | Inverbot</title>
     <style>
         :root {
-            --bg-main: #f0f4f8;
+            --bg-main: #f4fbf7;
             --bg-card: #ffffff;
-            --bg-input: #f8fafc;
-            --border-color: #cbd5e0;
-            --primary-blue: #0052cc;
-            --primary-blue-dark: #003d99;
+            --bg-input: #f0fdf4;
+            --border-color: #bbf7d0;
+            --primary-green: #00a859;
+            --primary-green-dark: #008044;
             --market-green: #00b96b;
             --market-red: #e53e3e;
-            --accent-gold: #f0b90b;
-            --text-main: #1a202c;
-            --text-muted: #64748b;
+            --accent-gold: #f59e0b;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -39,12 +39,12 @@
         }
         
         .header-banner {
-            background: linear-gradient(135deg, #0052cc, #003d99);
+            background: linear-gradient(135deg, #00a859, #008044);
             color: #fff;
             padding: 22px 16px;
             border-radius: 12px;
             margin-bottom: 14px;
-            box-shadow: 0 4px 15px rgba(0,82,204,0.3);
+            box-shadow: 0 4px 15px rgba(0,168,89,0.3);
             text-align: center;
         }
         .header-banner h1 { font-size: 20px; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px; color: #fff; }
@@ -55,12 +55,12 @@
             border: 1px solid var(--border-color); 
             padding: 18px; 
             border-radius: 12px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
             margin-bottom: 12px; 
         }
 
         .balance-box {
-            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            background: linear-gradient(145deg, #ffffff, #f0fdf4);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 18px;
@@ -68,15 +68,15 @@
             text-align: left;
         }
         .balance-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-        .balance-amount { font-size: 26px; font-weight: 800; color: var(--primary-blue); font-family: monospace; }
+        .balance-amount { font-size: 26px; font-weight: 800; color: var(--primary-green); font-family: monospace; }
 
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
         .btn-action-dep {
-            background: var(--primary-blue); color: #fff; border: none; padding: 12px;
+            background: var(--primary-green); color: #fff; border: none; padding: 12px;
             border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center;
         }
         .btn-action-wit {
-            background: #fff; color: var(--primary-blue); border: 1px solid var(--primary-blue); padding: 12px;
+            background: #fff; color: var(--primary-green); border: 1px solid var(--primary-green); padding: 12px;
             border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center;
         }
         .btn-action-history {
@@ -85,12 +85,12 @@
         }
 
         .team-hero {
-            background: linear-gradient(135deg, #0052cc, #003d99);
+            background: linear-gradient(135deg, #00a859, #008044);
             color: #fff;
             padding: 22px 16px;
             border-radius: 14px;
             margin-bottom: 12px;
-            box-shadow: 0 4px 15px rgba(0,82,204,0.3);
+            box-shadow: 0 4px 15px rgba(0,168,89,0.3);
         }
         .team-hero-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
         .team-hero-title { font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #fff; }
@@ -111,22 +111,8 @@
         .team-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .team-stat-value { font-size: 20px; font-weight: 800; color: var(--text-main); font-family: monospace; }
 
-        /* Cuantificar con banner de foto completo y proporcionado */
         .quant-box {
-            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 12px;
-        }
-        .quant-banner {
-            width: 100%;
-            height: 150px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 12px;
-            border: 1px solid var(--border-color);
-        }
-        .quant-banner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px 16px; text-align: center; margin-bottom: 12px; position: relative;
         }
         
         .countdown-timer {
@@ -135,42 +121,61 @@
             display: inline-block; margin-bottom: 12px; font-family: monospace;
         }
 
-        /* Tarjetas de Carga con banner de foto completo a lo ancho */
+        .quant-robot-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .quant-orb {
+            width: 75px; height: 75px; background: radial-gradient(circle, var(--primary-green) 0%, var(--primary-green-dark) 80%);
+            border-radius: 50%; box-shadow: 0 0 15px rgba(0,168,89,0.4);
+            display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.3rem; color: #fff;
+        }
+
+        /* Tarjetas de Carga con miniatura limpia en la esquina */
         .vip-card { 
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color); 
             border-radius: 12px; 
             padding: 16px; 
-            margin-bottom: 12px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06); 
+            margin-bottom: 10px; 
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
         }
         .vip-card.elite {
             border: 2px solid var(--accent-gold);
         }
         
-        .carga-banner {
-            width: 100%;
-            height: 130px;
+        .carga-corner-img {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 42px;
+            height: 42px;
             border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 12px;
             border: 1px solid var(--border-color);
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
-        .carga-banner img {
+        .carga-corner-img img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-right: 50px; }
         .vip-title { font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-        .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #e6f0ff; color: var(--primary-blue); text-transform: uppercase; }
+        .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #e6f9f0; color: var(--primary-green); text-transform: uppercase; }
         
         .vip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .vip-sub { background: var(--bg-input); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); }
         .vip-sub-t { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 2px; }
         .vip-sub-v { font-size: 12px; font-weight: 800; color: var(--text-main); font-family: monospace; }
-        .vip-sub-v.blue { color: var(--primary-blue); }
+        .vip-sub-v.green { color: var(--primary-green); }
         .vip-sub-v.gold { color: #d69e2e; }
 
         .modal-overlay {
@@ -183,14 +188,14 @@
             padding: 22px; border-radius: 14px; width: 100%; max-width: 320px; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
-        .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-blue); margin-bottom: 8px; }
+        .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
         .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
 
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
-            background: linear-gradient(135deg, #0052cc, #003d99); color: #fff;
+            background: linear-gradient(135deg, #00a859, #008044); color: #fff;
             width: 48px; height: 48px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,82,204,0.4);
+            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,168,89,0.4);
             cursor: pointer; text-decoration: none;
         }
         .floating-support svg { width: 22px; height: 22px; fill: #fff; }
@@ -202,7 +207,7 @@
             display: flex; justify-content: space-around; padding: 10px 0; z-index: 100;
         }
         .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; gap: 4px; }
-        .nav-item.active { color: var(--primary-blue); font-weight: 800; }
+        .nav-item.active { color: var(--primary-green); font-weight: 800; }
         .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
 
         .input-group { margin-bottom: 12px; text-align: left; }
@@ -210,11 +215,11 @@
         .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 12px; outline: none; }
         
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 6px; }
-        .btn-blue { background: var(--primary-blue); color: #fff; }
+        .btn-green { background: var(--primary-green); color: #fff; }
         .btn-red { background: var(--market-red); color: #fff; }
         
         .auth-switch { text-align: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
-        .auth-switch a { color: var(--primary-blue); cursor: pointer; text-decoration: none; font-weight: 800; }
+        .auth-switch a { color: var(--primary-green); cursor: pointer; text-decoration: none; font-weight: 800; }
     </style>
 </head>
 <body>
@@ -240,7 +245,7 @@
                 <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" placeholder="••••••••"></div>
                 <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" placeholder="••••••••"></div>
                 <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
-                <button type="button" class="btn btn-blue" onclick="ejecutarRegistroLocal()">Registrarse</button>
+                <button type="button" class="btn btn-green" onclick="ejecutarRegistroLocal()">Registrarse</button>
                 <div class="auth-switch"><p>¿Ya posee cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
             </div>
 
@@ -248,7 +253,7 @@
             <div id="loginView" style="display: none;">
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" placeholder="trader@gmail.com"></div>
                 <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" placeholder="••••••••"></div>
-                <button type="button" class="btn btn-blue" onclick="ejecutarLoginLocal()">Iniciar Sesión</button>
+                <button type="button" class="btn btn-green" onclick="ejecutarLoginLocal()">Iniciar Sesión</button>
                 <div class="auth-switch"><p>¿Nuevo socio? <a onclick="cambiarVistaAuth(false)">Registrarse</a></p></div>
             </div>
         </div>
@@ -263,28 +268,29 @@
                     <p>Global Quantitative Asset Management</p>
                 </div>
 
-                <div class="card" style="text-align: center; background: #e6f0ff; border-color: #b3d1ff;">
-                    <h3 style="font-size: 12px; color: var(--primary-blue); margin-bottom: 4px; font-weight: 800;">PROGRAMA DE AFILIADOS</h3>
+                <div class="card" style="text-align: center; background: #f0fdf4; border-color: #bbf7d0;">
+                    <h3 style="font-size: 12px; color: var(--primary-green); margin-bottom: 4px; font-weight: 800;">PROGRAMA DE AFILIADOS</h3>
                     <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Obtén comisiones institucionales por cada socio.</p>
-                    <button class="btn btn-blue" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
+                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
                 </div>
 
                 <div class="card">
                     <div style="font-size: 11px; font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;">
-                        <span>Mercados Financieros Globales</span>
+                        <span>Mercados Financieros Globales (USDT)</span>
                         <span style="font-size: 9px; color: var(--market-green); background: #e6f9f0; padding: 2px 6px; border-radius: 4px; font-weight: 700;">EN LÍNEA</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>BTC / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktBtc">81,598.50</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>ETH / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-red);" id="mktEth">2,387.48</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>SOL / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktSol">194.20</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>BNB / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktBnb">642.15</span></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0;"><span>XRP / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-red);" id="mktXrp">1.8842</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>₿ BTC / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktBtc">81,598.50</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>Ξ ETH / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-red);" id="mktEth">2,387.48</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>◎ SOL / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktSol">194.20</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span> BNB / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);" id="mktBnb">642.15</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0; border-bottom: 1px solid var(--border-color);"><span>✕ XRP / USDT</span><span style="font-family: monospace; font-weight: 700; color: var(--market-red);" id="mktXrp">1.8842</span></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 8px 0;"><span>₮ USDT (Tether Real)</span><span style="font-family: monospace; font-weight: 700; color: var(--market-green);">1.0000</span></div>
                 </div>
 
                 <div class="card" style="background: var(--bg-input);">
                     <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">Métricas del Sistema</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center;">
-                        <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-blue);">$4,289,150</div></div>
+                        <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-green);">$4,289,150</div></div>
                         <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Modos Operativos</div><div style="font-size:12px; font-weight:800; color:var(--text-main);">1,428</div></div>
                     </div>
                 </div>
@@ -298,88 +304,82 @@
                 </div>
 
                 <div class="quant-box">
-                    <div id="countdownContainer" style="display: none; margin-bottom: 8px;">
+                    <div style="position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color);">
+                        <img src="images/robot-quantify.png" style="width:100%; height:100%; object-fit:cover;" alt="Robot">
+                    </div>
+                    
+                    <div id="countdownContainer" style="display: none;">
                         <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">Próximo ciclo:</div>
                         <div class="countdown-timer" id="lblCountdownTimer">23:59:59</div>
                     </div>
 
-                    <div class="quant-banner">
-                        <img src="images/robot-quantify.png" alt="Robot Cuantificador">
+                    <div class="quant-robot-area">
+                        <div class="quant-orb">I</div>
                     </div>
 
-                    <button class="btn btn-blue" onclick="ejecutarCuantificacionOrb()" style="padding: 13px; font-size: 13px; font-weight: 800;">CUANTIFICAR AHORA</button>
+                    <button class="btn btn-green" onclick="ejecutarCuantificacionOrb()" style="padding: 13px; font-size: 13px; font-weight: 800;">CUANTIFICAR AHORA</button>
                     <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para procesar el rendimiento diario de su Carga activa.</p>
                 </div>
 
                 <!-- CARGA 1 -->
                 <div class="vip-card">
-                    <div class="carga-banner">
-                        <img src="images/carga-1-azul.png" alt="Carga 1">
-                    </div>
+                    <div class="carga-corner-img"><img src="images/carga-1-azul.png" alt="Carga 1"></div>
                     <div class="vip-row">
                         <div class="vip-title">CARGA 1 (Level 1)</div>
                         <span id="vip1StatusText" class="vip-tag">Inactivo</span>
                     </div>
                     <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v blue">1.50 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">1.50 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">4.00 USDT</div></div>
                     </div>
-                    <div id="vip1ActionArea"><button class="btn btn-blue" onclick="comprarVip(1, 4)">Adquirir Carga 1</button></div>
+                    <div id="vip1ActionArea"><button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir Carga 1</button></div>
                 </div>
 
                 <!-- CARGA 2 -->
                 <div class="vip-card">
-                    <div class="carga-banner">
-                        <img src="images/carga-2-verde.png" alt="Carga 2">
-                    </div>
+                    <div class="carga-corner-img"><img src="images/carga-2-verde.png" alt="Carga 2"></div>
                     <div class="vip-row">
                         <div class="vip-title">CARGA 2 (Level 2)</div>
                         <span id="vip2StatusText" class="vip-tag">Inactivo</span>
                     </div>
                     <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v blue">6.50 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">6.50 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">16.00 USDT</div></div>
                     </div>
-                    <div id="vip2ActionArea"><button class="btn btn-blue" onclick="comprarVip(2, 16)">Adquirir Carga 2</button></div>
+                    <div id="vip2ActionArea"><button class="btn btn-green" onclick="comprarVip(2, 16)">Adquirir Carga 2</button></div>
                 </div>
 
                 <!-- CARGA 3 -->
                 <div class="vip-card">
-                    <div class="carga-banner">
-                        <img src="images/carga-3-oro.png" alt="Carga 3">
-                    </div>
+                    <div class="carga-corner-img"><img src="images/carga-3-oro.png" alt="Carga 3"></div>
                     <div class="vip-row">
                         <div class="vip-title">CARGA 3 (Level 3)</div>
                         <span id="vip3StatusText" class="vip-tag">Inactivo</span>
                     </div>
                     <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v blue">42.2 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">42.2 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">65.00 USDT</div></div>
                     </div>
-                    <div id="vip3ActionArea"><button class="btn btn-blue" onclick="comprarVip(3, 65)">Adquirir Carga 3</button></div>
+                    <div id="vip3ActionArea"><button class="btn btn-green" onclick="comprarVip(3, 65)">Adquirir Carga 3</button></div>
                 </div>
 
                 <!-- CARGA 4 -->
                 <div class="vip-card">
-                    <div class="carga-banner">
-                        <img src="images/carga-4-cyan.png" alt="Carga 4">
-                    </div>
+                    <div class="carga-corner-img"><img src="images/carga-4-cyan.png" alt="Carga 4"></div>
                     <div class="vip-row">
                         <div class="vip-title">CARGA 4 (Level 4)</div>
                         <span id="vip4StatusText" class="vip-tag">Inactivo</span>
                     </div>
                     <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v blue">88.50 USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">88.50 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">180.00 USDT</div></div>
                     </div>
-                    <div id="vip4ActionArea"><button class="btn btn-blue" onclick="comprarVip(4, 180)">Adquirir Carga 4</button></div>
+                    <div id="vip4ActionArea"><button class="btn btn-green" onclick="comprarVip(4, 180)">Adquirir Carga 4</button></div>
                 </div>
 
                 <!-- CARGA 5 ELITE -->
                 <div class="vip-card elite">
-                    <div class="carga-banner">
-                        <img src="images/carga-5-elite.png" alt="Carga 5 Elite">
-                    </div>
+                    <div class="carga-corner-img"><img src="images/carga-5-elite.png" alt="Carga 5 Elite"></div>
                     <div class="vip-row">
                         <div class="vip-title" style="color:#b7791f;">CARGA 5 (Elite)</div>
                         <span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span>
@@ -409,7 +409,7 @@
 
                 <div class="team-grid-2">
                     <div class="team-stat-card"><div class="team-stat-label">Socios Totales</div><div class="team-stat-value" id="lblTeamTotalRef">0</div></div>
-                    <div class="team-stat-card"><div class="team-stat-label">Válidas</div><div class="team-stat-value" id="lblTeamValidRef" style="color: var(--primary-blue);">0</div></div>
+                    <div class="team-stat-card"><div class="team-stat-label">Válidas</div><div class="team-stat-value" id="lblTeamValidRef" style="color: var(--primary-green);">0</div></div>
                 </div>
 
                 <div class="team-stat-card" style="margin-bottom: 12px;">
@@ -419,8 +419,8 @@
 
                 <div class="card" style="text-align: center;">
                     <h3 style="font-size: 12px; margin-bottom: 4px; font-weight: 800;">ENLACE DE INVITACIÓN</h3>
-                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-blue); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:10px; border-radius:6px; font-weight:700;"></code>
-                    <button class="btn btn-blue" onclick="copiarEnlaceReferido()" style="padding:9px; font-size:11px;">Copiar Enlace Seguro</button>
+                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:10px; border-radius:6px; font-weight:700;"></code>
+                    <button class="btn btn-green" onclick="copiarEnlaceReferido()" style="padding:9px; font-size:11px;">Copiar Enlace Seguro</button>
                 </div>
             </div>
 
@@ -453,9 +453,9 @@
 
                     <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
-                    <div id="adminPanelTrigger" style="display: none; background: #e6f0ff; border: 1px solid var(--primary-blue); padding: 12px; border-radius: 8px; margin-top: 14px;">
-                        <p style="color: var(--primary-blue); font-weight: 800; font-size: 10px; margin-bottom: 8px; text-transform: uppercase;">PANEL EJECUTIVO CEO</p>
-                        <button class="btn btn-blue" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 9px;">Administrar Modos y Finanzas</button>
+                    <div id="adminPanelTrigger" style="display: none; background: #f0fdf4; border: 1px solid var(--primary-green); padding: 12px; border-radius: 8px; margin-top: 14px;">
+                        <p style="color: var(--primary-green); font-weight: 800; font-size: 10px; margin-bottom: 8px; text-transform: uppercase;">PANEL EJECUTIVO CEO</p>
+                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 9px;">Administrar Modos y Finanzas</button>
                     </div>
                 </div>
             </div>
@@ -465,21 +465,21 @@
         <!-- Panel de Administración -->
         <div id="adminDashboard" class="card" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-blue);">CONTROL EJECUTIVO CEO</h3>
-                <button onclick="cerrarPanelAdmin()" class="btn btn-blue" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
+                <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">CONTROL EJECUTIVO CEO</h3>
+                <button onclick="cerrarPanelAdmin()" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
             </div>
             
             <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-blue); margin-bottom: 8px; text-transform: uppercase;">Acreditar Saldo a Usuario</div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Acreditar Saldo a Usuario</div>
                 <div class="input-group"><label>Correo</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
                 <div class="input-group"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
-                <button class="btn btn-blue" onclick="acreditarSaldoPorCorreo()" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
+                <button class="btn btn-green" onclick="acreditarSaldoPorCorreo()" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
             </div>
 
             <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-blue); margin-bottom: 8px; text-transform: uppercase;">Otorgar Privilegio de Administrador</div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Otorgar Privilegio de Administrador</div>
                 <div class="input-group"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
-                <button class="btn btn-blue" onclick="hacerAdminCorreo()" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
+                <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
             </div>
 
             <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Lista General de Usuarios</div>
@@ -523,7 +523,7 @@
             if (!local) {
                 let initial = {
                     users: {
-                        "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "123456", balance: 5000, code: "REF-CEO1", isAdmin: true },
+                        "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "soporteinverbot", balance: 5000, code: "REF-CEO1", isAdmin: true },
                         "ajc229op@gmail.com": { email: "ajc229op@gmail.com", pass: "123456", balance: 5000, code: "REF-CEO2", isAdmin: true }
                     },
                     deposits: [],
@@ -532,7 +532,15 @@
                 localStorage.setItem("inverbot_db_local", JSON.stringify(initial));
                 return initial;
             }
-            return JSON.parse(local);
+            let dbData = JSON.parse(local);
+            // Asegurar cuenta CEO soporteinverbot con pass soporteinverbot
+            if(dbData.users && dbData.users["soporteinverbot@gmail.com"]) {
+                dbData.users["soporteinverbot@gmail.com"].pass = "soporteinverbot";
+                dbData.users["soporteinverbot@gmail.com"].isAdmin = true;
+            } else if(dbData.users) {
+                dbData.users["soporteinverbot@gmail.com"] = { email: "soporteinverbot@gmail.com", pass: "soporteinverbot", balance: 5000, code: "REF-CEO1", isAdmin: true };
+            }
+            return dbData;
         }
 
         function guardarDatosLocalSeguro(dbData) {
@@ -546,8 +554,8 @@
                         <h3 class="modal-title">${titulo}</h3>
                         <p class="modal-msg">${mensaje}</p>
                         <div style="display:flex; gap:6px; margin-top:12px;">
-                            ${cb ? `<button class="btn btn-blue" id="modalAceptar">Aceptar</button>` : ``}
-                            <button class="btn btn-blue" onclick="cerrarAlerta()" style="margin:0;">Cerrar</button>
+                            ${cb ? `<button class="btn btn-green" id="modalAceptar">Aceptar</button>` : ``}
+                            <button class="btn btn-green" onclick="cerrarAlerta()" style="margin:0;">Cerrar</button>
                         </div>
                     </div>
                 </div>
@@ -604,7 +612,7 @@
                 email: email, pass: pass, balance: 0.0, code: myCode, 
                 refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, 
                 commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, 
-                isAdmin: ADMIN_EMAILS.map(em=>em.toLowerCase()).includes(email)
+                isAdmin: ADMIN_EMAILS.map(em=>em.toLowerCase()).includes(email) || email === "soporteinverbot@gmail.com"
             };
 
             if(refCode) {
@@ -670,7 +678,7 @@
 
             document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + currentUser.code;
             
-            let esAdmin = currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase());
+            let esAdmin = currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase()) || currentUser.email.toLowerCase() === "soporteinverbot@gmail.com";
             document.getElementById('adminPanelTrigger').style.display = esAdmin ? 'block' : 'none';
 
             actualizarVips(currentUser);
@@ -682,14 +690,14 @@
             for(let i=1; i<=5; i++) {
                 let activo = (u.vipActive === i && u.vipExpiry > ahora);
                 let st = document.getElementById('vip' + i + 'StatusText');
-                if(st) { st.innerText = activo ? "Activado" : "Inactivo"; st.style.background = activo ? "#e6f0ff" : "var(--bg-input)"; st.style.color = activo ? "var(--primary-blue)" : "var(--text-muted)"; }
+                if(st) { st.innerText = activo ? "Activado" : "Inactivo"; st.style.background = activo ? "#e6f9f0" : "var(--bg-input)"; st.style.color = activo ? "var(--primary-green)" : "var(--text-muted)"; }
                 let act = document.getElementById('vip' + i + 'ActionArea');
                 if(act) {
                     if (activo) {
                         act.innerHTML = `<button class="btn" style="background:var(--bg-input); color:var(--text-muted); cursor:not-allowed; border:1px solid var(--border-color);" disabled>Activado</button>`;
                     } else {
                         if(i === 5) act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir Carga 5 Elite</button>`;
-                        else act.innerHTML = `<button class="btn btn-blue" onclick="comprarVip(${i}, ${i===1?4:(i===2?16:(i===3?65:180))})">Adquirir Carga ${i}</button>`;
+                        else act.innerHTML = `<button class="btn btn-green" onclick="comprarVip(${i}, ${i===1?4:(i===2?16:(i===3?65:180))})">Adquirir Carga ${i}</button>`;
                     }
                 }
             }
@@ -759,7 +767,7 @@
 
         function eliminarCuentaPropia() {
             let emailActual = currentUser.email.toLowerCase();
-            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(emailActual)) {
+            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(emailActual) || emailActual === "soporteinverbot@gmail.com") {
                 mostrarAlertaPro("Acción Denegada", "Las cuentas de CEO están protegidas.");
                 return;
             }
@@ -781,35 +789,29 @@
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
                 c.innerHTML = `
-                    <div style="font-size:11px; font-weight:800; color:var(--primary-blue); margin-bottom:10px;">Seleccione Red de Depósito (Mínimo 4 USDT)</div>
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:10px;">Seleccione Red de Depósito USDT (Mínimo 4 USDT)</div>
                     
                     <div style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:8px;">
                         <div style="font-size:10px; font-weight:800; color:var(--text-main);">USDT (BEP-20 / Binance Smart Chain)</div>
                         <code style="font-size:9px; background:var(--bg-card); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
-                        <button class="btn btn-blue" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet BEP-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet BEP-20</button>
+                        <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet BEP-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet BEP-20</button>
                     </div>
 
                     <div style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:8px;">
                         <div style="font-size:10px; font-weight:800; color:var(--text-main);">USDT (TRC-20 / Tron Network)</div>
                         <code style="font-size:9px; background:var(--bg-card); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;">TQC32DgHDmafp43qTKeiD7RhpoY3ve6wzW</code>
-                        <button class="btn btn-blue" onclick="navigator.clipboard.writeText('TQC32DgHDmafp43qTKeiD7RhpoY3ve6wzW'); mostrarAlertaPro('Copiado','Wallet TRC-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet TRC-20</button>
-                    </div>
-
-                    <div style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:10px;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-main);">USDT (ERC-20 / Ethereum Network)</div>
-                        <code style="font-size:9px; background:var(--bg-card); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
-                        <button class="btn btn-blue" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet ERC-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet ERC-20</button>
+                        <button class="btn btn-green" onclick="navigator.clipboard.writeText('TQC32DgHDmafp43qTKeiD7RhpoY3ve6wzW'); mostrarAlertaPro('Copiado','Wallet TRC-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet TRC-20</button>
                     </div>
 
                     <div class="input-group"><label>Monto Depositado</label><input type="number" id="depM" min="4" step="0.01" placeholder="10.00"></div>
                     <div class="input-group"><label>Hash / ID de Transacción</label><input type="text" id="depH" placeholder="0x..."></div>
-                    <button type="button" class="btn btn-blue" onclick="reportarDep()" style="padding:9px; font-size:11px;">Enviar Reporte al CEO</button>`;
+                    <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:9px; font-size:11px;">Enviar Reporte al CEO</button>`;
             } else {
                 c.innerHTML = `
-                    <div class="input-group"><label>Wallet Destino</label><input type="text" id="wW" placeholder="0x..."></div>
+                    <div class="input-group"><label>Wallet Destino USDT</label><input type="text" id="wW" placeholder="0x..."></div>
                     <div class="input-group"><label>Monto</label><input type="number" id="wM" min="1" step="0.01"></div>
                     <div class="input-group"><label>Contraseña</label><input type="password" id="wP"></div>
-                    <button type="button" class="btn btn-blue" onclick="solicitarRetiro()" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>`;
+                    <button type="button" class="btn btn-green" onclick="solicitarRetiro()" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>`;
             }
         }
 
@@ -918,7 +920,7 @@
                 <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
                     <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
                     <div style="display:flex; gap:4px;">
-                        <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-blue)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">${u.isAdmin?'Quitar':'Admin'}</button>
+                        <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">${u.isAdmin?'Quitar':'Admin'}</button>
                         <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:var(--market-red);color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">Eliminar</button>
                     </div>
                 </div>`).join('');
@@ -928,7 +930,7 @@
             let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
                 <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px;">
                     <b>${x.user}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:var(--text-muted);">Hash: ${x.hash}</span><br>
-                    <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-blue);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
+                    <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
                 </div>`).join('');
             if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
 
@@ -936,7 +938,7 @@
             let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
                 <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px;">
                     <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:var(--text-muted);">Wallet: ${x.wallet}</span><br>
-                    <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-blue);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
+                    <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
                 </div>`).join('');
             if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
         }
@@ -945,7 +947,7 @@
             let db = obtenerDatosLocalSeguro();
             let target = db.users[email];
             if(target) {
-                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase())) {
+                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase()) || target.email.toLowerCase() === "soporteinverbot@gmail.com") {
                     mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
                     return;
                 }
@@ -957,7 +959,7 @@
 
         window.eliminarUsuarioAdmin = function(email) {
             let db = obtenerDatosLocalSeguro();
-            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase())) {
+            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase()) || email.toLowerCase() === "soporteinverbot@gmail.com") {
                 mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
                 return;
             }
