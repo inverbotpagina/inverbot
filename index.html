@@ -190,6 +190,7 @@
         .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
         .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
 
+        /* Botón Flotante de Soporte con Robot Icon SVG */
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
             background: linear-gradient(135deg, #00a859, #008044); color: #fff;
@@ -197,7 +198,7 @@
             align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,168,89,0.4);
             cursor: pointer; text-decoration: none;
         }
-        .floating-support svg { width: 22px; height: 22px; fill: #fff; }
+        .floating-support svg { width: 24px; height: 24px; fill: #fff; }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
@@ -213,7 +214,7 @@
         .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
         .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 12px; outline: none; }
         
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 6px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-green { background: var(--primary-green); color: #fff; }
         .btn-red { background: var(--market-red); color: #fff; }
         
@@ -232,8 +233,9 @@
 
     <div id="customModalContainer"></div>
 
-    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Inverbot" class="floating-support" title="Soporte Técnico">
-        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    <!-- Botón de Soporte con Icono de Robot (Sin Emojis) -->
+    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Inverbot" class="floating-support" title="Asistente Robot de Soporte">
+        <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M9 10a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1m6 0a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1m-3 5c-2.33 0-4.31 1.35-5.22 3.31l1.83.74C9.17 17.84 10.5 17 12 17s2.83.84 3.39 2.05l1.83-.74C16.31 16.35 14.33 15 12 15z"/></svg>
     </a>
 
     <div class="app-container">
@@ -389,7 +391,11 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-green" id="btnCuantificarAccion" onclick="ejecutarCuantificacionConPila()" style="padding: 13px; font-size: 13px; font-weight: 800;">CUANTIFICAR AHORA</button>
+                    <!-- Botón CARGAR AHORA con Icono SVG de Energía -->
+                    <button class="btn btn-green" id="btnCuantificarAccion" onclick="ejecutarCuantificacionConPila()" style="padding: 13px; font-size: 13px; font-weight: 800;">
+                        <svg style="width:16px; height:16px; fill:#fff;" viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.88 0-.33-.75-.27-.78C8.73 10.37 14.5 3 14.5 3h1l-1 7h3.53c.88 0 .42.81.24.9-3.3 4.96-7.27 10.1-7.27 10.1z"/></svg>
+                        CARGAR AHORA
+                    </button>
                     <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para llenar su pila y procesar el rendimiento diario.</p>
                 </div>
 
@@ -577,7 +583,7 @@
 
     </div>
 
-    <!-- Script de la Aplicación con Motor de Mercado en Milisegundos -->
+    <!-- Script de la Aplicación -->
     <script>
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
         
@@ -585,7 +591,6 @@
         let currentUser = null;
         let countdownInterval = null;
 
-        // Datos del mercado en tiempo real para actualización rápida
         let marketData = {
             btc: { price: 81598.50, change: 2.45 },
             eth: { price: 2387.48, change: -1.20 },
@@ -663,12 +668,11 @@
             iniciarSimulacionMercadoRealtime();
         }
 
-        // Simulación ultrarrápida en milisegundos con colores dinámicos verdes y rojos
         function iniciarSimulacionMercadoRealtime() {
             setInterval(() => {
                 for (let key in marketData) {
                     let item = marketData[key];
-                    if (key === 'usdt') continue; // USDT se mantiene estable
+                    if (key === 'usdt') continue;
 
                     let fluctuation = (Math.random() - 0.49) * (item.price * 0.0006);
                     item.price += fluctuation;
@@ -692,7 +696,7 @@
                         elPct.style.borderRadius = '4px';
                     }
                 }
-            }, 250); // Se actualiza cada 250 milisegundos en tiempo real
+            }, 250);
         }
 
         function cambiarVistaAuth(isLog) {
@@ -902,27 +906,50 @@
             if(btn) btn.classList.add('active');
         }
 
+        // Sección de Depósito Interactiva con selección de red USDT y logotipos reales
         function mostrarSeccion(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
                 c.innerHTML = `
-                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:10px;">Seleccione Red de Depósito USDT (Mínimo 4 USDT)</div>
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:10px; text-transform:uppercase;">Seleccione Red USDT (Mínimo 4 USDT)</div>
                     
-                    <div style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:8px;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-main);">USDT (BEP-20 / Binance Smart Chain)</div>
-                        <code style="font-size:9px; background:var(--bg-card); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;">0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069</code>
-                        <button class="btn btn-green" onclick="navigator.clipboard.writeText('0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'); mostrarAlertaPro('Copiado','Wallet BEP-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet BEP-20</button>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 12px;">
+                        <div onclick="seleccionarRedDep('bep20')" id="redBep20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
+                            <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="24" height="24" alt="USDT">
+                            <div>
+                                <div style="font-size:11px; font-weight:800; color:var(--text-main);">USDT (BEP-20)</div>
+                                <div style="font-size:9px; color:var(--text-muted);">Binance Smart Chain</div>
+                            </div>
+                        </div>
+
+                        <div onclick="seleccionarRedDep('trc20')" id="redTrc20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
+                            <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="24" height="24" alt="USDT">
+                            <div>
+                                <div style="font-size:11px; font-weight:800; color:var(--text-main);">USDT (TRC-20)</div>
+                                <div style="font-size:9px; color:var(--text-muted);">Tron Network</div>
+                            </div>
+                        </div>
+
+                        <div onclick="seleccionarRedDep('erc20')" id="redErc20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
+                            <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="24" height="24" alt="USDT">
+                            <div>
+                                <div style="font-size:11px; font-weight:800; color:var(--text-main);">USDT (ERC-20)</div>
+                                <div style="font-size:9px; color:var(--text-muted);">Ethereum Network</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:8px;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-main);">USDT (TRC-20 / Tron Network)</div>
-                        <code style="font-size:9px; background:var(--bg-card); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;">TQC32DgHDmafp43qTKeiD7RhpoY3ve6wzW</code>
-                        <button class="btn btn-green" onclick="navigator.clipboard.writeText('TQC32DgHDmafp43qTKeiD7RhpoY3ve6wzW'); mostrarAlertaPro('Copiado','Wallet TRC-20 copiada');" style="padding:6px; font-size:9px; margin:0;">Copiar Wallet TRC-20</button>
+                    <div id="walletDetalleContainer" style="display:none; background:var(--bg-input); padding:12px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:10px;">
+                        <div style="font-size:10px; font-weight:800; color:var(--primary-green); margin-bottom:4px;" id="tituloRedSeleccionada"></div>
+                        <code id="walletSeleccionadaCode" style="font-size:9px; background:var(--bg-card); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;"></code>
+                        <button class="btn btn-green" id="btnCopiarWalletRed" style="padding:6px; font-size:9px; margin:0;">Copiar Dirección de Wallet</button>
                     </div>
 
-                    <div class="input-group"><label>Monto Depositado</label><input type="number" id="depM" min="4" step="0.01" placeholder="10.00"></div>
-                    <div class="input-group"><label>Hash / ID de Transacción</label><input type="text" id="depH" placeholder="0x..."></div>
-                    <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:9px; font-size:11px;">Enviar Reporte al CEO</button>`;
+                    <div id="formularioDepositoExtras" style="display:none;">
+                        <div class="input-group"><label>Monto a Depositar (USDT)</label><input type="number" id="depM" min="4" step="0.01" placeholder="10.00"></div>
+                        <div class="input-group"><label>Hash / ID de Transacción</label><input type="text" id="depH" placeholder="0x..."></div>
+                        <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:11px; font-size:12px; font-weight:800;">Confirmar Depósito</button>
+                    </div>`;
             } else {
                 c.innerHTML = `
                     <div class="input-group"><label>Wallet Destino USDT</label><input type="text" id="wW" placeholder="0x..."></div>
@@ -930,6 +957,38 @@
                     <div class="input-group"><label>Contraseña</label><input type="password" id="wP"></div>
                     <button type="button" class="btn btn-green" onclick="solicitarRetiro()" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>`;
             }
+        }
+
+        let redActualSeleccionada = '';
+        function seleccionarRedDep(red) {
+            redActualSeleccionada = red;
+            let wallets = {
+                'bep20': '0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069',
+                'trc20': 'TQC32DgHDmafp43qTKeiD7RhpoY3ve6wzW',
+                'erc20': '0x8B9a2f78D2bc67Bc6172386Ef9cd30e3F7829069'
+            };
+            let nombres = {
+                'bep20': 'USDT (BEP-20 / Binance Smart Chain)',
+                'trc20': 'USDT (TRC-20 / Tron Network)',
+                'erc20': 'USDT (ERC-20 / Ethereum Network)'
+            };
+
+            ['bep20', 'trc20', 'erc20'].forEach(r => {
+                let el = document.getElementById('red' + r.charAt(0).toUpperCase() + r.slice(1));
+                if(el) {
+                    el.style.borderColor = (r === red) ? 'var(--primary-green)' : 'var(--border-color)';
+                    el.style.background = (r === red) ? '#e6f9f0' : 'var(--bg-input)';
+                }
+            });
+
+            document.getElementById('walletDetalleContainer').style.display = 'block';
+            document.getElementById('formularioDepositoExtras').style.display = 'block';
+            document.getElementById('tituloRedSeleccionada').innerText = nombres[red];
+            document.getElementById('walletSeleccionadaCode').innerText = wallets[red];
+            document.getElementById('btnCopiarWalletRed').onclick = function() {
+                navigator.clipboard.writeText(wallets[red]);
+                mostrarAlertaPro('Copiado', 'Dirección de wallet copiada al portapapeles');
+            };
         }
 
         function reportarDep() {
