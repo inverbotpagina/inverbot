@@ -23,6 +23,10 @@
         
         body { 
             background-color: var(--bg-main); 
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(0, 185, 107, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(0, 185, 107, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
             color: var(--text-main); 
             display: block; 
             min-height: 100vh; 
@@ -46,7 +50,7 @@
             width: 100%; 
             max-width: 450px; 
             margin: 0 auto; 
-            background: var(--bg-main); 
+            background: transparent; 
             position: relative; 
             padding: 12px; 
         }
@@ -226,7 +230,6 @@
         .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
         .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
 
-        /* Botón de soporte actualizado: Negro con borde y verde adentro */
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
             background: var(--bg-card); border: 1px solid var(--border-color);
@@ -263,7 +266,6 @@
         .auth-switch { text-align: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
         .auth-switch a { color: var(--primary-green); cursor: pointer; text-decoration: none; font-weight: 800; }
 
-        /* Botones compactos del Admin estilizados en negro con verde */
         .admin-grid-btns {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -524,7 +526,7 @@
 
                 <div class="team-grid-2">
                     <div class="team-stat-card"><div class="team-stat-label">Socios Totales</div><div class="team-stat-value" id="lblTeamTotalRef">0</div></div>
-                    <div class="team-stat-card"><div class="team-stat-label">Válidas</div><div class="team-stat-value" id="lblTeamValidRef" style="color: var(--primary-green);">0</div></div>
+                    <div class="team-stat-card"><div class="team-stat-label">Válidos</div><div class="team-stat-value" id="lblTeamValidRef" style="color: var(--primary-green);">0</div></div>
                 </div>
 
                 <div class="team-stat-card" style="margin-bottom: 12px;">
@@ -590,7 +592,6 @@
                 <button onclick="ejecutarAccionPausada(cerrarPanelAdmin)" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
             </div>
             
-            <!-- Botones compactos con diseño oscuro y verde -->
             <div class="admin-grid-btns">
                 <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDep'))">
                     <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
@@ -1515,7 +1516,6 @@
 
         async function renderAdmin() {
             try {
-                // Usuarios de la web
                 let usersSnap = await getDocs(collection(db, "users"));
                 let usersArr = [];
                 usersSnap.forEach(d => usersArr.push(d.data()));
@@ -1528,7 +1528,6 @@
                     </div>`).join('');
                 if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
 
-                // Depósitos pendientes
                 let depsSnap = await getDocs(collection(db, "deposits"));
                 let deps = [];
                 depsSnap.forEach(d => { if(d.data().status === 'Pendiente') deps.push(d.data()); });
@@ -1543,7 +1542,6 @@
                     </div>`).join('');
                 if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
 
-                // Retiros pendientes
                 let witsSnap = await getDocs(collection(db, "withdrawals"));
                 let wits = [];
                 witsSnap.forEach(d => { if(d.data().status === 'Pendiente') wits.push(d.data()); });
@@ -1570,6 +1568,11 @@
                 if(!depSnap.exists()) return;
                 let dep = depSnap.data();
 
+                if(dep.status === 'Aprobado') {
+                    mostrarAlertaPro("Aviso", "Este depósito ya fue aprobado.");
+                    return;
+                }
+
                 let userDocRef = doc(db, "users", dep.user);
                 let userSnap = await getDoc(userDocRef);
                 if(userSnap.exists()) {
@@ -1582,11 +1585,38 @@
                         vipExpiry: uData.vipExpiry,
                         lastClaim: uData.lastClaim
                     });
+
+                    // Procesar sistema de referidos automáticos
+                    if(uData.refBy) {
+                        let referrerRef = doc(db, "users", uData.refBy);
+                        let referrerSnap = await getDoc(referrerRef);
+                        if(referrerSnap.exists()) {
+                            let refData = referrerSnap.data();
+                            let newTeamDep = (refData.teamDepositTotal || 0) + dep.monto;
+                            let updatePayload = { teamDepositTotal: newTeamDep };
+
+                            // Si el depósito es de 10 USDT o más y este referido no había otorgado el bono de 1 USDT aún
+                            if(dep.monto >= 10 && !uData.refBonusPaid) {
+                                refData.balance = (refData.balance || 0) + 1;
+                                refData.commissionTotal = (refData.commissionTotal || 0) + 1;
+                                refData.validRefCount = (refData.validRefCount || 0) + 1;
+
+                                updatePayload.balance = refData.balance;
+                                updatePayload.commissionTotal = refData.commissionTotal;
+                                updatePayload.validRefCount = refData.validRefCount;
+
+                                await updateDoc(userDocRef, { refBonusPaid: true });
+                            }
+
+                            await updateDoc(referrerRef, updatePayload);
+                        }
+                    }
                 }
 
                 await updateDoc(depDocRef, { status: 'Aprobado' });
                 renderAdmin();
             } catch(e) {
+                console.error(e);
                 mostrarAlertaRestriccionRegion();
             }
         };
