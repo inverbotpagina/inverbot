@@ -689,7 +689,7 @@
                     }
                 }
             } catch (e) {
-                console.error("Error inicializando CEO:", e);
+                console.error("Error de red/conexión con Firebase:", e);
             }
         }
 
@@ -820,70 +820,80 @@
         window.cambiarVistaAuth = cambiarVistaAuth;
 
         async function ejecutarRegistroFirebase() {
-            let email = document.getElementById('regEmail').value.trim().toLowerCase();
-            let pass = document.getElementById('regPass').value.trim();
-            let passConfirm = document.getElementById('regPassConfirm').value.trim();
-            let refCode = document.getElementById('regRef').value.trim();
+            try {
+                let email = document.getElementById('regEmail').value.trim().toLowerCase();
+                let pass = document.getElementById('regPass').value.trim();
+                let passConfirm = document.getElementById('regPassConfirm').value.trim();
+                let refCode = document.getElementById('regRef').value.trim();
 
-            if(!email || !pass) { mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
-            if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
+                if(!email || !pass) { mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
+                if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
-            let docRef = doc(db, "users", email);
-            let docSnap = await getDoc(docRef);
-            if(docSnap.exists()) {
-                mostrarAlertaPro("Aviso", "Este correo ya está registrado en Firebase.");
-                return;
+                let docRef = doc(db, "users", email);
+                let docSnap = await getDoc(docRef);
+                if(docSnap.exists()) {
+                    mostrarAlertaPro("Aviso", "Este correo ya está registrado en Firebase.");
+                    return;
+                }
+
+                let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
+                currentUser = { 
+                    email: email, pass: pass, balance: 0.0, code: myCode, 
+                    refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, 
+                    commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, 
+                    isAdmin: ADMIN_EMAILS.map(em=>em.toLowerCase()).includes(email) || email === "soporteinverbot@gmail.com"
+                };
+
+                if(refCode) {
+                    let querySnapshot = await getDocs(collection(db, "users"));
+                    querySnapshot.forEach(d => {
+                        let uData = d.data();
+                        if(uData.code && uData.code.toUpperCase() === refCode.toUpperCase()) {
+                            currentUser.refBy = uData.email;
+                            updateDoc(doc(db, "users", uData.email), { refCount: (uData.refCount || 0) + 1 });
+                        }
+                    });
+                }
+
+                await setDoc(docRef, currentUser);
+
+                sessionEmail = email;
+                sessionStorage.setItem("inverbot_session", sessionEmail);
+                entrarDashboardDirecto();
+            } catch (error) {
+                console.error(error);
+                mostrarAlertaPro("Error de Conexión", "No se pudo comunicar con el servidor de Firebase. Si tu red o región tiene restricciones, activa una VPN e intenta de nuevo.");
             }
-
-            let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
-            currentUser = { 
-                email: email, pass: pass, balance: 0.0, code: myCode, 
-                refBy: null, refCount: 0, validRefCount: 0, teamDepositTotal: 0, 
-                commissionTotal: 0, vipActive: null, vipExpiry: 0, lastClaim: 0, 
-                isAdmin: ADMIN_EMAILS.map(em=>em.toLowerCase()).includes(email) || email === "soporteinverbot@gmail.com"
-            };
-
-            if(refCode) {
-                let querySnapshot = await getDocs(collection(db, "users"));
-                querySnapshot.forEach(d => {
-                    let uData = d.data();
-                    if(uData.code && uData.code.toUpperCase() === refCode.toUpperCase()) {
-                        currentUser.refBy = uData.email;
-                        updateDoc(doc(db, "users", uData.email), { refCount: (uData.refCount || 0) + 1 });
-                    }
-                });
-            }
-
-            await setDoc(docRef, currentUser);
-
-            sessionEmail = email;
-            sessionStorage.setItem("inverbot_session", sessionEmail);
-            entrarDashboardDirecto();
         }
         window.ejecutarRegistroFirebase = ejecutarRegistroFirebase;
 
         async function ejecutarLoginFirebase() {
-            let email = document.getElementById('logEmail').value.trim().toLowerCase();
-            let pass = document.getElementById('logPass').value.trim();
-            
-            if(!email || !pass) { mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
+            try {
+                let email = document.getElementById('logEmail').value.trim().toLowerCase();
+                let pass = document.getElementById('logPass').value.trim();
+                
+                if(!email || !pass) { mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
 
-            let docRef = doc(db, "users", email);
-            let docSnap = await getDoc(docRef);
-            if(!docSnap.exists()) {
-                mostrarAlertaPro("Error", "El usuario no existe en Firebase.");
-                return;
-            }
-            let u = docSnap.data();
-            if(u.pass !== pass) {
-                mostrarAlertaPro("Error", "Contraseña incorrecta.");
-                return;
-            }
+                let docRef = doc(db, "users", email);
+                let docSnap = await getDoc(docRef);
+                if(!docSnap.exists()) {
+                    mostrarAlertaPro("Error", "El usuario no existe en Firebase.");
+                    return;
+                }
+                let u = docSnap.data();
+                if(u.pass !== pass) {
+                    mostrarAlertaPro("Error", "Contraseña incorrecta.");
+                    return;
+                }
 
-            currentUser = u;
-            sessionEmail = u.email;
-            sessionStorage.setItem("inverbot_session", sessionEmail);
-            entrarDashboardDirecto();
+                currentUser = u;
+                sessionEmail = u.email;
+                sessionStorage.setItem("inverbot_session", sessionEmail);
+                entrarDashboardDirecto();
+            } catch (error) {
+                console.error(error);
+                mostrarAlertaPro("Error de Conexión", "No se pudo comunicar con el servidor de Firebase. Si tu red o región tiene restricciones, activa una VPN e intenta de nuevo.");
+            }
         }
         window.ejecutarLoginFirebase = ejecutarLoginFirebase;
 
@@ -981,19 +991,23 @@
             fill.style.height = "100%";
 
             setTimeout(async () => {
-                let cargaObj = cargasData.find(x => x.id === currentUser.vipActive);
-                let rec = cargaObj ? cargaObj.daily : 2.0;
-                
-                currentUser.balance += rec; 
-                currentUser.lastClaim = ahora;
-                
-                await updateDoc(doc(db, "users", currentUser.email), {
-                    balance: currentUser.balance,
-                    lastClaim: currentUser.lastClaim
-                });
+                try {
+                    let cargaObj = cargasData.find(x => x.id === currentUser.vipActive);
+                    let rec = cargaObj ? cargaObj.daily : 2.0;
+                    
+                    currentUser.balance += rec; 
+                    currentUser.lastClaim = ahora;
+                    
+                    await updateDoc(doc(db, "users", currentUser.email), {
+                        balance: currentUser.balance,
+                        lastClaim: currentUser.lastClaim
+                    });
 
-                mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente en Firebase.`);
-                entrarDashboardDirecto();
+                    mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente en Firebase.`);
+                    entrarDashboardDirecto();
+                } catch (error) {
+                    mostrarAlertaPro("Error de Conexión", "No se pudo sincronizar con Firebase. Comprueba tu red o VPN.");
+                }
                 btn.disabled = false;
             }, 1000);
         }
@@ -1002,20 +1016,24 @@
         async function comprarVip(nivel, precio) {
             if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente en Firebase. Realiza un depósito."); return; }
             
-            currentUser.balance -= precio; 
-            currentUser.vipActive = nivel; 
-            currentUser.vipExpiry = Date.now() + (35*24*3600*1000); 
-            currentUser.lastClaim = 0;
+            try {
+                currentUser.balance -= precio; 
+                currentUser.vipActive = nivel; 
+                currentUser.vipExpiry = Date.now() + (35*24*3600*1000); 
+                currentUser.lastClaim = 0;
 
-            await updateDoc(doc(db, "users", currentUser.email), {
-                balance: currentUser.balance,
-                vipActive: currentUser.vipActive,
-                vipExpiry: currentUser.vipExpiry,
-                lastClaim: currentUser.lastClaim
-            });
+                await updateDoc(doc(db, "users", currentUser.email), {
+                    balance: currentUser.balance,
+                    vipActive: currentUser.vipActive,
+                    vipExpiry: currentUser.vipExpiry,
+                    lastClaim: currentUser.lastClaim
+                });
 
-            mostrarAlertaPro("Éxito", `¡Carga ${nivel} activada correctamente en la nube!`);
-            entrarDashboardDirecto();
+                mostrarAlertaPro("Éxito", `¡Carga ${nivel} activada correctamente en la nube!`);
+                entrarDashboardDirecto();
+            } catch (error) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo comunicar con Firebase. Comprueba tu red o VPN.");
+            }
         }
         window.comprarVip = comprarVip;
 
@@ -1037,8 +1055,12 @@
                 return;
             }
             mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente de Firebase?", async () => {
-                await deleteDoc(doc(db, "users", currentUser.email));
-                cerrarSesion();
+                try {
+                    await deleteDoc(doc(db, "users", currentUser.email));
+                    cerrarSesion();
+                } catch(e) {
+                    mostrarAlertaPro("Error de Conexión", "No se pudo completar la solicitud. Comprueba tu red o VPN.");
+                }
             });
         }
         window.eliminarCuentaPropia = eliminarCuentaPropia;
@@ -1176,24 +1198,28 @@
             if(!redActualSeleccionada) { mostrarAlertaPro("Aviso", "Seleccione una red de depósito."); return; }
             if(!selectedChargeForDeposit) { mostrarAlertaPro("Aviso", "Por favor toque la Carga que desea comprar."); return; }
             
-            let cargaObj = cargasData.find(x => x.id === selectedChargeForDeposit);
-            
-            let depId = 'DEP-' + Date.now();
-            let newDep = { 
-                id: depId, 
-                user: currentUser.email, 
-                monto: cargaObj.cost, 
-                vipId: cargaObj.id,
-                hash: `Red: ${redActualSeleccionada.toUpperCase()} | Carga ${cargaObj.id}`, 
-                status: 'Pendiente', 
-                fecha: new Date().toLocaleDateString() 
-            };
-            
-            await setDoc(doc(db, "deposits", depId), newDep);
+            try {
+                let cargaObj = cargasData.find(x => x.id === selectedChargeForDeposit);
+                
+                let depId = 'DEP-' + Date.now();
+                let newDep = { 
+                    id: depId, 
+                    user: currentUser.email, 
+                    monto: cargaObj.cost, 
+                    vipId: cargaObj.id,
+                    hash: `Red: ${redActualSeleccionada.toUpperCase()} | Carga ${cargaObj.id}`, 
+                    status: 'Pendiente', 
+                    fecha: new Date().toLocaleDateString() 
+                };
+                
+                await setDoc(doc(db, "deposits", depId), newDep);
 
-            mostrarAlertaPro("Solicitud Enviada", "Depósito enviado a revisión del CEO. Su carga se activará al ser aprobado.");
-            document.getElementById('subAccionContainer').style.display = 'none';
-            entrarDashboardDirecto();
+                mostrarAlertaPro("Solicitud Enviada", "Depósito enviado a revisión del CEO. Su carga se activará al ser aprobado.");
+                document.getElementById('subAccionContainer').style.display = 'none';
+                entrarDashboardDirecto();
+            } catch (error) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo enviar el depósito. Comprueba tu red o VPN.");
+            }
         }
         window.reportarDep = reportarDep;
 
@@ -1205,39 +1231,51 @@
             if(currentUser.pass !== p) { mostrarAlertaPro("Error", "Contraseña incorrecta."); return; }
             if(currentUser.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             
-            currentUser.balance -= m;
-            await updateDoc(doc(db, "users", currentUser.email), { balance: currentUser.balance });
-            
-            let witId = 'WIT-' + Date.now();
-            let newWit = { id: witId, user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
-            await setDoc(doc(db, "withdrawals", witId), newWit);
+            try {
+                currentUser.balance -= m;
+                await updateDoc(doc(db, "users", currentUser.email), { balance: currentUser.balance });
+                
+                let witId = 'WIT-' + Date.now();
+                let newWit = { id: witId, user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+                await setDoc(doc(db, "withdrawals", witId), newWit);
 
-            mostrarAlertaPro("Éxito", "Retiro solicitado correctamente a Firebase.");
-            entrarDashboardDirecto();
+                mostrarAlertaPro("Éxito", "Retiro solicitado correctamente a Firebase.");
+                entrarDashboardDirecto();
+            } catch (error) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo procesar el retiro. Comprueba tu red o VPN.");
+            }
         }
         window.solicitarRetiro = solicitarRetiro;
 
         async function verHistorialDeps() {
-            let querySnapshot = await getDocs(collection(db, "deposits"));
-            let deps = [];
-            querySnapshot.forEach(d => {
-                let data = d.data();
-                if(data.user && data.user.toLowerCase() === currentUser.email.toLowerCase()) deps.push(data);
-            });
-            if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros de depósitos en Firebase."); return; }
-            mostrarAlertaPro("Historial Depósitos", deps.map(x => `${x.hash} - <b>${x.status}</b>`).join('<br>'));
+            try {
+                let querySnapshot = await getDocs(collection(db, "deposits"));
+                let deps = [];
+                querySnapshot.forEach(d => {
+                    let data = d.data();
+                    if(data.user && data.user.toLowerCase() === currentUser.email.toLowerCase()) deps.push(data);
+                });
+                if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros de depósitos en Firebase."); return; }
+                mostrarAlertaPro("Historial Depósitos", deps.map(x => `${x.hash} - <b>${x.status}</b>`).join('<br>'));
+            } catch(e) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo cargar el historial. Comprueba tu red o VPN.");
+            }
         }
         window.verHistorialDeps = verHistorialDeps;
 
         async function verHistorialWits() {
-            let querySnapshot = await getDocs(collection(db, "withdrawals"));
-            let wits = [];
-            querySnapshot.forEach(d => {
-                let data = d.data();
-                if(data.user && data.user.toLowerCase() === currentUser.email.toLowerCase()) wits.push(data);
-            });
-            if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros de retiros en Firebase."); return; }
-            mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
+            try {
+                let querySnapshot = await getDocs(collection(db, "withdrawals"));
+                let wits = [];
+                querySnapshot.forEach(d => {
+                    let data = d.data();
+                    if(data.user && data.user.toLowerCase() === currentUser.email.toLowerCase()) wits.push(data);
+                });
+                if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros de retiros en Firebase."); return; }
+                mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
+            } catch(e) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo cargar el historial. Comprueba tu red o VPN.");
+            }
         }
         window.verHistorialWits = verHistorialWits;
 
@@ -1245,7 +1283,6 @@
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            // Ocultar todas las secciones al abrir el panel
             ['secDep', 'secWit', 'secAdmin', 'secAcreditar', 'secDesacreditar', 'secUsers'].forEach(s => {
                 let el = document.getElementById(s);
                 if(el) el.style.display = 'none';
@@ -1279,162 +1316,194 @@
         window.toggleAdminSection = toggleAdminSection;
 
         async function acreditarSaldoPorCorreo() {
-            let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
-            let monto = parseFloat(document.getElementById('acreditarMonto').value);
-            if(!mail || isNaN(monto)) { mostrarAlertaPro("Error", "Complete los campos correctamente."); return; }
-            
-            let docRef = doc(db, "users", mail);
-            let docSnap = await getDoc(docRef);
-            if(!docSnap.exists()) { 
-                mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
-                return; 
-            }
-            let target = docSnap.data();
-            target.balance += monto;
-            await updateDoc(docRef, { balance: target.balance });
+            try {
+                let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
+                let monto = parseFloat(document.getElementById('acreditarMonto').value);
+                if(!mail || isNaN(monto)) { mostrarAlertaPro("Error", "Complete los campos correctamente."); return; }
+                
+                let docRef = doc(db, "users", mail);
+                let docSnap = await getDoc(docRef);
+                if(!docSnap.exists()) { 
+                    mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
+                    return; 
+                }
+                let target = docSnap.data();
+                target.balance += monto;
+                await updateDoc(docRef, { balance: target.balance });
 
-            document.getElementById('acreditarEmail').value = '';
-            document.getElementById('acreditarMonto').value = '';
-            mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
-            renderAdmin();
+                document.getElementById('acreditarEmail').value = '';
+                document.getElementById('acreditarMonto').value = '';
+                mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
+                renderAdmin();
+            } catch(e) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo procesar la acreditación. Comprueba tu red o VPN.");
+            }
         }
         window.acreditarSaldoPorCorreo = acreditarSaldoPorCorreo;
 
         async function desacreditarSaldoPorCorreo() {
-            let mail = document.getElementById('desacreditarEmail').value.trim().toLowerCase();
-            let monto = parseFloat(document.getElementById('desacreditarMonto').value);
-            if(!mail || isNaN(monto)) { mostrarAlertaPro("Error", "Complete los campos correctamente."); return; }
-            
-            let docRef = doc(db, "users", mail);
-            let docSnap = await getDoc(docRef);
-            if(!docSnap.exists()) { 
-                mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
-                return; 
-            }
-            let target = docSnap.data();
-            target.balance = Math.max(0, target.balance - monto);
-            await updateDoc(docRef, { balance: target.balance });
+            try {
+                let mail = document.getElementById('desacreditarEmail').value.trim().toLowerCase();
+                let monto = parseFloat(document.getElementById('desacreditarMonto').value);
+                if(!mail || isNaN(monto)) { mostrarAlertaPro("Error", "Complete los campos correctamente."); return; }
+                
+                let docRef = doc(db, "users", mail);
+                let docSnap = await getDoc(docRef);
+                if(!docSnap.exists()) { 
+                    mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
+                    return; 
+                }
+                let target = docSnap.data();
+                target.balance = Math.max(0, target.balance - monto);
+                await updateDoc(docRef, { balance: target.balance });
 
-            document.getElementById('desacreditarEmail').value = '';
-            document.getElementById('desacreditarMonto').value = '';
-            mostrarAlertaPro("Éxito", `Desacreditado -$${monto} a ${target.email}`);
-            renderAdmin();
+                document.getElementById('desacreditarEmail').value = '';
+                document.getElementById('desacreditarMonto').value = '';
+                mostrarAlertaPro("Éxito", `Desacreditado -$${monto} a ${target.email}`);
+                renderAdmin();
+            } catch(e) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo procesar la desacreditación. Comprueba tu red o VPN.");
+            }
         }
         window.desacreditarSaldoPorCorreo = desacreditarSaldoPorCorreo;
 
         async function hacerAdminCorreo() {
-            let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
-            if(!mail) { mostrarAlertaPro("Error", "Ingrese un correo."); return; }
-            
-            let docRef = doc(db, "users", mail);
-            let docSnap = await getDoc(docRef);
-            if(!docSnap.exists()) { 
-                mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
-                return; 
-            }
-            await updateDoc(docRef, { isAdmin: true });
+            try {
+                let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
+                if(!mail) { mostrarAlertaPro("Error", "Ingrese un correo."); return; }
+                
+                let docRef = doc(db, "users", mail);
+                let docSnap = await getDoc(docRef);
+                if(!docSnap.exists()) { 
+                    mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
+                    return; 
+                }
+                await updateDoc(docRef, { isAdmin: true });
 
-            document.getElementById('novoAdminEmail').value = '';
-            mostrarAlertaPro("Éxito", `Privilegio de Admin otorgado en Firebase a ${mail}`);
+                document.getElementById('novoAdminEmail').value = '';
+                mostrarAlertaPro("Éxito", `Privilegio de Admin otorgado en Firebase a ${mail}`);
+            } catch(e) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo actualizar el usuario. Comprueba tu red o VPN.");
+            }
         }
         window.hacerAdminCorreo = hacerAdminCorreo;
 
         async function renderAdmin() {
-            // Usuarios de la web
-            let usersSnap = await getDocs(collection(db, "users"));
-            let usersArr = [];
-            usersSnap.forEach(d => usersArr.push(d.data()));
-            
-            let uHtml = usersArr.map(u => `
-                <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
-                    <div style="font-size:10px; color:var(--text-main);"><b>Correo:</b> ${u.email}</div>
-                    <div style="font-size:10px; color:var(--text-main);"><b>Contraseña:</b> ${u.pass}</div>
-                    <div style="font-size:10px; color:var(--primary-green); font-weight:800;"><b>Saldo:</b> $${u.balance.toFixed(2)} USDT</div>
-                </div>`).join('');
-            if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
+            try {
+                // Usuarios de la web
+                let usersSnap = await getDocs(collection(db, "users"));
+                let usersArr = [];
+                usersSnap.forEach(d => usersArr.push(d.data()));
+                
+                let uHtml = usersArr.map(u => `
+                    <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
+                        <div style="font-size:10px; color:var(--text-main);"><b>Correo:</b> ${u.email}</div>
+                        <div style="font-size:10px; color:var(--text-main);"><b>Contraseña:</b> ${u.pass}</div>
+                        <div style="font-size:10px; color:var(--primary-green); font-weight:800;"><b>Saldo:</b> $${u.balance.toFixed(2)} USDT</div>
+                    </div>`).join('');
+                if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
 
-            // Depósitos pendientes
-            let depsSnap = await getDocs(collection(db, "deposits"));
-            let deps = [];
-            depsSnap.forEach(d => { if(d.data().status === 'Pendiente') deps.push(d.data()); });
-            let dHtml = deps.length === 0 ? "<div style='font-size:10px; color:var(--text-muted);'>Sin solicitudes pendientes</div>" : deps.map(x => `
-                <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
-                    <div style="font-size:10px;"><b>Socio:</b> ${x.user}</div>
-                    <div style="font-size:10px;"><b>Detalle:</b> ${x.hash}</div>
-                    <div style="display:flex; gap:6px; margin-top:6px;">
-                        <button onclick="ejecutarAccionPausada(() => window.aprobarDep('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
-                        <button onclick="ejecutarAccionPausada(() => window.cancelarDep('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
-                    </div>
-                </div>`).join('');
-            if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
+                // Depósitos pendientes
+                let depsSnap = await getDocs(collection(db, "deposits"));
+                let deps = [];
+                depsSnap.forEach(d => { if(d.data().status === 'Pendiente') deps.push(d.data()); });
+                let dHtml = deps.length === 0 ? "<div style='font-size:10px; color:var(--text-muted);'>Sin solicitudes pendientes</div>" : deps.map(x => `
+                    <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
+                        <div style="font-size:10px;"><b>Socio:</b> ${x.user}</div>
+                        <div style="font-size:10px;"><b>Detalle:</b> ${x.hash}</div>
+                        <div style="display:flex; gap:6px; margin-top:6px;">
+                            <button onclick="ejecutarAccionPausada(() => window.aprobarDep('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
+                            <button onclick="ejecutarAccionPausada(() => window.cancelarDep('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
+                        </div>
+                    </div>`).join('');
+                if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
 
-            // Retiros pendientes
-            let witsSnap = await getDocs(collection(db, "withdrawals"));
-            let wits = [];
-            witsSnap.forEach(d => { if(d.data().status === 'Pendiente') wits.push(d.data()); });
-            let wHtml = wits.length === 0 ? "<div style='font-size:10px; color:var(--text-muted);'>Sin solicitudes pendientes</div>" : wits.map(x => `
-                <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
-                    <div style="font-size:10px;"><b>Socio:</b> ${x.user}</div>
-                    <div style="font-size:10px;"><b>Monto:</b> -$${x.monto} USDT</div>
-                    <div style="font-size:9px; color:var(--text-muted);"><b>Wallet:</b> ${x.wallet}</div>
-                    <div style="display:flex; gap:6px; margin-top:6px;">
-                        <button onclick="ejecutarAccionPausada(() => window.aprobarWit('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
-                        <button onclick="ejecutarAccionPausada(() => window.cancelarWit('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
-                    </div>
-                </div>`).join('');
-            if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
+                // Retiros pendientes
+                let witsSnap = await getDocs(collection(db, "withdrawals"));
+                let wits = [];
+                witsSnap.forEach(d => { if(d.data().status === 'Pendiente') wits.push(d.data()); });
+                let wHtml = wits.length === 0 ? "<div style='font-size:10px; color:var(--text-muted);'>Sin solicitudes pendientes</div>" : wits.map(x => `
+                    <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
+                        <div style="font-size:10px;"><b>Socio:</b> ${x.user}</div>
+                        <div style="font-size:10px;"><b>Monto:</b> -$${x.monto} USDT</div>
+                        <div style="font-size:9px; color:var(--text-muted);"><b>Wallet:</b> ${x.wallet}</div>
+                        <div style="display:flex; gap:6px; margin-top:6px;">
+                            <button onclick="ejecutarAccionPausada(() => window.aprobarWit('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
+                            <button onclick="ejecutarAccionPausada(() => window.cancelarWit('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
+                        </div>
+                    </div>`).join('');
+                if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
+            } catch(e) {
+                console.error("Error cargando panel admin:", e);
+            }
         }
 
         window.aprobarDep = async function(id) {
-            let depDocRef = doc(db, "deposits", id);
-            let depSnap = await getDoc(depDocRef);
-            if(!depSnap.exists()) return;
-            let dep = depSnap.data();
+            try {
+                let depDocRef = doc(db, "deposits", id);
+                let depSnap = await getDoc(depDocRef);
+                if(!depSnap.exists()) return;
+                let dep = depSnap.data();
 
-            let userDocRef = doc(db, "users", dep.user);
-            let userSnap = await getDoc(userDocRef);
-            if(userSnap.exists()) {
-                let uData = userSnap.data();
-                uData.vipActive = dep.vipId;
-                uData.vipExpiry = Date.now() + (35 * 24 * 3600 * 1000);
-                uData.lastClaim = 0;
-                await updateDoc(userDocRef, {
-                    vipActive: uData.vipActive,
-                    vipExpiry: uData.vipExpiry,
-                    lastClaim: uData.lastClaim
-                });
+                let userDocRef = doc(db, "users", dep.user);
+                let userSnap = await getDoc(userDocRef);
+                if(userSnap.exists()) {
+                    let uData = userSnap.data();
+                    uData.vipActive = dep.vipId;
+                    uData.vipExpiry = Date.now() + (35 * 24 * 3600 * 1000);
+                    uData.lastClaim = 0;
+                    await updateDoc(userDocRef, {
+                        vipActive: uData.vipActive,
+                        vipExpiry: uData.vipExpiry,
+                        lastClaim: uData.lastClaim
+                    });
+                }
+
+                await updateDoc(depDocRef, { status: 'Aprobado' });
+                renderAdmin();
+            } catch(e) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo aprobar el depósito. Comprueba tu red o VPN.");
             }
-
-            await updateDoc(depDocRef, { status: 'Aprobado' });
-            renderAdmin();
         };
 
         window.cancelarDep = async function(id) {
-            await updateDoc(doc(db, "deposits", id), { status: 'Cancelado' });
-            renderAdmin();
+            try {
+                await updateDoc(doc(db, "deposits", id), { status: 'Cancelado' });
+                renderAdmin();
+            } catch(e) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo cancelar el depósito. Comprueba tu red o VPN.");
+            }
         };
 
         window.aprobarWit = async function(id) {
-            await updateDoc(doc(db, "withdrawals", id), { status: 'Aprobado' });
-            renderAdmin();
+            try {
+                await updateDoc(doc(db, "withdrawals", id), { status: 'Aprobado' });
+                renderAdmin();
+            } catch(e) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo aprobar el retiro. Comprueba tu red o VPN.");
+            }
         };
 
         window.cancelarWit = async function(id) {
-            let witDocRef = doc(db, "withdrawals", id);
-            let witSnap = await getDoc(witDocRef);
-            if(!witSnap.exists()) return;
-            let wit = witSnap.data();
+            try {
+                let witDocRef = doc(db, "withdrawals", id);
+                let witSnap = await getDoc(witDocRef);
+                if(!witSnap.exists()) return;
+                let wit = witSnap.data();
 
-            let userDocRef = doc(db, "users", wit.user);
-            let userSnap = await getDoc(userDocRef);
-            if(userSnap.exists()) {
-                let uData = userSnap.data();
-                let nuevoSaldo = uData.balance + wit.monto;
-                await updateDoc(userDocRef, { balance: nuevoSaldo });
+                let userDocRef = doc(db, "users", wit.user);
+                let userSnap = await getDoc(userDocRef);
+                if(userSnap.exists()) {
+                    let uData = userSnap.data();
+                    let nuevoSaldo = uData.balance + wit.monto;
+                    await updateDoc(userDocRef, { balance: nuevoSaldo });
+                }
+
+                await updateDoc(witDocRef, { status: 'Cancelado' });
+                renderAdmin();
+            } catch(e) {
+                mostrarAlertaPro("Error de Conexión", "No se pudo cancelar el retiro. Comprueba tu red o VPN.");
             }
-
-            await updateDoc(witDocRef, { status: 'Cancelado' });
-            renderAdmin();
         };
 
         window.copiarEnlaceReferido = function() {
