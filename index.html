@@ -29,17 +29,19 @@
             padding-bottom: 80px;
         }
 
-        /* Pantalla de Animación de Carga Inicial */
-        #splashScreen {
+        /* Pantalla de Animación de Carga Inicial y Pausa */
+        #splashScreen, #actionLoader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-main); display: flex; flex-direction: column;
+            background: rgba(244, 251, 247, 0.92); backdrop-filter: blur(2px);
+            display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 9999;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.3s ease;
         }
+        #actionLoader { display: none; z-index: 10000; }
         .spinner {
-            width: 45px; height: 45px; border: 4px solid var(--border-color);
+            width: 42px; height: 42px; border: 4px solid var(--border-color);
             border-top: 4px solid var(--primary-green); border-radius: 50%;
-            animation: spin 0.9s linear infinite; margin-top: 12px;
+            animation: spin 0.8s linear infinite; margin-top: 10px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -231,16 +233,22 @@
         <div class="spinner"></div>
     </div>
 
+    <!-- Animación de Pausa Global para Botones y Acciones -->
+    <div id="actionLoader" style="display: none;">
+        <div style="font-size: 13px; font-weight: 800; color: var(--primary-green); letter-spacing: 0.5px;">PROCESANDO...</div>
+        <div class="spinner"></div>
+    </div>
+
     <div id="customModalContainer"></div>
 
-    <!-- Botón de Soporte con Icono de Robot (Sin Emojis) -->
+    <!-- Botón de Soporte con Icono de Robot -->
     <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Inverbot" class="floating-support" title="Asistente Robot de Soporte">
         <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M9 10a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1m6 0a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1m-3 5c-2.33 0-4.31 1.35-5.22 3.31l1.83.74C9.17 17.84 10.5 17 12 17s2.83.84 3.39 2.05l1.83-.74C16.31 16.35 14.33 15 12 15z"/></svg>
     </a>
 
     <div class="app-container">
         
-        <!-- Pantalla de Autenticación con Imagen de Fondo -->
+        <!-- Pantalla de Autenticación -->
         <div id="authScreen" class="card" style="margin-top: 40px; display: none;">
             <div class="header-banner" style="margin-bottom: 16px;">
                 <h1>INVERBOT</h1>
@@ -253,16 +261,16 @@
                 <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" placeholder="••••••••"></div>
                 <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" placeholder="••••••••"></div>
                 <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
-                <button type="button" class="btn btn-green" onclick="ejecutarRegistroLocal()">Registrarse</button>
-                <div class="auth-switch"><p>¿Ya posee cuenta? <a onclick="cambiarVistaAuth(true)">Iniciar Sesión</a></p></div>
+                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarRegistroLocal)">Registrarse</button>
+                <div class="auth-switch"><p>¿Ya posee cuenta? <a onclick="ejecutarAccionPausada(() => cambiarVistaAuth(true))">Iniciar Sesión</a></p></div>
             </div>
 
             <!-- VISTA LOGIN -->
             <div id="loginView" style="display: none;">
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" placeholder="trader@gmail.com"></div>
                 <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" placeholder="••••••••"></div>
-                <button type="button" class="btn btn-green" onclick="ejecutarLoginLocal()">Iniciar Sesión</button>
-                <div class="auth-switch"><p>¿Nuevo socio? <a onclick="cambiarVistaAuth(false)">Registrarse</a></p></div>
+                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarLoginLocal)">Iniciar Sesión</button>
+                <div class="auth-switch"><p>¿Nuevo socio? <a onclick="ejecutarAccionPausada(() => cambiarVistaAuth(false))">Registrarse</a></p></div>
             </div>
         </div>
 
@@ -279,17 +287,16 @@
                 <div class="card" style="text-align: center; background: #f0fdf4; border-color: #bbf7d0;">
                     <h3 style="font-size: 12px; color: var(--primary-green); margin-bottom: 4px; font-weight: 800;">PROGRAMA DE AFILIADOS</h3>
                     <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Obtén comisiones institucionales por cada socio.</p>
-                    <button class="btn btn-green" onclick="cambiarTab('Red', document.getElementById('navRed'))" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
+                    <button class="btn btn-green" onclick="ejecutarAccionPausada(() => cambiarTab('Red', document.getElementById('navRed')))" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
                 </div>
 
-                <!-- MERCADOS FINANCIEROS CON LOGOTIPOS REALES Y TICKET EN TIEMPO REAL EN MILISEGUNDOS -->
+                <!-- MERCADOS FINANCIEROS -->
                 <div class="card">
                     <div style="font-size: 11px; font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;">
                         <span>Mercados Globales (USDT)</span>
                         <span style="font-size: 9px; color: var(--market-green); background: #e6f9f0; padding: 2px 6px; border-radius: 4px; font-weight: 700;">EN VIVO</span>
                     </div>
 
-                    <!-- BTC -->
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <img src="https://assets.coincap.io/assets/icons/btc@2x.png" width="20" height="20" alt="BTC">
@@ -301,7 +308,6 @@
                         </div>
                     </div>
 
-                    <!-- ETH -->
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <img src="https://assets.coincap.io/assets/icons/eth@2x.png" width="20" height="20" alt="ETH">
@@ -313,7 +319,6 @@
                         </div>
                     </div>
 
-                    <!-- SOL -->
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <img src="https://assets.coincap.io/assets/icons/sol@2x.png" width="20" height="20" alt="SOL">
@@ -325,7 +330,6 @@
                         </div>
                     </div>
 
-                    <!-- BNB -->
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <img src="https://assets.coincap.io/assets/icons/bnb@2x.png" width="20" height="20" alt="BNB">
@@ -337,7 +341,6 @@
                         </div>
                     </div>
 
-                    <!-- XRP -->
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <img src="https://assets.coincap.io/assets/icons/xrp@2x.png" width="20" height="20" alt="XRP">
@@ -349,7 +352,6 @@
                         </div>
                     </div>
 
-                    <!-- USDT -->
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="20" height="20" alt="USDT">
@@ -391,77 +393,57 @@
                         </div>
                     </div>
 
-                    <!-- Botón CARGAR AHORA con Icono SVG de Energía -->
-                    <button class="btn btn-green" id="btnCuantificarAccion" onclick="ejecutarCuantificacionConPila()" style="padding: 13px; font-size: 13px; font-weight: 800;">
+                    <button class="btn btn-green" id="btnCuantificarAccion" onclick="ejecutarAccionPausada(ejecutarCuantificacionConPila)" style="padding: 13px; font-size: 13px; font-weight: 800;">
                         <svg style="width:16px; height:16px; fill:#fff;" viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.88 0-.33-.75-.27-.78C8.73 10.37 14.5 3 14.5 3h1l-1 7h3.53c.88 0 .42.81.24.9-3.3 4.96-7.27 10.1-7.27 10.1z"/></svg>
                         CARGAR AHORA
                     </button>
                     <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para llenar su pila y procesar el rendimiento diario.</p>
                 </div>
 
-                <!-- CARGA 1 -->
+                <!-- CARGAS VIP -->
                 <div class="vip-card">
-                    <div class="vip-row">
-                        <div class="vip-title">CARGA 1 (Level 1)</div>
-                        <span id="vip1StatusText" class="vip-tag">Inactivo</span>
-                    </div>
+                    <div class="vip-row"><div class="vip-title">CARGA 1 (Level 1)</div><span id="vip1StatusText" class="vip-tag">Inactivo</span></div>
                     <div class="vip-grid">
                         <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">1.50 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">4.00 USDT</div></div>
                     </div>
-                    <div id="vip1ActionArea"><button class="btn btn-green" onclick="comprarVip(1, 4)">Adquirir Carga 1</button></div>
+                    <div id="vip1ActionArea"><button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(1, 4))">Adquirir Carga 1</button></div>
                 </div>
 
-                <!-- CARGA 2 -->
                 <div class="vip-card">
-                    <div class="vip-row">
-                        <div class="vip-title">CARGA 2 (Level 2)</div>
-                        <span id="vip2StatusText" class="vip-tag">Inactivo</span>
-                    </div>
+                    <div class="vip-row"><div class="vip-title">CARGA 2 (Level 2)</div><span id="vip2StatusText" class="vip-tag">Inactivo</span></div>
                     <div class="vip-grid">
                         <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">6.50 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">16.00 USDT</div></div>
                     </div>
-                    <div id="vip2ActionArea"><button class="btn btn-green" onclick="comprarVip(2, 16)">Adquirir Carga 2</button></div>
+                    <div id="vip2ActionArea"><button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(2, 16))">Adquirir Carga 2</button></div>
                 </div>
 
-                <!-- CARGA 3 -->
                 <div class="vip-card">
-                    <div class="vip-row">
-                        <div class="vip-title">CARGA 3 (Level 3)</div>
-                        <span id="vip3StatusText" class="vip-tag">Inactivo</span>
-                    </div>
+                    <div class="vip-row"><div class="vip-title">CARGA 3 (Level 3)</div><span id="vip3StatusText" class="vip-tag">Inactivo</span></div>
                     <div class="vip-grid">
                         <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">42.2 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">65.00 USDT</div></div>
                     </div>
-                    <div id="vip3ActionArea"><button class="btn btn-green" onclick="comprarVip(3, 65)">Adquirir Carga 3</button></div>
+                    <div id="vip3ActionArea"><button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(3, 65))">Adquirir Carga 3</button></div>
                 </div>
 
-                <!-- CARGA 4 -->
                 <div class="vip-card">
-                    <div class="vip-row">
-                        <div class="vip-title">CARGA 4 (Level 4)</div>
-                        <span id="vip4StatusText" class="vip-tag">Inactivo</span>
-                    </div>
+                    <div class="vip-row"><div class="vip-title">CARGA 4 (Level 4)</div><span id="vip4StatusText" class="vip-tag">Inactivo</span></div>
                     <div class="vip-grid">
                         <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">88.50 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">180.00 USDT</div></div>
                     </div>
-                    <div id="vip4ActionArea"><button class="btn btn-green" onclick="comprarVip(4, 180)">Adquirir Carga 4</button></div>
+                    <div id="vip4ActionArea"><button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(4, 180))">Adquirir Carga 4</button></div>
                 </div>
 
-                <!-- CARGA 5 ELITE -->
                 <div class="vip-card elite">
-                    <div class="vip-row">
-                        <div class="vip-title" style="color:#b7791f;">CARGA 5 (Elite)</div>
-                        <span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span>
-                    </div>
+                    <div class="vip-row"><div class="vip-title" style="color:#b7791f;">CARGA 5 (Elite)</div><span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span></div>
                     <div class="vip-grid">
                         <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v gold">1,600.00 USDT</div></div>
                         <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v gold">3,600.00 USDT</div></div>
                     </div>
-                    <div id="vip5ActionArea"><button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir Carga 5 Elite</button></div>
+                    <div id="vip5ActionArea"><button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="ejecutarAccionPausada(() => comprarVip(5, 3600))">Adquirir Carga 5 Elite</button></div>
                 </div>
             </div>
 
@@ -475,7 +457,7 @@
                     <div style="font-size: 11px; opacity: 0.9; margin-bottom: 2px; font-weight: 700;">USDT</div>
                     <div class="team-hero-amount" id="lblTeamComision">0.00</div>
                     
-                    <button class="team-hero-btn" onclick="mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.')">
+                    <button class="team-hero-btn" onclick="ejecutarAccionPausada(() => mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.'))">
                         Historial de comisiones
                     </button>
                 </div>
@@ -493,7 +475,7 @@
                 <div class="card" style="text-align: center;">
                     <h3 style="font-size: 12px; margin-bottom: 4px; font-weight: 800;">ENLACE DE INVITACIÓN</h3>
                     <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:10px; border-radius:6px; font-weight:700;"></code>
-                    <button class="btn btn-green" onclick="copiarEnlaceReferido()" style="padding:9px; font-size:11px;">Copiar Enlace Seguro</button>
+                    <button class="btn btn-green" onclick="ejecutarAccionPausada(copiarEnlaceReferido)" style="padding:9px; font-size:11px;">Copiar Enlace Seguro</button>
                 </div>
             </div>
 
@@ -506,8 +488,8 @@
                             <div style="font-size: 11px; font-weight: 800;" id="lblUserEmail"></div>
                         </div>
                         <div style="display: flex; gap: 6px;">
-                            <button onclick="eliminarCuentaPropia()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Eliminar</button>
-                            <button onclick="cerrarSesion()" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Salir</button>
+                            <button onclick="ejecutarAccionPausada(eliminarCuentaPropia)" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Eliminar</button>
+                            <button onclick="ejecutarAccionPausada(cerrarSesion)" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Salir</button>
                         </div>
                     </div>
 
@@ -515,20 +497,20 @@
                     <div class="balance-amount" id="lblBalanceAmi">$0.00</div>
 
                     <div class="action-grid">
-                        <button class="btn-action-dep" onclick="mostrarSeccion('dep')">Depositar</button>
-                        <button class="btn-action-wit" onclick="mostrarSeccion('wit')">Retirar</button>
+                        <button class="btn-action-dep" onclick="ejecutarAccionPausada(() => mostrarSeccion('dep'))">Depositar</button>
+                        <button class="btn-action-wit" onclick="ejecutarAccionPausada(() => mostrarSeccion('wit'))">Retirar</button>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <button class="btn-action-history" onclick="verHistorialDeps()">Historial Depósitos</button>
-                        <button class="btn-action-history" onclick="verHistorialWits()">Historial Retiros</button>
+                        <button class="btn-action-history" onclick="ejecutarAccionPausada(verHistorialDeps)">Historial Depósitos</button>
+                        <button class="btn-action-history" onclick="ejecutarAccionPausada(verHistorialWits)">Historial Retiros</button>
                     </div>
 
                     <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
                     <div id="adminPanelTrigger" style="display: none; background: #f0fdf4; border: 1px solid var(--primary-green); padding: 12px; border-radius: 8px; margin-top: 14px;">
                         <p style="color: var(--primary-green); font-weight: 800; font-size: 10px; margin-bottom: 8px; text-transform: uppercase;">PANEL EJECUTIVO CEO</p>
-                        <button class="btn btn-green" onclick="abrirPanelAdmin()" style="margin:0; font-size: 11px; padding: 9px;">Administrar Modos y Finanzas</button>
+                        <button class="btn btn-green" onclick="ejecutarAccionPausada(abrirPanelAdmin)" style="margin:0; font-size: 11px; padding: 9px;">Administrar Modos y Finanzas</button>
                     </div>
                 </div>
             </div>
@@ -539,20 +521,20 @@
         <div id="adminDashboard" class="card" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">CONTROL EJECUTIVO CEO</h3>
-                <button onclick="cerrarPanelAdmin()" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
+                <button onclick="ejecutarAccionPausada(cerrarPanelAdmin)" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
             </div>
             
             <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Acreditar Saldo a Usuario</div>
                 <div class="input-group"><label>Correo</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
                 <div class="input-group"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
-                <button class="btn btn-green" onclick="acreditarSaldoPorCorreo()" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(acreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
             </div>
 
             <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Otorgar Privilegio de Administrador</div>
                 <div class="input-group"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
-                <button class="btn btn-green" onclick="hacerAdminCorreo()" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(hacerAdminCorreo)" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
             </div>
 
             <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Lista General de Usuarios</div>
@@ -565,18 +547,18 @@
             <div id="listaAdminWits" style="max-height: 140px; overflow-y: auto;"></div>
         </div>
 
-        <!-- Navegación Inferior -->
+        <!-- Navegación Inferior Pausada -->
         <div class="bottom-nav" id="bottomNavBar" style="display: none;">
-            <button class="nav-item active" onclick="cambiarTab('Hogar', this)" id="navHogar">
+            <button class="nav-item active" onclick="ejecutarAccionPausada(() => cambiarTab('Hogar', this))" id="navHogar">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Hogar
             </button>
-            <button class="nav-item" onclick="cambiarTab('Cuantificar', this)" id="navCuantificar">
+            <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Cuantificar', this))" id="navCuantificar">
                 <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>Cuantificar
             </button>
-            <button class="nav-item" onclick="cambiarTab('Red', this)" id="navRed">
+            <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Red', this))" id="navRed">
                 <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Equipo
             </button>
-            <button class="nav-item" onclick="cambiarTab('Ami', this)" id="navAmi">
+            <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Ami', this))" id="navAmi">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil
             </button>
         </div>
@@ -599,6 +581,16 @@
             xrp: { price: 1.8842, change: -0.45 },
             usdt: { price: 1.0000, change: 0.00 }
         };
+
+        // Función global para dar animación pausada a cualquier botón o cambio de pestaña
+        function ejecutarAccionPausada(callback) {
+            let loader = document.getElementById('actionLoader');
+            if(loader) loader.style.display = 'flex';
+            setTimeout(() => {
+                callback();
+                if(loader) loader.style.display = 'none';
+            }, 450); // Pausa elegante de 450ms con animación
+        }
 
         function obtenerDatosLocalSeguro() {
             let local = localStorage.getItem("inverbot_db_local");
@@ -808,8 +800,8 @@
                     if (activo) {
                         act.innerHTML = `<button class="btn" style="background:var(--bg-input); color:var(--text-muted); cursor:not-allowed; border:1px solid var(--border-color);" disabled>Activado</button>`;
                     } else {
-                        if(i === 5) act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="comprarVip(5, 3600)">Adquirir Carga 5 Elite</button>`;
-                        else act.innerHTML = `<button class="btn btn-green" onclick="comprarVip(${i}, ${i===1?4:(i===2?16:(i===3?65:180))})">Adquirir Carga ${i}</button>`;
+                        if(i === 5) act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="ejecutarAccionPausada(() => comprarVip(5, 3600))">Adquirir Carga 5 Elite</button>`;
+                        else act.innerHTML = `<button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(${i}, ${i===1?4:(i===2?16:(i===3?65:180))}))">Adquirir Carga ${i}</button>`;
                     }
                 }
             }
@@ -906,7 +898,7 @@
             if(btn) btn.classList.add('active');
         }
 
-        // Sección de Depósito Interactiva con selección de red USDT y logotipos reales
+        // Sección de Depósito sin monto ni ID, solo red, wallet y botón de confirmar con icono bonito
         function mostrarSeccion(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
@@ -914,7 +906,7 @@
                     <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:10px; text-transform:uppercase;">Seleccione Red USDT (Mínimo 4 USDT)</div>
                     
                     <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 12px;">
-                        <div onclick="seleccionarRedDep('bep20')" id="redBep20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
+                        <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('bep20'))" id="redBep20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
                             <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="24" height="24" alt="USDT">
                             <div>
                                 <div style="font-size:11px; font-weight:800; color:var(--text-main);">USDT (BEP-20)</div>
@@ -922,7 +914,7 @@
                             </div>
                         </div>
 
-                        <div onclick="seleccionarRedDep('trc20')" id="redTrc20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
+                        <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('trc20'))" id="redTrc20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
                             <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="24" height="24" alt="USDT">
                             <div>
                                 <div style="font-size:11px; font-weight:800; color:var(--text-main);">USDT (TRC-20)</div>
@@ -930,7 +922,7 @@
                             </div>
                         </div>
 
-                        <div onclick="seleccionarRedDep('erc20')" id="redErc20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
+                        <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('erc20'))" id="redErc20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
                             <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="24" height="24" alt="USDT">
                             <div>
                                 <div style="font-size:11px; font-weight:800; color:var(--text-main);">USDT (ERC-20)</div>
@@ -946,16 +938,17 @@
                     </div>
 
                     <div id="formularioDepositoExtras" style="display:none;">
-                        <div class="input-group"><label>Monto a Depositar (USDT)</label><input type="number" id="depM" min="4" step="0.01" placeholder="10.00"></div>
-                        <div class="input-group"><label>Hash / ID de Transacción</label><input type="text" id="depH" placeholder="0x..."></div>
-                        <button type="button" class="btn btn-green" onclick="reportarDep()" style="padding:11px; font-size:12px; font-weight:800;">Confirmar Depósito</button>
+                        <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(reportarDep)" style="padding:12px; font-size:12px; font-weight:800;">
+                            <svg style="width:16px; height:16px; fill:#fff;" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                            Confirmar Depósito
+                        </button>
                     </div>`;
             } else {
                 c.innerHTML = `
                     <div class="input-group"><label>Wallet Destino USDT</label><input type="text" id="wW" placeholder="0x..."></div>
                     <div class="input-group"><label>Monto</label><input type="number" id="wM" min="1" step="0.01"></div>
                     <div class="input-group"><label>Contraseña</label><input type="password" id="wP"></div>
-                    <button type="button" class="btn btn-green" onclick="solicitarRetiro()" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>`;
+                    <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(solicitarRetiro)" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>`;
             }
         }
 
@@ -992,17 +985,15 @@
         }
 
         function reportarDep() {
-            let m = parseFloat(document.getElementById('depM').value);
-            let h = document.getElementById('depH').value.trim();
-            if(!m || !h) { mostrarAlertaPro("Error", "Complete los campos del depósito."); return; }
+            if(!redActualSeleccionada) { mostrarAlertaPro("Aviso", "Seleccione una red de depósito."); return; }
             
             let db = obtenerDatosLocalSeguro();
             if(!db.deposits) db.deposits = [];
-            let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: m, hash: h, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+            let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: 0, hash: 'Red: ' + redActualSeleccionada.toUpperCase(), status: 'Pendiente', fecha: new Date().toLocaleDateString() };
             db.deposits.push(newDep);
             guardarDatosLocalSeguro(db);
 
-            mostrarAlertaPro("Éxito", "Depósito reportado correctamente.");
+            mostrarAlertaPro("Éxito", "Depósito confirmado. En breve será acreditado tras validación en red.");
             document.getElementById('subAccionContainer').style.display = 'none';
         }
 
@@ -1030,7 +1021,7 @@
             let db = obtenerDatosLocalSeguro();
             let deps = (db.deposits || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
             if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros de depósitos."); return; }
-            mostrarAlertaPro("Historial Depósitos", deps.map(x => `+${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
+            mostrarAlertaPro("Historial Depósitos", deps.map(x => `${x.hash} - <b>${x.status}</b>`).join('<br>'));
         }
 
         function verHistorialWits() {
@@ -1096,8 +1087,8 @@
                 <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
                     <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
                     <div style="display:flex; gap:4px;">
-                        <button onclick="window.toggleAdminUser('${u.email}')" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">${u.isAdmin?'Quitar':'Admin'}</button>
-                        <button onclick="window.eliminarUsuarioAdmin('${u.email}')" style="background:var(--market-red);color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">Eliminar</button>
+                        <button onclick="ejecutarAccionPausada(() => window.toggleAdminUser('${u.email}'))" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">${u.isAdmin?'Quitar':'Admin'}</button>
+                        <button onclick="ejecutarAccionPausada(() => window.eliminarUsuarioAdmin('${u.email}'))" style="background:var(--market-red);color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">Eliminar</button>
                     </div>
                 </div>`).join('');
             if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
@@ -1105,8 +1096,8 @@
             let deps = (db.deposits || []).filter(x => x.status === 'Pendiente');
             let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
                 <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px;">
-                    <b>${x.user}</b>: +$${x.monto} USDT<br><span style="font-size:9px;color:var(--text-muted);">Hash: ${x.hash}</span><br>
-                    <button onclick="window.aprobarDep('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
+                    <b>${x.user}</b>: ${x.hash}<br>
+                    <button onclick="ejecutarAccionPausada(() => window.aprobarDep('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
                 </div>`).join('');
             if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
 
@@ -1114,7 +1105,7 @@
             let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
                 <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px;">
                     <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:var(--text-muted);">Wallet: ${x.wallet}</span><br>
-                    <button onclick="window.aprobarWit('${x.id}')" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
+                    <button onclick="ejecutarAccionPausada(() => window.aprobarWit('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
                 </div>`).join('');
             if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
         }
@@ -1149,7 +1140,6 @@
             let d = (db.deposits || []).find(x => x.id === id);
             if(!d) return;
             d.status = 'Aprobado';
-            if(db.users[d.user]) { db.users[d.user].balance += d.monto; }
             guardarDatosLocalSeguro(db);
             renderAdmin();
         };
