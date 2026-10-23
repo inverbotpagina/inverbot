@@ -531,52 +531,62 @@
 
         </div>
 
-        <!-- Panel de Administración Reorganizado -->
+        <!-- Panel de Administración Reorganizado por Botones -->
         <div id="adminDashboard" class="card" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                 <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">CONTROL EJECUTIVO CEO</h3>
                 <button onclick="ejecutarAccionPausada(cerrarPanelAdmin)" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
             </div>
             
-            <!-- 1. SOLICITUD DE DEPÓSITO -->
-            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; text-transform: uppercase;">1. Solicitud de Depósito</div>
-                <div id="listaAdminDeps" style="max-height: 140px; overflow-y: auto;"></div>
+            <!-- Botones Principales del Panel CEO -->
+            <div style="display: grid; gap: 8px; margin-bottom: 14px;">
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDep'))" style="padding: 10px; font-size: 11px; font-weight: 800;">📥 Solicitud de Depósito</button>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secWit'))" style="padding: 10px; font-size: 11px; font-weight: 800;">📤 Solicitud de Retiro</button>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secAdmin'))" style="padding: 10px; font-size: 11px; font-weight: 800;">👑 Dar Admin</button>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secAcreditar'))" style="padding: 10px; font-size: 11px; font-weight: 800;">➕ Acreditar Usuario</button>
+                <button class="btn btn-red" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDesacreditar'))" style="padding: 10px; font-size: 11px; font-weight: 800;">➖ Desacreditar Usuario</button>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secUsers'))" style="padding: 10px; font-size: 11px; font-weight: 800;">👥 Usuarios de la Web</button>
             </div>
 
-            <!-- 2. SOLICITUD DE RETIRO -->
-            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 6px; text-transform: uppercase;">2. Solicitud de Retiro</div>
-                <div id="listaAdminWits" style="max-height: 140px; overflow-y: auto;"></div>
+            <!-- SECCIÓN 1: SOLICITUD DE DEPÓSITO -->
+            <div id="secDep" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Solicitudes de Depósito</div>
+                <div id="listaAdminDeps" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
 
-            <!-- 3. DAR ADMIN -->
-            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; text-transform: uppercase;">3. Dar Admin</div>
-                <div class="input-group" style="margin-bottom:6px;"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(hacerAdminCorreo)" style="padding:8px; font-size:11px; margin:0;">Otorgar Admin</button>
+            <!-- SECCIÓN 2: SOLICITUD DE RETIRO -->
+            <div id="secWit" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;">Solicitudes de Retiro</div>
+                <div id="listaAdminWits" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
 
-            <!-- 4. ACREDITAR USUARIO -->
-            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; text-transform: uppercase;">4. Acreditar Usuario</div>
-                <div class="input-group" style="margin-bottom:6px;"><label>Correo</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
-                <div class="input-group" style="margin-bottom:6px;"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(acreditarSaldoPorCorreo)" style="padding:8px; font-size:11px; margin:0;">Acreditar Saldo</button>
+            <!-- SECCIÓN 3: DAR ADMIN -->
+            <div id="secAdmin" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Dar Privilegio de Admin</div>
+                <div class="input-group" style="margin-bottom:8px;"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(hacerAdminCorreo)" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
             </div>
 
-            <!-- 5. DESACREDITAR USUARIO -->
-            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 6px; text-transform: uppercase;">5. Desacreditar Usuario</div>
-                <div class="input-group" style="margin-bottom:6px;"><label>Correo</label><input type="email" id="desacreditarEmail" placeholder="socio@gmail.com"></div>
-                <div class="input-group" style="margin-bottom:6px;"><label>Monto a Quitar (USDT)</label><input type="number" id="desacreditarMonto" step="0.01" placeholder="50.00"></div>
-                <button class="btn btn-red" onclick="ejecutarAccionPausada(desacreditarSaldoPorCorreo)" style="padding:8px; font-size:11px; margin:0;">Desacreditar Saldo</button>
+            <!-- SECCIÓN 4: ACREDITAR USUARIO -->
+            <div id="secAcreditar" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Acreditar Saldo a Usuario</div>
+                <div class="input-group" style="margin-bottom:8px;"><label>Correo del Usuario</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
+                <div class="input-group" style="margin-bottom:8px;"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(acreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo</button>
             </div>
 
-            <!-- 6. USUARIOS DE LA WEB -->
-            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; text-transform: uppercase;">6. Usuarios de la Web</div>
-                <div id="listaAdminUsers" style="max-height: 140px; overflow-y: auto;"></div>
+            <!-- SECCIÓN 5: DESACREDITAR USUARIO -->
+            <div id="secDesacreditar" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;">Desacreditar Saldo a Usuario</div>
+                <div class="input-group" style="margin-bottom:8px;"><label>Correo del Usuario</label><input type="email" id="desacreditarEmail" placeholder="socio@gmail.com"></div>
+                <div class="input-group" style="margin-bottom:8px;"><label>Monto a Quitar (USDT)</label><input type="number" id="desacreditarMonto" step="0.01" placeholder="50.00"></div>
+                <button class="btn btn-red" onclick="ejecutarAccionPausada(desacreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;">Desacreditar Saldo</button>
+            </div>
+
+            <!-- SECCIÓN 6: USUARIOS DE LA WEB -->
+            <div id="secUsers" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Usuarios Registrados en la Web</div>
+                <div id="listaAdminUsers" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
         </div>
 
@@ -1235,7 +1245,11 @@
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            renderAdmin();
+            // Ocultar todas las secciones al abrir el panel
+            ['secDep', 'secWit', 'secAdmin', 'secAcreditar', 'secDesacreditar', 'secUsers'].forEach(s => {
+                let el = document.getElementById(s);
+                if(el) el.style.display = 'none';
+            });
         }
         window.abrirPanelAdmin = abrirPanelAdmin;
 
@@ -1246,9 +1260,28 @@
         }
         window.cerrarPanelAdmin = cerrarPanelAdmin;
 
+        function toggleAdminSection(secId) {
+            let secciones = ['secDep', 'secWit', 'secAdmin', 'secAcreditar', 'secDesacreditar', 'secUsers'];
+            secciones.forEach(s => {
+                let el = document.getElementById(s);
+                if(el) {
+                    if(s === secId) {
+                        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+                    } else {
+                        el.style.display = 'none';
+                    }
+                }
+            });
+            if(secId === 'secDep' || secId === 'secWit' || secId === 'secUsers') {
+                renderAdmin();
+            }
+        }
+        window.toggleAdminSection = toggleAdminSection;
+
         async function acreditarSaldoPorCorreo() {
             let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
             let monto = parseFloat(document.getElementById('acreditarMonto').value);
+            if(!mail || isNaN(monto)) { mostrarAlertaPro("Error", "Complete los campos correctamente."); return; }
             
             let docRef = doc(db, "users", mail);
             let docSnap = await getDoc(docRef);
@@ -1270,6 +1303,7 @@
         async function desacreditarSaldoPorCorreo() {
             let mail = document.getElementById('desacreditarEmail').value.trim().toLowerCase();
             let monto = parseFloat(document.getElementById('desacreditarMonto').value);
+            if(!mail || isNaN(monto)) { mostrarAlertaPro("Error", "Complete los campos correctamente."); return; }
             
             let docRef = doc(db, "users", mail);
             let docSnap = await getDoc(docRef);
@@ -1290,6 +1324,8 @@
 
         async function hacerAdminCorreo() {
             let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
+            if(!mail) { mostrarAlertaPro("Error", "Ingrese un correo."); return; }
+            
             let docRef = doc(db, "users", mail);
             let docSnap = await getDoc(docRef);
             if(!docSnap.exists()) { 
@@ -1300,12 +1336,11 @@
 
             document.getElementById('novoAdminEmail').value = '';
             mostrarAlertaPro("Éxito", `Privilegio de Admin otorgado en Firebase a ${mail}`);
-            renderAdmin();
         }
         window.hacerAdminCorreo = hacerAdminCorreo;
 
         async function renderAdmin() {
-            // 6. USUARIOS DE LA WEB (Solo correo, contraseña y saldo)
+            // Usuarios de la web
             let usersSnap = await getDocs(collection(db, "users"));
             let usersArr = [];
             usersSnap.forEach(d => usersArr.push(d.data()));
@@ -1318,7 +1353,7 @@
                 </div>`).join('');
             if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
 
-            // 1. SOLICITUD DE DEPÓSITO
+            // Depósitos pendientes
             let depsSnap = await getDocs(collection(db, "deposits"));
             let deps = [];
             depsSnap.forEach(d => { if(d.data().status === 'Pendiente') deps.push(d.data()); });
@@ -1333,7 +1368,7 @@
                 </div>`).join('');
             if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
 
-            // 2. SOLICITUD DE RETIRO
+            // Retiros pendientes
             let witsSnap = await getDocs(collection(db, "withdrawals"));
             let wits = [];
             witsSnap.forEach(d => { if(d.data().status === 'Pendiente') wits.push(d.data()); });
