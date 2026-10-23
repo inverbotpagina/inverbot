@@ -53,7 +53,7 @@
         }
         
         .header-banner {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('images/banner-inicio.png');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('images/1792708281435.jpg');
             background-size: cover;
             background-position: center;
             color: #fff;
@@ -137,7 +137,7 @@
             display: inline-block; margin-bottom: 12px; font-family: monospace;
         }
 
-        /* Estilo de la Pila / Batería Interactiva */
+        /* Batería limpia sin emojis ni textos de estado */
         .battery-container {
             display: flex; flex-direction: column; align-items: center; margin: 15px 0;
         }
@@ -239,7 +239,7 @@
 
     <div class="app-container">
         
-        <!-- Pantalla de Autenticación con Banner de Fondo Personalizado -->
+        <!-- Pantalla de Autenticación con la imagen correcta -->
         <div id="authScreen" class="card" style="margin-top: 40px; display: none;">
             <div class="header-banner" style="margin-bottom: 16px;">
                 <h1>INVERBOT</h1>
@@ -303,7 +303,7 @@
                 </div>
             </div>
 
-            <!-- TAB CUANTIFICAR CON BATERÍA INTERACTIVA 🪫 / 🔋 -->
+            <!-- TAB CUANTIFICAR (Batería limpia sin emojis ni textos de estado) -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="balance-box">
                     <div class="balance-title">Activos Totales</div>
@@ -321,7 +321,6 @@
                         <div class="battery-body">
                             <div class="battery-fill" id="batteryFillElement"></div>
                         </div>
-                        <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-top: 8px;" id="batteryTextStatus">Batería de Cuantificación 🪫</div>
                     </div>
 
                     <button class="btn btn-green" id="btnCuantificarAccion" onclick="ejecutarCuantificacionConPila()" style="padding: 13px; font-size: 13px; font-weight: 800;">CUANTIFICAR AHORA</button>
@@ -566,7 +565,6 @@
         function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
 
         window.onload = function() {
-            // Ocultar splash screen de carga tras 1 segundo
             setTimeout(() => {
                 let splash = document.getElementById('splashScreen');
                 if(splash) {
@@ -733,22 +731,19 @@
             } else { container.style.display = 'none'; }
         }
 
-        // Animación de la Pila / Batería al Cuantificar
+        // Animación de llenado de la batería sin textos ni emojis
         function ejecutarCuantificacionConPila() {
             let ahora = Date.now();
             if(!currentUser.vipActive || currentUser.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con ninguna Carga activa."); return; }
             if(ahora - (currentUser.lastClaim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso", "Espera a que finalice el contador de ciclo."); return; }
             
             let fill = document.getElementById('batteryFillElement');
-            let txt = document.getElementById('batteryTextStatus');
             let btn = document.getElementById('btnCuantificarAccion');
 
             btn.disabled = true;
-            txt.innerText = "Cargando pila... 🔋";
             fill.style.height = "100%";
 
             setTimeout(() => {
-                txt.innerText = "¡Pila Llena y Cuantificada! 🔋";
                 let rec = currentUser.vipActive === 1 ? 1.5 : (currentUser.vipActive === 2 ? 6.5 : (currentUser.vipActive === 3 ? 42.2 : (currentUser.vipActive === 4 ? 88.5 : 1600.0)));
                 
                 let db = obtenerDatosLocalSeguro();
