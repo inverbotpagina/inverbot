@@ -926,7 +926,7 @@
                 let email = document.getElementById('regEmail').value.trim().toLowerCase();
                 let pass = document.getElementById('regPass').value.trim();
                 let passConfirm = document.getElementById('regPassConfirm').value.trim();
-                let refCode = document.getElementById('regRef').value.trim();
+                let refInput = document.getElementById('regRef').value.trim();
 
                 if(!email || !pass) { mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
                 if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
@@ -936,6 +936,17 @@
                 if(docSnap.exists()) {
                     mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
                     return;
+                }
+
+                // Limpiar código de invitación por si pegaron el enlace completo
+                let refCode = refInput;
+                if(refCode.includes('ref=')) {
+                    try {
+                        let parts = refCode.split('ref=');
+                        if(parts.length > 1) {
+                            refCode = parts[1].split('&')[0];
+                        }
+                    } catch(e) {}
                 }
 
                 let myCode = "REF-" + Math.floor(100000 + Math.random() * 900000);
