@@ -6,17 +6,17 @@
     <title>Global Financial Asset Management | Inverbot</title>
     <style>
         :root {
-            --bg-main: #f4fbf7;
-            --bg-card: #ffffff;
-            --bg-input: #f0fdf4;
-            --border-color: #bbf7d0;
-            --primary-green: #00a859;
-            --primary-green-dark: #008044;
+            --bg-main: #080c0a;
+            --bg-card: #111815;
+            --bg-input: #16221c;
+            --border-color: #1f382a;
+            --primary-green: #00b96b;
+            --primary-green-dark: #008f52;
             --market-green: #00b96b;
             --market-red: #e53e3e;
             --accent-gold: #f59e0b;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -52,28 +52,28 @@
         }
         
         .header-banner {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('images/1792708281435.jpg');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/1792708281435.jpg');
             background-size: cover;
             background-position: center;
             color: #fff;
             padding: 35px 16px;
-            border-radius: 12px;
+            border-radius: 14px;
             margin-bottom: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             text-align: center;
+            border: 1px solid var(--border-color);
         }
-        .header-banner h1 { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .header-banner p { font-size: 11px; opacity: 0.95; letter-spacing: 0.5px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .header-banner h1 { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .header-banner p { font-size: 11px; opacity: 0.9; letter-spacing: 0.5px; font-weight: 700; color: var(--primary-green); text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
 
         .marquee-container {
             overflow: hidden;
-            background: var(--bg-input);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 9px 0;
             margin-bottom: 12px;
             white-space: nowrap;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
         }
         .marquee-track {
             display: inline-block;
@@ -91,19 +91,20 @@
             background-color: var(--bg-card); 
             border: 1px solid var(--border-color); 
             padding: 18px; 
-            border-radius: 12px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
+            border-radius: 14px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
             margin-bottom: 12px; 
             position: relative;
         }
 
         .balance-box {
-            background: linear-gradient(145deg, #ffffff, #f0fdf4);
+            background: linear-gradient(145deg, #111815, #16221c);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 18px;
             margin-bottom: 12px;
             text-align: left;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         .balance-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
         .balance-title svg { width: 14px; height: 14px; fill: var(--primary-green); }
@@ -111,25 +112,25 @@
 
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
         .btn-action-dep {
-            background: var(--primary-green); color: #fff; border: none; padding: 12px;
-            border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center;
+            background: var(--primary-green); color: #000; border: none; padding: 12px;
+            border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center;
         }
         .btn-action-wit {
-            background: #fff; color: var(--primary-green); border: 1px solid var(--primary-green); padding: 12px;
-            border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center;
+            background: var(--bg-card); color: var(--primary-green); border: 1px solid var(--primary-green); padding: 12px;
+            border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center;
         }
         .btn-action-history {
             background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); padding: 10px;
-            border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 6px;
+            border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center; margin-top: 6px;
         }
 
         .team-hero {
-            background: linear-gradient(135deg, #00a859, #008044);
+            background: linear-gradient(135deg, #008f52, #00b96b);
             color: #fff;
             padding: 22px 16px;
             border-radius: 14px;
             margin-bottom: 12px;
-            box-shadow: 0 4px 15px rgba(0,168,89,0.3);
+            box-shadow: 0 4px 15px rgba(0,185,107,0.2);
         }
         .team-hero-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
         .team-hero-title { font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: #fff; }
@@ -137,7 +138,7 @@
         .team-hero-amount { font-size: 24px; font-weight: 900; font-family: monospace; color: #fff; }
         
         .team-hero-btn {
-            background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.3);
             color: #fff; padding: 9px 12px; border-radius: 8px; font-size: 11px; font-weight: 800;
             cursor: pointer; display: flex; align-items: center; gap: 6px; width: fit-content;
             margin-top: 10px;
@@ -145,18 +146,18 @@
 
         .team-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .team-stat-card {
-            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px;
         }
         .team-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .team-stat-value { font-size: 20px; font-weight: 800; color: var(--text-main); font-family: monospace; }
 
         .quant-box {
-            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px 16px; text-align: center; margin-bottom: 12px; position: relative;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px 16px; text-align: center; margin-bottom: 12px; position: relative;
         }
         
         .pool-robot-badge {
             position: absolute; top: 12px; right: 12px; background: var(--bg-input); border: 1px solid var(--border-color);
-            padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
         }
         .pool-robot-badge svg { width: 28px; height: 28px; fill: var(--primary-green); }
 
@@ -166,8 +167,8 @@
         .card-robot-corner svg { width: 18px; height: 18px; fill: var(--primary-green); }
 
         .countdown-timer {
-            font-size: 12px; font-weight: 800; color: var(--market-red); background: #fff5f5;
-            border: 1px solid #fed7d7; padding: 5px 12px; border-radius: 6px;
+            font-size: 12px; font-weight: 800; color: var(--market-red); background: #2a1215;
+            border: 1px solid #5c2227; padding: 5px 12px; border-radius: 8px;
             display: inline-block; margin-bottom: 12px; font-family: monospace;
         }
 
@@ -178,23 +179,23 @@
             width: 16px; height: 6px; background: var(--primary-green); border-radius: 3px 3px 0 0;
         }
         .battery-body {
-            width: 50px; height: 90px; border: 3px solid var(--primary-green); border-radius: 8px;
+            width: 50px; height: 90px; border: 3px solid var(--primary-green); border-radius: 10px;
             padding: 3px; background: var(--bg-input); position: relative; display: flex; flex-direction: column-reverse;
-            overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden; box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
         }
         .battery-fill {
             width: 100%; height: 0%; background: linear-gradient(to top, var(--primary-green-dark), var(--primary-green));
-            border-radius: 4px; transition: height 1.2s ease-in-out;
+            border-radius: 6px; transition: height 1.2s ease-in-out;
         }
 
         .vip-card { 
             background: var(--bg-card); 
             border: 1px solid var(--border-color); 
             padding: 16px; 
-            border-radius: 12px; 
+            border-radius: 14px; 
             margin-bottom: 10px; 
             position: relative;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             cursor: pointer;
         }
         .vip-card.elite {
@@ -203,10 +204,10 @@
 
         .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-right: 24px; }
         .vip-title { font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-        .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #e6f9f0; color: var(--primary-green); text-transform: uppercase; }
+        .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #16221c; color: var(--primary-green); text-transform: uppercase; border: 1px solid var(--border-color); }
         
         .vip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .vip-sub { background: var(--bg-input); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .vip-sub { background: var(--bg-input); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
         .vip-sub-t { font-size: 9px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 2px; }
         .vip-sub-v { font-size: 12px; font-weight: 800; color: var(--text-main); font-family: monospace; }
         .vip-sub-v.green { color: var(--primary-green); }
@@ -214,25 +215,25 @@
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px);
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(3px);
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
         .modal-card {
             background: var(--bg-card); border: 1px solid var(--border-color);
-            padding: 22px; border-radius: 14px; width: 100%; max-width: 320px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 22px; border-radius: 16px; width: 100%; max-width: 320px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
         .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
 
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
-            background: linear-gradient(135deg, #00a859, #008044); color: #fff;
+            background: linear-gradient(135deg, #00b96b, #008f52); color: #000;
             width: 48px; height: 48px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,168,89,0.4);
+            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,185,107,0.4);
             cursor: pointer; text-decoration: none;
         }
-        .floating-support svg { width: 24px; height: 24px; fill: #fff; }
+        .floating-support svg { width: 24px; height: 24px; fill: #000; }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
@@ -246,14 +247,51 @@
 
         .input-group { margin-bottom: 12px; text-align: left; }
         .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
-        .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 12px; outline: none; }
+        .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 12px; outline: none; }
+        .input-group input:focus { border-color: var(--primary-green); }
         
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-green { background: var(--primary-green); color: #fff; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-green { background: var(--primary-green); color: #000; }
         .btn-red { background: var(--market-red); color: #fff; }
         
         .auth-switch { text-align: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
         .auth-switch a { color: var(--primary-green); cursor: pointer; text-decoration: none; font-weight: 800; }
+
+        /* Estilos de botones compactos del Admin con iconos SVG */
+        .admin-grid-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .admin-btn-compact {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .admin-btn-compact:hover {
+            border-color: var(--primary-green);
+            background: #13221b;
+        }
+        .admin-btn-compact svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--primary-green);
+            flex-shrink: 0;
+        }
+        .admin-btn-compact.danger svg {
+            fill: var(--market-red);
+        }
     </style>
 </head>
 <body>
@@ -266,14 +304,14 @@
 
     <div id="customModalContainer"></div>
 
-    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Inverbot" class="floating-support" title="Asistente Robot de Soporte">
+    <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Inverbot" class="floating-support" title="Soporte">
         <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M9 10a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1m6 0a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1m-3 5c-2.33 0-4.31 1.35-5.22 3.31l1.83.74C9.17 17.84 10.5 17 12 17s2.83.84 3.39 2.05l1.83-.74C16.31 16.35 14.33 15 12 15z"/></svg>
     </a>
 
     <div class="app-container">
         
         <!-- Pantalla de Autenticación -->
-        <div id="authScreen" class="card" style="margin-top: 40px; display: none;">
+        <div id="authScreen" class="card" style="margin-top: 30px; display: none;">
             <div class="header-banner" style="margin-bottom: 16px;">
                 <h1>INVERBOT</h1>
                 <p>Global Quantitative Asset Management</p>
@@ -281,6 +319,10 @@
 
             <!-- VISTA REGISTRO -->
             <div id="registerView">
+                <div style="font-size: 14px; font-weight: 800; color: var(--primary-green); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <svg style="width:18px;height:18px;fill:var(--primary-green);" viewBox="0 0 24 24"><path d="M15 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-9-4V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/></svg>
+                    Registro de Socio
+                </div>
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="regEmail" placeholder="trader@gmail.com"></div>
                 <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" placeholder="••••••••"></div>
                 <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" placeholder="••••••••"></div>
@@ -291,6 +333,10 @@
 
             <!-- VISTA LOGIN -->
             <div id="loginView" style="display: none;">
+                <div style="font-size: 14px; font-weight: 800; color: var(--primary-green); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                    <svg style="width:18px;height:18px;fill:var(--primary-green);" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                    Iniciar Sesión
+                </div>
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" placeholder="trader@gmail.com"></div>
                 <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" placeholder="••••••••"></div>
                 <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarLoginFirebase)">Iniciar Sesión</button>
@@ -314,7 +360,7 @@
                     </div>
                 </div>
 
-                <div class="card" style="text-align: center; background: #f0fdf4; border-color: #bbf7d0;">
+                <div class="card" style="text-align: center; background: #111a16; border-color: #1f382a;">
                     <div class="card-robot-corner">
                         <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
                     </div>
@@ -327,7 +373,7 @@
                 <div class="card">
                     <div style="font-size: 11px; font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;">
                         <span>Mercados Globales (USDT)</span>
-                        <span style="font-size: 9px; color: var(--market-green); background: #e6f9f0; padding: 2px 6px; border-radius: 4px; font-weight: 700;">EN VIVO</span>
+                        <span style="font-size: 9px; color: var(--market-green); background: #16221c; padding: 2px 6px; border-radius: 4px; font-weight: 700; border: 1px solid var(--border-color);">EN VIVO</span>
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
@@ -400,15 +446,15 @@
                 <div class="card" style="background: var(--bg-input);">
                     <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">Métricas del Sistema</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center;">
-                        <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-green);">$4,289,150</div></div>
-                        <div style="background:var(--bg-card); padding:10px; border-radius:6px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Modos Operativos</div><div style="font-size:12px; font-weight:800; color:var(--text-main);">1,428</div></div>
+                        <div style="background:var(--bg-card); padding:10px; border-radius:10px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-green);">$4,289,150</div></div>
+                        <div style="background:var(--bg-card); padding:10px; border-radius:10px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Modos Operativos</div><div style="font-size:12px; font-weight:800; color:var(--text-main);">1,428</div></div>
                     </div>
                 </div>
             </div>
 
             <!-- TAB CUANTIFICAR -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
-                <div class="balance-box" style="background: linear-gradient(145deg, #f0fdf4, #e6f9f0);">
+                <div class="balance-box">
                     <div class="balance-title">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
                         Ingreso Diario
@@ -434,7 +480,7 @@
                     </div>
 
                     <button class="btn btn-green" id="btnCuantificarAccion" onclick="ejecutarAccionPausada(ejecutarCuantificacionConPila)" style="padding: 13px; font-size: 13px; font-weight: 800;">
-                        <svg style="width:16px; height:16px; fill:#fff;" viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.88 0-.33-.75-.27-.78C8.73 10.37 14.5 3 14.5 3h1l-1 7h3.53c.88 0 .42.81.24.9-3.3 4.96-7.27 10.1-7.27 10.1z"/></svg>
+                        <svg style="width:16px; height:16px; fill:#000;" viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.88 0-.33-.75-.27-.78C8.73 10.37 14.5 3 14.5 3h1l-1 7h3.53c.88 0 .42.81.24.9-3.3 4.96-7.27 10.1-7.27 10.1z"/></svg>
                         CARGAR AHORA
                     </button>
                     <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para llenar su pila y procesar el rendimiento diario.</p>
@@ -485,7 +531,7 @@
                         <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
                     </div>
                     <h3 style="font-size: 12px; margin-bottom: 4px; font-weight: 800;">ENLACE DE INVITACIÓN</h3>
-                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:10px; border-radius:6px; font-weight:700;"></code>
+                    <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:10px; border-radius:8px; font-weight:700; border:1px solid var(--border-color);"></code>
                     <button class="btn btn-green" onclick="ejecutarAccionPausada(copiarEnlaceReferido)" style="padding:9px; font-size:11px;">Copiar Enlace Seguro</button>
                 </div>
             </div>
@@ -522,7 +568,7 @@
 
                     <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
-                    <div id="adminPanelTrigger" style="display: none; background: #f0fdf4; border: 1px solid var(--primary-green); padding: 12px; border-radius: 8px; margin-top: 14px;">
+                    <div id="adminPanelTrigger" style="display: none; background: #13221b; border: 1px solid var(--primary-green); padding: 12px; border-radius: 10px; margin-top: 14px;">
                         <p style="color: var(--primary-green); font-weight: 800; font-size: 10px; margin-bottom: 8px; text-transform: uppercase;">PANEL EJECUTIVO CEO</p>
                         <button class="btn btn-green" onclick="ejecutarAccionPausada(abrirPanelAdmin)" style="margin:0; font-size: 11px; padding: 9px;">Administrar Modos y Finanzas</button>
                     </div>
@@ -531,44 +577,66 @@
 
         </div>
 
-        <!-- Panel de Administración Reorganizado por Botones -->
+        <!-- Panel de Administración Reorganizado con Iconos Limpios y Compactos -->
         <div id="adminDashboard" class="card" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                 <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">CONTROL EJECUTIVO CEO</h3>
                 <button onclick="ejecutarAccionPausada(cerrarPanelAdmin)" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
             </div>
             
-            <!-- Botones Principales del Panel CEO -->
-            <div style="display: grid; gap: 8px; margin-bottom: 14px;">
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDep'))" style="padding: 10px; font-size: 11px; font-weight: 800;">📥 Solicitud de Depósito</button>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secWit'))" style="padding: 10px; font-size: 11px; font-weight: 800;">📤 Solicitud de Retiro</button>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secAdmin'))" style="padding: 10px; font-size: 11px; font-weight: 800;">👑 Dar Admin</button>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secAcreditar'))" style="padding: 10px; font-size: 11px; font-weight: 800;">➕ Acreditar Usuario</button>
-                <button class="btn btn-red" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDesacreditar'))" style="padding: 10px; font-size: 11px; font-weight: 800;">➖ Desacreditar Usuario</button>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(() => toggleAdminSection('secUsers'))" style="padding: 10px; font-size: 11px; font-weight: 800;">👥 Usuarios de la Web</button>
+            <!-- Botones Compactos con Iconos SVG -->
+            <div class="admin-grid-btns">
+                <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDep'))">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    Depósitos
+                </button>
+                <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secWit'))">
+                    <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
+                    Retiros
+                </button>
+                <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secAdmin'))">
+                    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                    Dar Admin
+                </button>
+                <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secAcreditar'))">
+                    <svg viewBox="0 0 24 24"><path d="M11 15h2v-2h2v-2h-2V9h-2v2H9v2h2v2zm9-6h-4.18C14.4 7.84 13.3 7 12 7c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2zm-7-4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg>
+                    Acreditar
+                </button>
+                <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDesacreditar'))">
+                    <svg viewBox="0 0 24 24"><path d="M9 11h6v2H9v-2zm11-2v9c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h3.18C9.6 5.84 10.7 5 12 5s2.4.84 2.82 2H18c1.1 0 2 .9 2 2zm-8-4c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"/></svg>
+                    Desacreditar
+                </button>
+                <button class="admin-btn-compact danger" onclick="ejecutarAccionPausada(() => toggleAdminSection('secEliminarUser'))">
+                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    Eliminar User
+                </button>
+                <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secUsers'))" style="grid-column: span 2;">
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    Usuarios de la Web
+                </button>
             </div>
 
             <!-- SECCIÓN 1: SOLICITUD DE DEPÓSITO -->
-            <div id="secDep" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+            <div id="secDep" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Solicitudes de Depósito</div>
                 <div id="listaAdminDeps" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
 
             <!-- SECCIÓN 2: SOLICITUD DE RETIRO -->
-            <div id="secWit" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+            <div id="secWit" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;">Solicitudes de Retiro</div>
                 <div id="listaAdminWits" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
 
             <!-- SECCIÓN 3: DAR ADMIN -->
-            <div id="secAdmin" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+            <div id="secAdmin" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Dar Privilegio de Admin</div>
                 <div class="input-group" style="margin-bottom:8px;"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
                 <button class="btn btn-green" onclick="ejecutarAccionPausada(hacerAdminCorreo)" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
             </div>
 
             <!-- SECCIÓN 4: ACREDITAR USUARIO -->
-            <div id="secAcreditar" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+            <div id="secAcreditar" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Acreditar Saldo a Usuario</div>
                 <div class="input-group" style="margin-bottom:8px;"><label>Correo del Usuario</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
                 <div class="input-group" style="margin-bottom:8px;"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
@@ -576,15 +644,22 @@
             </div>
 
             <!-- SECCIÓN 5: DESACREDITAR USUARIO -->
-            <div id="secDesacreditar" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+            <div id="secDesacreditar" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;">Desacreditar Saldo a Usuario</div>
                 <div class="input-group" style="margin-bottom:8px;"><label>Correo del Usuario</label><input type="email" id="desacreditarEmail" placeholder="socio@gmail.com"></div>
                 <div class="input-group" style="margin-bottom:8px;"><label>Monto a Quitar (USDT)</label><input type="number" id="desacreditarMonto" step="0.01" placeholder="50.00"></div>
                 <button class="btn btn-red" onclick="ejecutarAccionPausada(desacreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;">Desacreditar Saldo</button>
             </div>
 
+            <!-- SECCIÓN NUEVA: ELIMINAR USUARIO POR CORREO -->
+            <div id="secEliminarUser" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;">Eliminar Usuario por Correo</div>
+                <div class="input-group" style="margin-bottom:8px;"><label>Correo del Usuario</label><input type="email" id="eliminarUserEmail" placeholder="socio@gmail.com"></div>
+                <button class="btn btn-red" onclick="ejecutarAccionPausada(eliminarUsuarioPorCorreoAdmin)" style="padding:9px; font-size:11px; margin:0;">Eliminar Permanentemente</button>
+            </div>
+
             <!-- SECCIÓN 6: USUARIOS DE LA WEB -->
-            <div id="secUsers" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px;">
+            <div id="secUsers" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Usuarios Registrados en la Web</div>
                 <div id="listaAdminUsers" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
@@ -710,7 +785,6 @@
         }
         window.mostrarAlertaPro = mostrarAlertaPro;
 
-        // NUEVA ALERTA ROJA Y BLANCA EXCLUSIVA PARA RESTRICCIÓN DE REGIÓN / RED
         function mostrarAlertaRestriccionRegion() {
             document.getElementById('customModalContainer').innerHTML = `
                 <div class="modal-overlay">
@@ -773,8 +847,8 @@
             cargasData.forEach(c => {
                 let eliteClass = c.elite ? ' elite' : '';
                 let titleColor = c.elite ? ' style="color:#b7791f;"' : '';
-                let tagStyle = c.elite ? ' style="background:#fefcbf; color:#b7791f;"' : '';
-                let btnStyle = c.elite ? ' style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;"' : '';
+                let tagStyle = c.elite ? ' style="background:#2a2211; color:#f6e05e;"' : '';
+                let btnStyle = c.elite ? ' style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#000; font-weight:800;"' : '';
                 let btnClass = c.elite ? '' : 'btn-green';
                 let btnText = c.elite ? 'Adquirir Carga 10 Elite' : `Adquirir Carga ${c.id}`;
 
@@ -820,7 +894,7 @@
                         let isPos = item.change >= 0;
                         elPct.innerText = (isPos ? '+' : '') + item.change.toFixed(2) + '%';
                         elPct.style.color = isPos ? 'var(--market-green)' : 'var(--market-red)';
-                        elPct.style.background = isPos ? '#e6f9f0' : '#fff5f5';
+                        elPct.style.background = isPos ? '#16221c' : '#2a1215';
                         elPct.style.padding = '2px 5px';
                         elPct.style.borderRadius = '4px';
                     }
@@ -960,8 +1034,8 @@
                 let st = document.getElementById('vip' + c.id + 'StatusText');
                 if(st) { 
                     st.innerText = activo ? "Activado" : "Inactivo"; 
-                    st.style.background = activo ? "#e6f9f0" : (c.elite ? "#fefcbf" : "var(--bg-input)"); 
-                    st.style.color = activo ? "var(--primary-green)" : (c.elite ? "#b7791f" : "var(--text-muted)"); 
+                    st.style.background = activo ? "#16221c" : (c.elite ? "#2a2211" : "var(--bg-input)"); 
+                    st.style.color = activo ? "var(--primary-green)" : (c.elite ? "#f6e05e" : "var(--text-muted)"); 
                 }
                 let act = document.getElementById('vip' + c.id + 'ActionArea');
                 if(act) {
@@ -969,7 +1043,7 @@
                         act.innerHTML = `<button class="btn" style="background:var(--bg-input); color:var(--text-muted); cursor:not-allowed; border:1px solid var(--border-color);" disabled>Activado</button>`;
                     } else {
                         if(c.elite) {
-                            act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="ejecutarAccionPausada(() => comprarVip(10, 18800))">Adquirir Carga 10 Elite</button>`;
+                            act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#000; font-weight:800;" onclick="ejecutarAccionPausada(() => comprarVip(10, 18800))">Adquirir Carga 10 Elite</button>`;
                         } else {
                             act.innerHTML = `<button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(${c.id}, ${c.cost}))">Adquirir Carga ${c.id}</button>`;
                         }
@@ -1099,7 +1173,7 @@
                     <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:10px; text-transform:uppercase;">1. Seleccione Red USDT</div>
                     
                     <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 12px;">
-                        <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('bep20'))" id="redBep20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
+                        <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('bep20'))" id="redBep20" style="background:var(--bg-input); padding:10px; border-radius:10px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
                             <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="24" height="24" alt="USDT">
                             <div>
                                 <div style="font-size:11px; font-weight:800; color:var(--text-main);">USDT (BEP-20)</div>
@@ -1107,7 +1181,7 @@
                             </div>
                         </div>
 
-                        <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('trc20'))" id="redTrc20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
+                        <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('trc20'))" id="redTrc20" style="background:var(--bg-input); padding:10px; border-radius:10px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
                             <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="24" height="24" alt="USDT">
                             <div>
                                 <div style="font-size:11px; font-weight:800; color:var(--text-main);">USDT (TRC-20)</div>
@@ -1115,7 +1189,7 @@
                             </div>
                         </div>
 
-                        <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('erc20'))" id="redErc20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
+                        <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('erc20'))" id="redErc20" style="background:var(--bg-input); padding:10px; border-radius:10px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
                             <img src="https://assets.coincap.io/assets/icons/usdt@2x.png" width="24" height="24" alt="USDT">
                             <div>
                                 <div style="font-size:11px; font-weight:800; color:var(--text-main);">USDT (ERC-20)</div>
@@ -1124,7 +1198,7 @@
                         </div>
                     </div>
 
-                    <div id="walletDetalleContainer" style="display:none; background:var(--bg-input); padding:12px; border-radius:8px; border:1px solid var(--border-color); margin-bottom:10px;">
+                    <div id="walletDetalleContainer" style="display:none; background:var(--bg-input); padding:12px; border-radius:10px; border:1px solid var(--border-color); margin-bottom:10px;">
                         <div style="font-size:10px; font-weight:800; color:var(--primary-green); margin-bottom:4px;" id="tituloRedSeleccionada"></div>
                         <code id="walletSeleccionadaCode" style="font-size:9px; background:var(--bg-card); padding:6px; display:block; word-break:break-all; border:1px solid var(--border-color); margin:4px 0;"></code>
                         <button class="btn btn-green" id="btnCopiarWalletRed" style="padding:6px; font-size:9px; margin:0;">Copiar Dirección de Wallet</button>
@@ -1137,7 +1211,7 @@
 
                     <div id="formularioDepositoExtras" style="display:none;">
                         <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(reportarDep)" style="padding:12px; font-size:12px; font-weight:800;">
-                            <svg style="width:16px; height:16px; fill:#fff;" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                            <svg style="width:16px; height:16px; fill:#000;" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
                             Confirmar Depósito (Enviar a Revisión CEO)
                         </button>
                     </div>`;
@@ -1169,7 +1243,7 @@
                 let el = document.getElementById('red' + r.charAt(0).toUpperCase() + r.slice(1));
                 if(el) {
                     el.style.borderColor = (r === red) ? 'var(--primary-green)' : 'var(--border-color)';
-                    el.style.background = (r === red) ? '#e6f9f0' : 'var(--bg-input)';
+                    el.style.background = (r === red) ? '#16221c' : 'var(--bg-input)';
                 }
             });
 
@@ -1186,7 +1260,7 @@
             let cargasHTML = '';
             cargasData.forEach(c => {
                 cargasHTML += `
-                <div onclick="ejecutarAccionPausada(() => seleccionarCargaParaDeposito(${c.id}))" id="cargaDepOption${c.id}" style="background:var(--bg-card); border:1px solid var(--border-color); padding:8px; border-radius:6px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+                <div onclick="ejecutarAccionPausada(() => seleccionarCargaParaDeposito(${c.id}))" id="cargaDepOption${c.id}" style="background:var(--bg-card); border:1px solid var(--border-color); padding:8px; border-radius:8px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
                     <span style="font-size:11px; font-weight:800;">Carga ${c.id} (${c.cost} USDT)</span>
                     <span style="font-size:10px; color:var(--primary-green); font-weight:700;">Gana $${c.daily}/día</span>
                 </div>`;
@@ -1202,7 +1276,7 @@
                 if(el) {
                     if(c.id === id) {
                         el.style.borderColor = 'var(--primary-green)';
-                        el.style.background = '#e6f9f0';
+                        el.style.background = '#16221c';
                     } else {
                         el.style.borderColor = 'var(--border-color)';
                         el.style.background = 'var(--bg-card)';
@@ -1302,7 +1376,7 @@
             document.getElementById('userDashboard').style.display = 'none';
             document.getElementById('bottomNavBar').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-            ['secDep', 'secWit', 'secAdmin', 'secAcreditar', 'secDesacreditar', 'secUsers'].forEach(s => {
+            ['secDep', 'secWit', 'secAdmin', 'secAcreditar', 'secDesacreditar', 'secEliminarUser', 'secUsers'].forEach(s => {
                 let el = document.getElementById(s);
                 if(el) el.style.display = 'none';
             });
@@ -1317,7 +1391,7 @@
         window.cerrarPanelAdmin = cerrarPanelAdmin;
 
         function toggleAdminSection(secId) {
-            let secciones = ['secDep', 'secWit', 'secAdmin', 'secAcreditar', 'secDesacreditar', 'secUsers'];
+            let secciones = ['secDep', 'secWit', 'secAdmin', 'secAcreditar', 'secDesacreditar', 'secEliminarUser', 'secUsers'];
             secciones.forEach(s => {
                 let el = document.getElementById(s);
                 if(el) {
@@ -1386,6 +1460,32 @@
         }
         window.desacreditarSaldoPorCorreo = desacreditarSaldoPorCorreo;
 
+        async function eliminarUsuarioPorCorreoAdmin() {
+            try {
+                let mail = document.getElementById('eliminarUserEmail').value.trim().toLowerCase();
+                if(!mail) { mostrarAlertaPro("Error", "Ingrese el correo del usuario."); return; }
+                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(mail) || mail === "soporteinverbot@gmail.com") {
+                    mostrarAlertaPro("Acción Denegada", "No se pueden eliminar cuentas de CEO.");
+                    return;
+                }
+
+                let docRef = doc(db, "users", mail);
+                let docSnap = await getDoc(docRef);
+                if(!docSnap.exists()) {
+                    mostrarAlertaPro("Error", "El usuario no existe en la base de datos.");
+                    return;
+                }
+
+                await deleteDoc(docRef);
+                document.getElementById('eliminarUserEmail').value = '';
+                mostrarAlertaPro("Éxito", `Usuario ${mail} eliminado permanentemente.`);
+                renderAdmin();
+            } catch(e) {
+                mostrarAlertaRestriccionRegion();
+            }
+        }
+        window.eliminarUsuarioPorCorreoAdmin = eliminarUsuarioPorCorreoAdmin;
+
         async function hacerAdminCorreo() {
             try {
                 let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
@@ -1415,7 +1515,7 @@
                 usersSnap.forEach(d => usersArr.push(d.data()));
                 
                 let uHtml = usersArr.map(u => `
-                    <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
+                    <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:8px;">
                         <div style="font-size:10px; color:var(--text-main);"><b>Correo:</b> ${u.email}</div>
                         <div style="font-size:10px; color:var(--text-main);"><b>Contraseña:</b> ${u.pass}</div>
                         <div style="font-size:10px; color:var(--primary-green); font-weight:800;"><b>Saldo:</b> $${u.balance.toFixed(2)} USDT</div>
@@ -1427,12 +1527,12 @@
                 let deps = [];
                 depsSnap.forEach(d => { if(d.data().status === 'Pendiente') deps.push(d.data()); });
                 let dHtml = deps.length === 0 ? "<div style='font-size:10px; color:var(--text-muted);'>Sin solicitudes pendientes</div>" : deps.map(x => `
-                    <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
+                    <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:8px;">
                         <div style="font-size:10px;"><b>Socio:</b> ${x.user}</div>
                         <div style="font-size:10px;"><b>Detalle:</b> ${x.hash}</div>
                         <div style="display:flex; gap:6px; margin-top:6px;">
-                            <button onclick="ejecutarAccionPausada(() => window.aprobarDep('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
-                            <button onclick="ejecutarAccionPausada(() => window.cancelarDep('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
+                            <button onclick="ejecutarAccionPausada(() => window.aprobarDep('${x.id}'))" style="background:var(--primary-green);color:#000;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
+                            <button onclick="ejecutarAccionPausada(() => window.cancelarDep('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
                         </div>
                     </div>`).join('');
                 if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
@@ -1442,13 +1542,13 @@
                 let wits = [];
                 witsSnap.forEach(d => { if(d.data().status === 'Pendiente') wits.push(d.data()); });
                 let wHtml = wits.length === 0 ? "<div style='font-size:10px; color:var(--text-muted);'>Sin solicitudes pendientes</div>" : wits.map(x => `
-                    <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
+                    <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:8px;">
                         <div style="font-size:10px;"><b>Socio:</b> ${x.user}</div>
                         <div style="font-size:10px;"><b>Monto:</b> -$${x.monto} USDT</div>
                         <div style="font-size:9px; color:var(--text-muted);"><b>Wallet:</b> ${x.wallet}</div>
                         <div style="display:flex; gap:6px; margin-top:6px;">
-                            <button onclick="ejecutarAccionPausada(() => window.aprobarWit('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
-                            <button onclick="ejecutarAccionPausada(() => window.cancelarWit('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
+                            <button onclick="ejecutarAccionPausada(() => window.aprobarWit('${x.id}'))" style="background:var(--primary-green);color:#000;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
+                            <button onclick="ejecutarAccionPausada(() => window.cancelarWit('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
                         </div>
                     </div>`).join('');
                 if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
