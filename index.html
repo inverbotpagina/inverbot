@@ -226,14 +226,20 @@
         .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
         .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
 
+        /* Botón de soporte actualizado: Negro con borde y verde adentro */
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
-            background: linear-gradient(135deg, #00b96b, #008f52); color: #000;
+            background: var(--bg-card); border: 1px solid var(--border-color);
             width: 48px; height: 48px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,185,107,0.4);
+            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             cursor: pointer; text-decoration: none;
+            transition: all 0.2s;
         }
-        .floating-support svg { width: 24px; height: 24px; fill: #000; }
+        .floating-support:hover {
+            border-color: var(--primary-green);
+            background: var(--bg-input);
+        }
+        .floating-support svg { width: 22px; height: 22px; fill: var(--primary-green); }
 
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
@@ -257,7 +263,7 @@
         .auth-switch { text-align: center; margin-top: 14px; font-size: 11px; color: var(--text-muted); }
         .auth-switch a { color: var(--primary-green); cursor: pointer; text-decoration: none; font-weight: 800; }
 
-        /* Estilos de botones compactos del Admin con iconos SVG */
+        /* Botones compactos del Admin estilizados en negro con verde */
         .admin-grid-btns {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -265,27 +271,27 @@
             margin-bottom: 14px;
         }
         .admin-btn-compact {
-            background: var(--bg-input);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 8px 10px;
+            padding: 9px 10px;
             border-radius: 10px;
             font-size: 10px;
             font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             text-align: left;
             transition: all 0.2s;
         }
         .admin-btn-compact:hover {
             border-color: var(--primary-green);
-            background: #13221b;
+            background: var(--bg-input);
         }
         .admin-btn-compact svg {
-            width: 14px;
-            height: 14px;
+            width: 15px;
+            height: 15px;
             fill: var(--primary-green);
             flex-shrink: 0;
         }
@@ -577,14 +583,14 @@
 
         </div>
 
-        <!-- Panel de Administración Reorganizado con Iconos Limpios y Compactos -->
+        <!-- Panel de Administración -->
         <div id="adminDashboard" class="card" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                 <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">CONTROL EJECUTIVO CEO</h3>
                 <button onclick="ejecutarAccionPausada(cerrarPanelAdmin)" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
             </div>
             
-            <!-- Botones Compactos con Iconos SVG -->
+            <!-- Botones compactos con diseño oscuro y verde -->
             <div class="admin-grid-btns">
                 <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDep'))">
                     <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
@@ -651,7 +657,7 @@
                 <button class="btn btn-red" onclick="ejecutarAccionPausada(desacreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;">Desacreditar Saldo</button>
             </div>
 
-            <!-- SECCIÓN NUEVA: ELIMINAR USUARIO POR CORREO -->
+            <!-- SECCIÓN: ELIMINAR USUARIO POR CORREO -->
             <div id="secEliminarUser" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
                 <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;">Eliminar Usuario por Correo</div>
                 <div class="input-group" style="margin-bottom:8px;"><label>Correo del Usuario</label><input type="email" id="eliminarUserEmail" placeholder="socio@gmail.com"></div>
