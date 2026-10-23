@@ -6,8 +6,8 @@
     <title>Global Financial Asset Management | Inverbot</title>
     <style>
         :root {
-            --bg-main: #080c0a;
-            --bg-card: #111815;
+            --bg-main: #050806;
+            --bg-card: rgba(17, 24, 21, 0.92);
             --bg-input: #16221c;
             --border-color: #1f382a;
             --primary-green: #00b96b;
@@ -24,9 +24,11 @@
         body { 
             background-color: var(--bg-main); 
             background-image: 
-                radial-gradient(circle at 15% 20%, rgba(0, 185, 107, 0.14) 0%, transparent 45%),
-                radial-gradient(circle at 85% 80%, rgba(0, 185, 107, 0.1) 0%, transparent 50%);
+                radial-gradient(circle at 20% 25%, rgba(0, 255, 128, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 80% 75%, rgba(0, 185, 107, 0.18) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 120, 70, 0.12) 0%, transparent 65%);
             background-attachment: fixed;
+            background-size: cover;
             color: var(--text-main); 
             display: block; 
             min-height: 100vh; 
@@ -73,6 +75,7 @@
         .marquee-container {
             overflow: hidden;
             background: var(--bg-card);
+            backdrop-filter: blur(4px);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 9px 0;
@@ -93,6 +96,7 @@
 
         .card { 
             background-color: var(--bg-card); 
+            backdrop-filter: blur(5px);
             border: 1px solid var(--border-color); 
             padding: 18px; 
             border-radius: 14px; 
@@ -102,7 +106,8 @@
         }
 
         .balance-box {
-            background: linear-gradient(145deg, #111815, #16221c);
+            background: linear-gradient(145deg, rgba(17, 24, 21, 0.95), rgba(22, 34, 28, 0.95));
+            backdrop-filter: blur(5px);
             border: 1px solid var(--border-color);
             border-radius: 14px;
             padding: 18px;
@@ -150,13 +155,13 @@
 
         .team-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .team-stat-card {
-            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px;
+            background: var(--bg-card); backdrop-filter: blur(5px); border: 1px solid var(--border-color); border-radius: 14px; padding: 14px;
         }
         .team-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .team-stat-value { font-size: 20px; font-weight: 800; color: var(--text-main); font-family: monospace; }
 
         .quant-box {
-            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px 16px; text-align: center; margin-bottom: 12px; position: relative;
+            background: var(--bg-card); backdrop-filter: blur(5px); border: 1px solid var(--border-color); border-radius: 14px; padding: 24px 16px; text-align: center; margin-bottom: 12px; position: relative;
         }
         
         .pool-robot-badge {
@@ -194,6 +199,7 @@
 
         .vip-card { 
             background: var(--bg-card); 
+            backdrop-filter: blur(5px);
             border: 1px solid var(--border-color); 
             padding: 16px; 
             border-radius: 14px; 
@@ -223,7 +229,7 @@
             display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
         }
         .modal-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
+            background: var(--bg-card); backdrop-filter: blur(6px); border: 1px solid var(--border-color);
             padding: 22px; border-radius: 16px; width: 100%; max-width: 320px; text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
@@ -232,7 +238,7 @@
 
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
-            background: var(--bg-card); border: 1px solid var(--border-color);
+            background: var(--bg-card); backdrop-filter: blur(4px); border: 1px solid var(--border-color);
             width: 48px; height: 48px; border-radius: 50%; display: flex;
             align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             cursor: pointer; text-decoration: none;
@@ -247,7 +253,7 @@
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 450px;
-            background: var(--bg-card); border-top: 1px solid var(--border-color);
+            background: var(--bg-card); backdrop-filter: blur(6px); border-top: 1px solid var(--border-color);
             display: flex; justify-content: space-around; padding: 8px 0; z-index: 100;
         }
         .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 9px; font-weight: 700; cursor: pointer; gap: 3px; }
@@ -368,7 +374,7 @@
                     </div>
                 </div>
 
-                <div class="card" style="text-align: center; background: #111a16; border-color: #1f382a;">
+                <div class="card" style="text-align: center; background: rgba(17, 26, 22, 0.9); border-color: #1f382a;">
                     <div class="card-robot-corner">
                         <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
                     </div>
@@ -451,7 +457,7 @@
                     </div>
                 </div>
 
-                <div class="card" style="background: var(--bg-input);">
+                <div class="card" style="background: rgba(22, 34, 28, 0.9);">
                     <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">Métricas del Sistema</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center;">
                         <div style="background:var(--bg-card); padding:10px; border-radius:10px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-green);">$4,289,150</div></div>
@@ -697,7 +703,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-        import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyBtgCtppNvC4FnyO8AluG1Xwzdt-AbVyqk",
@@ -941,14 +947,18 @@
                 };
 
                 if(refCode) {
-                    let querySnapshot = await getDocs(collection(db, "users"));
-                    querySnapshot.forEach(d => {
-                        let uData = d.data();
-                        if(uData.code && uData.code.toUpperCase() === refCode.toUpperCase()) {
-                            currentUser.refBy = uData.email;
-                            updateDoc(doc(db, "users", uData.email), { refCount: (uData.refCount || 0) + 1 });
+                    try {
+                        let q = query(collection(db, "users"), where("code", "==", refCode.toUpperCase()));
+                        let querySnapshot = await getDocs(q);
+                        if (!querySnapshot.empty) {
+                            let refUserDoc = querySnapshot.docs[0];
+                            let refUserData = refUserDoc.data();
+                            currentUser.refBy = refUserData.email;
+                            await updateDoc(doc(db, "users", refUserData.email), { refCount: (refUserData.refCount || 0) + 1 });
                         }
-                    });
+                    } catch(err) {
+                        console.log("Error al buscar patrocinador:", err);
+                    }
                 }
 
                 await setDoc(docRef, currentUser);
@@ -1023,7 +1033,7 @@
             document.getElementById('lblTeamComision').innerText = (currentUser.commissionTotal || 0).toFixed(2);
             document.getElementById('lblTeamTotalRef').innerText = currentUser.refCount || 0;
             document.getElementById('lblTeamValidRef').innerText = currentUser.validRefCount || 0;
-            document.getElementById('lblTeamDepEquipo').innerText = (currentUser.teamDepositTotal || 0).toFixed(2);
+            document.getElementById('lblTeamDepEquipo').innerText = "$" + (currentUser.teamDepositTotal || 0).toFixed(2);
 
             document.getElementById('lblMyRefLink').innerText = window.location.origin + window.location.pathname + "?ref=" + currentUser.code;
             
@@ -1586,7 +1596,7 @@
                         lastClaim: uData.lastClaim
                     });
 
-                    // Procesar sistema de referidos automáticos
+                    // Sistema de referidos automáticos
                     if(uData.refBy) {
                         let referrerRef = doc(db, "users", uData.refBy);
                         let referrerSnap = await getDoc(referrerRef);
@@ -1595,7 +1605,7 @@
                             let newTeamDep = (refData.teamDepositTotal || 0) + dep.monto;
                             let updatePayload = { teamDepositTotal: newTeamDep };
 
-                            // Si el depósito es de 10 USDT o más y este referido no había otorgado el bono de 1 USDT aún
+                            // Si el depósito es de 10 USDT o más y este referido no ha otorgado el bono de 1 USDT aún
                             if(dep.monto >= 10 && !uData.refBonusPaid) {
                                 refData.balance = (refData.balance || 0) + 1;
                                 refData.commissionTotal = (refData.commissionTotal || 0) + 1;
