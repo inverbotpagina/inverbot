@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Financial Asset Management | Inverbot</title>
-    <!-- Configuración para Icono y Acceso Directo Móvil -->
+    <!-- Configuración PWA y Acceso Directo -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/jpeg" href="images/IMG-20261023-WA0039.jpg">
     <link rel="apple-touch-icon" href="images/IMG-20261023-WA0039.jpg">
+    <meta name="theme-color" content="#00b96b">
     <style>
         :root {
             --bg-main: #050806;
@@ -269,7 +270,6 @@
         .input-group input, .input-group select { width: 100%; padding: 11px; background-color: var(--bg-input); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 12px; outline: none; }
         .input-group input:focus { border-color: var(--primary-green); }
         
-        /* Contenedor para mostrar/ocultar contraseña */
         .password-wrapper { position: relative; }
         .password-wrapper input { padding-right: 40px; }
         .toggle-password {
@@ -354,7 +354,6 @@
                 </div>
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="regEmail" placeholder="trader@gmail.com"></div>
                 
-                <!-- Contraseña Registro con Ojo -->
                 <div class="input-group">
                     <label>Contraseña</label>
                     <div class="password-wrapper">
@@ -365,7 +364,6 @@
                     </div>
                 </div>
 
-                <!-- Confirmar Contraseña Registro con Ojo -->
                 <div class="input-group">
                     <label>Confirmar Contraseña</label>
                     <div class="password-wrapper">
@@ -389,7 +387,6 @@
                 </div>
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" placeholder="trader@gmail.com"></div>
                 
-                <!-- Contraseña Login con Ojo -->
                 <div class="input-group">
                     <label>Contraseña</label>
                     <div class="password-wrapper">
@@ -746,11 +743,20 @@
 
     </div>
 
-    <!-- Script Integrado con Firebase SDK Modular (CDN) y Carga Segura -->
+    <!-- Script Integrado con Firebase SDK Modular (CDN) y Registro de Service Worker -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
         import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Registrar Service Worker para PWA (para que el icono se vea como app normal)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito:', reg.scope))
+                    .catch(err => console.log('Error al registrar Service Worker:', err));
+            });
+        }
 
         const firebaseConfig = {
           apiKey: "AIzaSyBtgCtppNvC4FnyO8AluG1Xwzdt-AbVyqk",
@@ -800,7 +806,6 @@
         }
         window.ejecutarAccionPausada = ejecutarAccionPausada;
 
-        // Función para mostrar u ocultar contraseña con el botón del ojo
         function togglePasswordVisibility(id, btn) {
             let input = document.getElementById(id);
             if (!input) return;
