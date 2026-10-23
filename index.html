@@ -531,34 +531,53 @@
 
         </div>
 
-        <!-- Panel de Administración -->
+        <!-- Panel de Administración Reorganizado -->
         <div id="adminDashboard" class="card" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">CONTROL EJECUTIVO CEO</h3>
                 <button onclick="ejecutarAccionPausada(cerrarPanelAdmin)" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
             </div>
             
-            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Acreditar Saldo a Usuario</div>
-                <div class="input-group"><label>Correo</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
-                <div class="input-group"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(acreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo Directo</button>
+            <!-- 1. SOLICITUD DE DEPÓSITO -->
+            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; text-transform: uppercase;">1. Solicitud de Depósito</div>
+                <div id="listaAdminDeps" style="max-height: 140px; overflow-y: auto;"></div>
             </div>
 
-            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 14px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Otorgar Privilegio de Administrador</div>
-                <div class="input-group"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(hacerAdminCorreo)" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
+            <!-- 2. SOLICITUD DE RETIRO -->
+            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 6px; text-transform: uppercase;">2. Solicitud de Retiro</div>
+                <div id="listaAdminWits" style="max-height: 140px; overflow-y: auto;"></div>
             </div>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Lista General de Usuarios</div>
-            <div id="listaAdminUsers" style="margin-bottom: 14px; max-height: 120px; overflow-y: auto;"></div>
+            <!-- 3. DAR ADMIN -->
+            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; text-transform: uppercase;">3. Dar Admin</div>
+                <div class="input-group" style="margin-bottom:6px;"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(hacerAdminCorreo)" style="padding:8px; font-size:11px; margin:0;">Otorgar Admin</button>
+            </div>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase;">Depósitos Pendientes</div>
-            <div id="listaAdminDeps" style="margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
+            <!-- 4. ACREDITAR USUARIO -->
+            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; text-transform: uppercase;">4. Acreditar Usuario</div>
+                <div class="input-group" style="margin-bottom:6px;"><label>Correo</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
+                <div class="input-group" style="margin-bottom:6px;"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(acreditarSaldoPorCorreo)" style="padding:8px; font-size:11px; margin:0;">Acreditar Saldo</button>
+            </div>
 
-            <div style="font-size: 11px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; color: var(--market-red);">Retiros Pendientes</div>
-            <div id="listaAdminWits" style="max-height: 140px; overflow-y: auto;"></div>
+            <!-- 5. DESACREDITAR USUARIO -->
+            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 6px; text-transform: uppercase;">5. Desacreditar Usuario</div>
+                <div class="input-group" style="margin-bottom:6px;"><label>Correo</label><input type="email" id="desacreditarEmail" placeholder="socio@gmail.com"></div>
+                <div class="input-group" style="margin-bottom:6px;"><label>Monto a Quitar (USDT)</label><input type="number" id="desacreditarMonto" step="0.01" placeholder="50.00"></div>
+                <button class="btn btn-red" onclick="ejecutarAccionPausada(desacreditarSaldoPorCorreo)" style="padding:8px; font-size:11px; margin:0;">Desacreditar Saldo</button>
+            </div>
+
+            <!-- 6. USUARIOS DE LA WEB -->
+            <div style="background: var(--bg-input); border: 1px solid var(--border-color); padding: 10px; border-radius: 8px;">
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 6px; text-transform: uppercase;">6. Usuarios de la Web</div>
+                <div id="listaAdminUsers" style="max-height: 140px; overflow-y: auto;"></div>
+            </div>
         </div>
 
         <!-- Navegación Inferior -->
@@ -600,7 +619,6 @@
 
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-        // CORREGIDO: Apuntando explícitamente a la base de datos "default" creada en Firestore
         const db = getFirestore(app, "default");
 
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
@@ -1069,7 +1087,7 @@
                     <div id="formularioDepositoExtras" style="display:none;">
                         <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(reportarDep)" style="padding:12px; font-size:12px; font-weight:800;">
                             <svg style="width:16px; height:16px; fill:#fff;" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-                            Confirmar Depósito y Activar Carga
+                            Confirmar Depósito (Enviar a Revisión CEO)
                         </button>
                     </div>`;
             } else {
@@ -1150,21 +1168,20 @@
             
             let cargaObj = cargasData.find(x => x.id === selectedChargeForDeposit);
             
-            currentUser.vipActive = cargaObj.id;
-            currentUser.vipExpiry = Date.now() + (35 * 24 * 3600 * 1000);
-            currentUser.lastClaim = 0;
-            
             let depId = 'DEP-' + Date.now();
-            let newDep = { id: depId, user: currentUser.email, monto: cargaObj.cost, hash: `Red: ${redActualSeleccionada.toUpperCase()} | Carga ${cargaObj.id}`, status: 'Aprobado Automático', fecha: new Date().toLocaleDateString() };
+            let newDep = { 
+                id: depId, 
+                user: currentUser.email, 
+                monto: cargaObj.cost, 
+                vipId: cargaObj.id,
+                hash: `Red: ${redActualSeleccionada.toUpperCase()} | Carga ${cargaObj.id}`, 
+                status: 'Pendiente', 
+                fecha: new Date().toLocaleDateString() 
+            };
             
             await setDoc(doc(db, "deposits", depId), newDep);
-            await updateDoc(doc(db, "users", currentUser.email), {
-                vipActive: currentUser.vipActive,
-                vipExpiry: currentUser.vipExpiry,
-                lastClaim: currentUser.lastClaim
-            });
 
-            mostrarAlertaPro("¡Éxito!", `Depósito procesado en Firebase. Se ha activado la <b>Carga ${cargaObj.id}</b>.`);
+            mostrarAlertaPro("Solicitud Enviada", "Depósito enviado a revisión del CEO. Su carga se activará al ser aprobado.");
             document.getElementById('subAccionContainer').style.display = 'none';
             entrarDashboardDirecto();
         }
@@ -1250,6 +1267,27 @@
         }
         window.acreditarSaldoPorCorreo = acreditarSaldoPorCorreo;
 
+        async function desacreditarSaldoPorCorreo() {
+            let mail = document.getElementById('desacreditarEmail').value.trim().toLowerCase();
+            let monto = parseFloat(document.getElementById('desacreditarMonto').value);
+            
+            let docRef = doc(db, "users", mail);
+            let docSnap = await getDoc(docRef);
+            if(!docSnap.exists()) { 
+                mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
+                return; 
+            }
+            let target = docSnap.data();
+            target.balance = Math.max(0, target.balance - monto);
+            await updateDoc(docRef, { balance: target.balance });
+
+            document.getElementById('desacreditarEmail').value = '';
+            document.getElementById('desacreditarMonto').value = '';
+            mostrarAlertaPro("Éxito", `Desacreditado -$${monto} a ${target.email}`);
+            renderAdmin();
+        }
+        window.desacreditarSaldoPorCorreo = desacreditarSaldoPorCorreo;
+
         async function hacerAdminCorreo() {
             let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
             let docRef = doc(db, "users", mail);
@@ -1267,71 +1305,100 @@
         window.hacerAdminCorreo = hacerAdminCorreo;
 
         async function renderAdmin() {
+            // 6. USUARIOS DE LA WEB (Solo correo, contraseña y saldo)
             let usersSnap = await getDocs(collection(db, "users"));
             let usersArr = [];
             usersSnap.forEach(d => usersArr.push(d.data()));
             
             let uHtml = usersArr.map(u => `
-                <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
-                    <div style="display:flex; gap:4px;">
-                        <button onclick="ejecutarAccionPausada(() => window.toggleAdminUser('${u.email}'))" style="background:${u.isAdmin?'#d69e2e':'var(--primary-green)'};color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">${u.isAdmin?'Quitar':'Admin'}</button>
-                        <button onclick="ejecutarAccionPausada(() => window.eliminarUsuarioAdmin('${u.email}'))" style="background:var(--market-red);color:#fff;border:none;padding:3px 6px;border-radius:3px;cursor:pointer;font-size:9px;font-weight:800;">Eliminar</button>
-                    </div>
+                <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
+                    <div style="font-size:10px; color:var(--text-main);"><b>Correo:</b> ${u.email}</div>
+                    <div style="font-size:10px; color:var(--text-main);"><b>Contraseña:</b> ${u.pass}</div>
+                    <div style="font-size:10px; color:var(--primary-green); font-weight:800;"><b>Saldo:</b> $${u.balance.toFixed(2)} USDT</div>
                 </div>`).join('');
             if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
 
+            // 1. SOLICITUD DE DEPÓSITO
             let depsSnap = await getDocs(collection(db, "deposits"));
             let deps = [];
             depsSnap.forEach(d => { if(d.data().status === 'Pendiente') deps.push(d.data()); });
-            let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
-                <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px;">
-                    <b>${x.user}</b>: ${x.hash}<br>
-                    <button onclick="ejecutarAccionPausada(() => window.aprobarDep('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
+            let dHtml = deps.length === 0 ? "<div style='font-size:10px; color:var(--text-muted);'>Sin solicitudes pendientes</div>" : deps.map(x => `
+                <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
+                    <div style="font-size:10px;"><b>Socio:</b> ${x.user}</div>
+                    <div style="font-size:10px;"><b>Detalle:</b> ${x.hash}</div>
+                    <div style="display:flex; gap:6px; margin-top:6px;">
+                        <button onclick="ejecutarAccionPausada(() => window.aprobarDep('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
+                        <button onclick="ejecutarAccionPausada(() => window.cancelarDep('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
+                    </div>
                 </div>`).join('');
             if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
 
+            // 2. SOLICITUD DE RETIRO
             let witsSnap = await getDocs(collection(db, "withdrawals"));
             let wits = [];
             witsSnap.forEach(d => { if(d.data().status === 'Pendiente') wits.push(d.data()); });
-            let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
-                <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px;">
-                    <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:var(--text-muted);">Wallet: ${x.wallet}</span><br>
-                    <button onclick="ejecutarAccionPausada(() => window.aprobarWit('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:3px 8px;border-radius:3px;cursor:pointer;margin-top:4px;font-weight:800;">Aprobar</button>
+            let wHtml = wits.length === 0 ? "<div style='font-size:10px; color:var(--text-muted);'>Sin solicitudes pendientes</div>" : wits.map(x => `
+                <div style="background:var(--bg-card); padding:8px; margin-bottom:6px; border:1px solid var(--border-color); border-radius:6px;">
+                    <div style="font-size:10px;"><b>Socio:</b> ${x.user}</div>
+                    <div style="font-size:10px;"><b>Monto:</b> -$${x.monto} USDT</div>
+                    <div style="font-size:9px; color:var(--text-muted);"><b>Wallet:</b> ${x.wallet}</div>
+                    <div style="display:flex; gap:6px; margin-top:6px;">
+                        <button onclick="ejecutarAccionPausada(() => window.aprobarWit('${x.id}'))" style="background:var(--primary-green);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Aprobar</button>
+                        <button onclick="ejecutarAccionPausada(() => window.cancelarWit('${x.id}'))" style="background:var(--market-red);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:9px;font-weight:800;">Cancelar</button>
+                    </div>
                 </div>`).join('');
             if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
         }
 
-        window.toggleAdminUser = async function(email) {
-            let docRef = doc(db, "users", email);
-            let docSnap = await getDoc(docRef);
-            if(docSnap.exists()) {
-                let target = docSnap.data();
-                if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase()) || target.email.toLowerCase() === "soporteinverbot@gmail.com") {
-                    mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
-                    return;
-                }
-                await updateDoc(docRef, { isAdmin: !target.isAdmin });
-                renderAdmin();
-            }
-        };
+        window.aprobarDep = async function(id) {
+            let depDocRef = doc(db, "deposits", id);
+            let depSnap = await getDoc(depDocRef);
+            if(!depSnap.exists()) return;
+            let dep = depSnap.data();
 
-        window.eliminarUsuarioAdmin = async function(email) {
-            if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase()) || email.toLowerCase() === "soporteinverbot@gmail.com") {
-                mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
-                return;
+            let userDocRef = doc(db, "users", dep.user);
+            let userSnap = await getDoc(userDocRef);
+            if(userSnap.exists()) {
+                let uData = userSnap.data();
+                uData.vipActive = dep.vipId;
+                uData.vipExpiry = Date.now() + (35 * 24 * 3600 * 1000);
+                uData.lastClaim = 0;
+                await updateDoc(userDocRef, {
+                    vipActive: uData.vipActive,
+                    vipExpiry: uData.vipExpiry,
+                    lastClaim: uData.lastClaim
+                });
             }
-            await deleteDoc(doc(db, "users", email));
+
+            await updateDoc(depDocRef, { status: 'Aprobado' });
             renderAdmin();
         };
 
-        window.aprobarDep = async function(id) {
-            await updateDoc(doc(db, "deposits", id), { status: 'Aprobado' });
+        window.cancelarDep = async function(id) {
+            await updateDoc(doc(db, "deposits", id), { status: 'Cancelado' });
             renderAdmin();
         };
 
         window.aprobarWit = async function(id) {
             await updateDoc(doc(db, "withdrawals", id), { status: 'Aprobado' });
+            renderAdmin();
+        };
+
+        window.cancelarWit = async function(id) {
+            let witDocRef = doc(db, "withdrawals", id);
+            let witSnap = await getDoc(witDocRef);
+            if(!witSnap.exists()) return;
+            let wit = witSnap.data();
+
+            let userDocRef = doc(db, "users", wit.user);
+            let userSnap = await getDoc(userDocRef);
+            if(userSnap.exists()) {
+                let uData = userSnap.data();
+                let nuevoSaldo = uData.balance + wit.monto;
+                await updateDoc(userDocRef, { balance: nuevoSaldo });
+            }
+
+            await updateDoc(witDocRef, { status: 'Cancelado' });
             renderAdmin();
         };
 
