@@ -26,17 +26,15 @@
             color: var(--text-main); 
             display: block; 
             min-height: 100vh; 
-            padding-bottom: 80px;
+            padding-bottom: 85px;
         }
 
-        #splashScreen, #actionLoader {
+        #splashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(244, 251, 247, 0.92); backdrop-filter: blur(2px);
-            display: flex; flex-direction: column;
+            background: var(--bg-main); display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 9999;
             transition: opacity 0.3s ease;
         }
-        #actionLoader { display: none; z-index: 10000; }
         .spinner {
             width: 42px; height: 42px; border: 4px solid var(--border-color);
             border-top: 4px solid var(--primary-green); border-radius: 50%;
@@ -67,7 +65,6 @@
         .header-banner h1 { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .header-banner p { font-size: 11px; opacity: 0.95; letter-spacing: 0.5px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
-        /* Estilo de la barra de anuncios movible (Marquee) */
         .marquee-container {
             overflow: hidden;
             background: var(--bg-input);
@@ -108,7 +105,8 @@
             margin-bottom: 12px;
             text-align: left;
         }
-        .balance-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+        .balance-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .balance-title svg { width: 14px; height: 14px; fill: var(--primary-green); }
         .balance-amount { font-size: 26px; font-weight: 800; color: var(--primary-green); font-family: monospace; }
 
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
@@ -156,14 +154,12 @@
             background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px 16px; text-align: center; margin-bottom: 12px; position: relative;
         }
         
-        /* Icono de Robot Limpiapiscinas Grande en la Pila */
         .pool-robot-badge {
             position: absolute; top: 12px; right: 12px; background: var(--bg-input); border: 1px solid var(--border-color);
             padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
         .pool-robot-badge svg { width: 28px; height: 28px; fill: var(--primary-green); }
 
-        /* Icono de Robot Pequeño en las esquinas de las tarjetas */
         .card-robot-corner {
             position: absolute; top: 10px; right: 12px; opacity: 0.75; display: flex; align-items: center; justify-content: center;
         }
@@ -194,11 +190,12 @@
         .vip-card { 
             background: var(--bg-card); 
             border: 1px solid var(--border-color); 
-            border-radius: 12px; 
             padding: 16px; 
+            border-radius: 12px; 
             margin-bottom: 10px; 
             position: relative;
             box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            cursor: pointer;
         }
         .vip-card.elite {
             border: 2px solid var(--accent-gold);
@@ -228,7 +225,6 @@
         .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; }
         .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: left; max-height: 200px; overflow-y: auto; }
 
-        /* Botón Flotante de Soporte con Robot Icon SVG */
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
             background: linear-gradient(135deg, #00a859, #008044); color: #fff;
@@ -242,11 +238,11 @@
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 450px;
             background: var(--bg-card); border-top: 1px solid var(--border-color);
-            display: flex; justify-content: space-around; padding: 10px 0; z-index: 100;
+            display: flex; justify-content: space-around; padding: 8px 0; z-index: 100;
         }
-        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; gap: 4px; }
+        .nav-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 9px; font-weight: 700; cursor: pointer; gap: 3px; }
         .nav-item.active { color: var(--primary-green); font-weight: 800; }
-        .nav-item svg { width: 20px; height: 20px; fill: currentColor; }
+        .nav-item svg { width: 18px; height: 18px; fill: currentColor; }
 
         .input-group { margin-bottom: 12px; text-align: left; }
         .input-group label { display: block; font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
@@ -262,22 +258,14 @@
 </head>
 <body>
 
-    <!-- Pantalla de Carga Inicial -->
     <div id="splashScreen">
         <div style="font-size: 22px; font-weight: 800; color: var(--primary-green); letter-spacing: 1px;">INVERBOT</div>
         <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;">Cargando plataforma segura...</div>
         <div class="spinner"></div>
     </div>
 
-    <!-- Animación de Pausa Global para Botones y Acciones -->
-    <div id="actionLoader" style="display: none;">
-        <div style="font-size: 13px; font-weight: 800; color: var(--primary-green); letter-spacing: 0.5px;">PROCESANDO...</div>
-        <div class="spinner"></div>
-    </div>
-
     <div id="customModalContainer"></div>
 
-    <!-- Botón de Soporte con Icono de Robot -->
     <a href="mailto:soporteinverbot@gmail.com?subject=Soporte%20Inverbot" class="floating-support" title="Asistente Robot de Soporte">
         <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M9 10a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1m6 0a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-1-1m-3 5c-2.33 0-4.31 1.35-5.22 3.31l1.83.74C9.17 17.84 10.5 17 12 17s2.83.84 3.39 2.05l1.83-.74C16.31 16.35 14.33 15 12 15z"/></svg>
     </a>
@@ -320,7 +308,6 @@
                     <p>Global Quantitative Asset Management</p>
                 </div>
 
-                <!-- NOTIFICACIÓN DESPLAZABLE (MARQUEE) -->
                 <div class="marquee-container">
                     <div class="marquee-track">
                         INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS
@@ -419,16 +406,17 @@
                 </div>
             </div>
 
-            <!-- TAB CUANTIFICAR -->
+            <!-- TAB CUANTIFICAR (SOLO PILA, BOTON E INGRESO DIARIO) -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
-                <div class="balance-box">
-                    <div class="balance-title">Activos Totales</div>
-                    <div class="balance-amount" id="lblBalanceCuantificar">$0.00</div>
+                <div class="balance-box" style="background: linear-gradient(145deg, #f0fdf4, #e6f9f0);">
+                    <div class="balance-title">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+                        Ingreso Diario
+                    </div>
+                    <div class="balance-amount" id="lblIngresoDiario">$0.00 USDT</div>
                 </div>
 
-                <!-- SECCIÓN DE LA PILA CON ROBOT LIMPIAPISCINAS GRANDE EN LA ESQUINA -->
                 <div class="quant-box">
-                    <!-- Icono Robot Limpiapiscinas en la esquina de la pila -->
                     <div class="pool-robot-badge" title="Robot Limpiapiscinas Activo">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
                     </div>
@@ -451,8 +439,19 @@
                     </button>
                     <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para llenar su pila y procesar el rendimiento diario.</p>
                 </div>
+            </div>
 
-                <!-- 10 CARGAS ACTUALIZADAS -->
+            <!-- TAB CARGAS -->
+            <div id="tabCargas" class="tab-content" style="display: none;">
+                <div class="balance-box">
+                    <div class="balance-title">
+                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                        Activo
+                    </div>
+                    <div class="balance-amount" id="lblBalanceCargas">$0.00</div>
+                </div>
+
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">Selecciona o adquiere tu Carga:</div>
                 <div id="vipsContainer"></div>
             </div>
 
@@ -505,7 +504,10 @@
                         </div>
                     </div>
 
-                    <div class="balance-title">Balance Disponible</div>
+                    <div class="balance-title">
+                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                        Balance Disponible
+                    </div>
                     <div class="balance-amount" id="lblBalanceAmi">$0.00</div>
 
                     <div class="action-grid">
@@ -559,13 +561,16 @@
             <div id="listaAdminWits" style="max-height: 140px; overflow-y: auto;"></div>
         </div>
 
-        <!-- Navegación Inferior Pausada -->
+        <!-- Navegación Inferior Pausada Sin Spinner -->
         <div class="bottom-nav" id="bottomNavBar" style="display: none;">
             <button class="nav-item active" onclick="ejecutarAccionPausada(() => cambiarTab('Hogar', this))" id="navHogar">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Hogar
             </button>
             <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Cuantificar', this))" id="navCuantificar">
                 <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>Cuantificar
+            </button>
+            <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Cargas', this))" id="navCargas">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>Cargas
             </button>
             <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Red', this))" id="navRed">
                 <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Equipo
@@ -584,8 +589,8 @@
         let sessionEmail = sessionStorage.getItem("inverbot_session") || null;
         let currentUser = null;
         let countdownInterval = null;
+        let selectedChargeForDeposit = null;
 
-        // Nuevas 10 Cargas definidas con sus costos e ingresos diarios exactos
         const cargasData = [
             { id: 1, cost: 10, daily: 2 },
             { id: 2, cost: 25, daily: 6 },
@@ -608,13 +613,11 @@
             usdt: { price: 1.0000, change: 0.00 }
         };
 
+        // Función para dar la sensación pausada/lenta en las acciones SIN animación visual en pantalla
         function ejecutarAccionPausada(callback) {
-            let loader = document.getElementById('actionLoader');
-            if(loader) loader.style.display = 'flex';
             setTimeout(() => {
                 callback();
-                if(loader) loader.style.display = 'none';
-            }, 450);
+            }, 350); // Retraso deliberado y silencioso
         }
 
         function obtenerDatosLocalSeguro() {
@@ -667,9 +670,9 @@
                 let splash = document.getElementById('splashScreen');
                 if(splash) {
                     splash.style.opacity = '0';
-                    setTimeout(() => splash.style.display = 'none', 500);
+                    setTimeout(() => splash.style.display = 'none', 300);
                 }
-            }, 800);
+            }, 500);
 
             renderizarTarjetasVip();
 
@@ -700,7 +703,7 @@
                 let btnText = c.elite ? 'Adquirir Carga 10 Elite' : `Adquirir Carga ${c.id}`;
 
                 html += `
-                <div class="vip-card${eliteClass}">
+                <div class="vip-card${eliteClass}" id="vipCardElem${c.id}">
                     <div class="card-robot-corner">
                         <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
                     </div>
@@ -831,8 +834,16 @@
             document.getElementById('lblUserEmail').innerText = currentUser.email;
             let b = "$" + currentUser.balance.toFixed(2);
             document.getElementById('lblBalanceAmi').innerText = b;
-            document.getElementById('lblBalanceCuantificar').innerText = b;
+            document.getElementById('lblBalanceCargas').innerText = b;
             
+            let ingresoDiarioVal = 0.00;
+            let ahora = Date.now();
+            if(currentUser.vipActive && currentUser.vipExpiry > ahora) {
+                let activeCarga = cargasData.find(x => x.id === currentUser.vipActive);
+                if(activeCarga) ingresoDiarioVal = activeCarga.daily;
+            }
+            document.getElementById('lblIngresoDiario').innerText = "$" + ingresoDiarioVal.toFixed(2) + " USDT";
+
             document.getElementById('lblTeamComision').innerText = (currentUser.commissionTotal || 0).toFixed(2);
             document.getElementById('lblTeamTotalRef').innerText = currentUser.refCount || 0;
             document.getElementById('lblTeamValidRef').innerText = currentUser.validRefCount || 0;
@@ -916,11 +927,11 @@
                 mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente.`);
                 entrarDashboardDirecto();
                 btn.disabled = false;
-            }, 1400);
+            }, 1000);
         }
 
         function comprarVip(nivel, precio) {
-            if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
+            if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente. Realiza un depósito o selecciona esta carga en tu depósito."); return; }
             
             let db = obtenerDatosLocalSeguro();
             currentUser.balance -= precio; 
@@ -959,7 +970,7 @@
         }
 
         function cambiarTab(tab, btn) {
-            ['Hogar', 'Cuantificar', 'Red', 'Ami'].forEach(t => { document.getElementById('tab' + t).style.display = (t === tab) ? 'block' : 'none'; });
+            ['Hogar', 'Cuantificar', 'Cargas', 'Red', 'Ami'].forEach(t => { document.getElementById('tab' + t).style.display = (t === tab) ? 'block' : 'none'; });
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(btn) btn.classList.add('active');
         }
@@ -967,8 +978,9 @@
         function mostrarSeccion(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
+                selectedChargeForDeposit = null;
                 c.innerHTML = `
-                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:10px; text-transform:uppercase;">Seleccione Red USDT (Mínimo 4 USDT)</div>
+                    <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:10px; text-transform:uppercase;">1. Seleccione Red USDT</div>
                     
                     <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 12px;">
                         <div onclick="ejecutarAccionPausada(() => seleccionarRedDep('bep20'))" id="redBep20" style="background:var(--bg-input); padding:10px; border-radius:8px; border:1px solid var(--border-color); cursor:pointer; display:flex; align-items:center; gap:10px;">
@@ -1002,10 +1014,15 @@
                         <button class="btn btn-green" id="btnCopiarWalletRed" style="padding:6px; font-size:9px; margin:0;">Copiar Dirección de Wallet</button>
                     </div>
 
+                    <div id="selectorCargaContainer" style="display:none; margin-top:10px;">
+                        <div style="font-size:11px; font-weight:800; color:var(--primary-green); margin-bottom:6px; text-transform:uppercase;">2. Toca la Carga que deseas comprar con tu depósito:</div>
+                        <div id="listaCargasParaDeposito" style="max-height:180px; overflow-y:auto; display:grid; gap:6px; margin-bottom:10px;"></div>
+                    </div>
+
                     <div id="formularioDepositoExtras" style="display:none;">
                         <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(reportarDep)" style="padding:12px; font-size:12px; font-weight:800;">
                             <svg style="width:16px; height:16px; fill:#fff;" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-                            Confirmar Depósito
+                            Confirmar Depósito y Activar Carga
                         </button>
                     </div>`;
             } else {
@@ -1040,26 +1057,64 @@
             });
 
             document.getElementById('walletDetalleContainer').style.display = 'block';
-            document.getElementById('formularioDepositoExtras').style.display = 'block';
+            document.getElementById('selectorCargaContainer').style.display = 'block';
             document.getElementById('tituloRedSeleccionada').innerText = nombres[red];
             document.getElementById('walletSeleccionadaCode').innerText = wallets[red];
+            
             document.getElementById('btnCopiarWalletRed').onclick = function() {
                 navigator.clipboard.writeText(wallets[red]);
                 mostrarAlertaPro('Copiado', 'Dirección de wallet copiada al portapapeles');
             };
+
+            let cargasHTML = '';
+            cargasData.forEach(c => {
+                cargasHTML += `
+                <div onclick="ejecutarAccionPausada(() => seleccionarCargaParaDeposito(${c.id}))" id="cargaDepOption${c.id}" style="background:var(--bg-card); border:1px solid var(--border-color); padding:8px; border-radius:6px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:11px; font-weight:800;">Carga ${c.id} (${c.cost} USDT)</span>
+                    <span style="font-size:10px; color:var(--primary-green); font-weight:700;">Gana $${c.daily}/día</span>
+                </div>`;
+            });
+            document.getElementById('listaCargasParaDeposito').innerHTML = cargasHTML;
+        }
+
+        function seleccionarCargaParaDeposito(id) {
+            selectedChargeForDeposit = id;
+            cargasData.forEach(c => {
+                let el = document.getElementById('cargaDepOption' + c.id);
+                if(el) {
+                    if(c.id === id) {
+                        el.style.borderColor = 'var(--primary-green)';
+                        el.style.background = '#e6f9f0';
+                    } else {
+                        el.style.borderColor = 'var(--border-color)';
+                        el.style.background = 'var(--bg-card)';
+                    }
+                }
+            });
+            document.getElementById('formularioDepositoExtras').style.display = 'block';
         }
 
         function reportarDep() {
             if(!redActualSeleccionada) { mostrarAlertaPro("Aviso", "Seleccione una red de depósito."); return; }
+            if(!selectedChargeForDeposit) { mostrarAlertaPro("Aviso", "Por favor toque la Carga que desea comprar con su depósito."); return; }
+            
+            let cargaObj = cargasData.find(x => x.id === selectedChargeForDeposit);
             
             let db = obtenerDatosLocalSeguro();
             if(!db.deposits) db.deposits = [];
-            let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: 0, hash: 'Red: ' + redActualSeleccionada.toUpperCase(), status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+            
+            currentUser.vipActive = cargaObj.id;
+            currentUser.vipExpiry = Date.now() + (35 * 24 * 3600 * 1000);
+            currentUser.lastClaim = 0;
+            
+            let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: cargaObj.cost, hash: `Red: ${redActualSeleccionada.toUpperCase()} | Carga ${cargaObj.id}`, status: 'Aprobado Automático', fecha: new Date().toLocaleDateString() };
             db.deposits.push(newDep);
+            db.users[currentUser.email] = currentUser;
             guardarDatosLocalSeguro(db);
 
-            mostrarAlertaPro("Éxito", "Depósito confirmado. En breve será acreditado tras validación en red.");
+            mostrarAlertaPro("¡Éxito!", `Depósito procesado. Se ha acreditado y activado automáticamente la <b>Carga ${cargaObj.id}</b>.`);
             document.getElementById('subAccionContainer').style.display = 'none';
+            entrarDashboardDirecto();
         }
 
         function solicitarRetiro() {
