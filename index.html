@@ -689,7 +689,7 @@
                     }
                 }
             } catch (e) {
-                console.error("Error de red/conexión con Firebase:", e);
+                console.error("Error de conexión:", e);
             }
         }
 
@@ -709,6 +709,21 @@
             if(cb) document.getElementById('modalAceptar').onclick = () => { cerrarAlerta(); cb(); };
         }
         window.mostrarAlertaPro = mostrarAlertaPro;
+
+        // NUEVA ALERTA ROJA Y BLANCA EXCLUSIVA PARA RESTRICCIÓN DE REGIÓN / RED
+        function mostrarAlertaRestriccionRegion() {
+            document.getElementById('customModalContainer').innerHTML = `
+                <div class="modal-overlay">
+                    <div class="modal-card" style="background: #111111; border: 2px solid #e53e3e; box-shadow: 0 10px 30px rgba(229,62,62,0.4); text-align: center;">
+                        <div style="font-size: 24px; margin-bottom: 8px;">🚨</div>
+                        <h3 style="font-size: 13px; font-weight: 900; color: #e53e3e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">ATENCIÓN DEL SISTEMA</h3>
+                        <p style="font-size: 11px; font-weight: 800; color: #ffffff; line-height: 1.5; margin-bottom: 18px;">INVERBOT NO ESTA DISPONIBLE PARA TU REGIÓN, PORFAVOR INTENTE MAS TARDE.</p>
+                        <button onclick="cerrarAlerta()" style="background: #e53e3e; color: #ffffff; border: none; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">ENTENDIDO</button>
+                    </div>
+                </div>
+            `;
+        }
+        window.mostrarAlertaRestriccionRegion = mostrarAlertaRestriccionRegion;
 
         function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
         window.cerrarAlerta = cerrarAlerta;
@@ -744,7 +759,7 @@
                 }
                 cerrarSesion();
             }).catch(err => {
-                console.error("Error de Firebase:", err);
+                console.error("Error de conexión:", err);
                 cerrarSesion();
             });
 
@@ -832,7 +847,7 @@
                 let docRef = doc(db, "users", email);
                 let docSnap = await getDoc(docRef);
                 if(docSnap.exists()) {
-                    mostrarAlertaPro("Aviso", "Este correo ya está registrado en Firebase.");
+                    mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
                     return;
                 }
 
@@ -862,7 +877,7 @@
                 entrarDashboardDirecto();
             } catch (error) {
                 console.error(error);
-                mostrarAlertaPro("Error de Conexión", "No se pudo comunicar con el servidor de Firebase. Si tu red o región tiene restricciones, activa una VPN e intenta de nuevo.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.ejecutarRegistroFirebase = ejecutarRegistroFirebase;
@@ -877,7 +892,7 @@
                 let docRef = doc(db, "users", email);
                 let docSnap = await getDoc(docRef);
                 if(!docSnap.exists()) {
-                    mostrarAlertaPro("Error", "El usuario no existe en Firebase.");
+                    mostrarAlertaPro("Error", "El usuario no existe.");
                     return;
                 }
                 let u = docSnap.data();
@@ -892,15 +907,19 @@
                 entrarDashboardDirecto();
             } catch (error) {
                 console.error(error);
-                mostrarAlertaPro("Error de Conexión", "No se pudo comunicar con el servidor de Firebase. Si tu red o región tiene restricciones, activa una VPN e intenta de nuevo.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.ejecutarLoginFirebase = ejecutarLoginFirebase;
 
         async function entrarDashboardDirecto() {
             if(!currentUser) return;
-            let docSnap = await getDoc(doc(db, "users", currentUser.email));
-            if(docSnap.exists()) currentUser = docSnap.data();
+            try {
+                let docSnap = await getDoc(doc(db, "users", currentUser.email));
+                if(docSnap.exists()) currentUser = docSnap.data();
+            } catch(e) {
+                console.error(e);
+            }
 
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
@@ -1003,10 +1022,10 @@
                         lastClaim: currentUser.lastClaim
                     });
 
-                    mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente en Firebase.`);
+                    mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente.`);
                     entrarDashboardDirecto();
                 } catch (error) {
-                    mostrarAlertaPro("Error de Conexión", "No se pudo sincronizar con Firebase. Comprueba tu red o VPN.");
+                    mostrarAlertaRestriccionRegion();
                 }
                 btn.disabled = false;
             }, 1000);
@@ -1014,7 +1033,7 @@
         window.ejecutarCuantificacionConPila = ejecutarCuantificacionConPila;
 
         async function comprarVip(nivel, precio) {
-            if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente en Firebase. Realiza un depósito."); return; }
+            if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente. Realiza un depósito."); return; }
             
             try {
                 currentUser.balance -= precio; 
@@ -1029,10 +1048,10 @@
                     lastClaim: currentUser.lastClaim
                 });
 
-                mostrarAlertaPro("Éxito", `¡Carga ${nivel} activada correctamente en la nube!`);
+                mostrarAlertaPro("Éxito", `¡Carga ${nivel} activada correctamente!`);
                 entrarDashboardDirecto();
             } catch (error) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo comunicar con Firebase. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.comprarVip = comprarVip;
@@ -1054,12 +1073,12 @@
                 mostrarAlertaPro("Acción Denegada", "Las cuentas de CEO están protegidas.");
                 return;
             }
-            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente de Firebase?", async () => {
+            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente?", async () => {
                 try {
                     await deleteDoc(doc(db, "users", currentUser.email));
                     cerrarSesion();
                 } catch(e) {
-                    mostrarAlertaPro("Error de Conexión", "No se pudo completar la solicitud. Comprueba tu red o VPN.");
+                    mostrarAlertaRestriccionRegion();
                 }
             });
         }
@@ -1218,7 +1237,7 @@
                 document.getElementById('subAccionContainer').style.display = 'none';
                 entrarDashboardDirecto();
             } catch (error) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo enviar el depósito. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.reportarDep = reportarDep;
@@ -1239,10 +1258,10 @@
                 let newWit = { id: witId, user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
                 await setDoc(doc(db, "withdrawals", witId), newWit);
 
-                mostrarAlertaPro("Éxito", "Retiro solicitado correctamente a Firebase.");
+                mostrarAlertaPro("Éxito", "Retiro solicitado correctamente.");
                 entrarDashboardDirecto();
             } catch (error) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo procesar el retiro. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.solicitarRetiro = solicitarRetiro;
@@ -1255,10 +1274,10 @@
                     let data = d.data();
                     if(data.user && data.user.toLowerCase() === currentUser.email.toLowerCase()) deps.push(data);
                 });
-                if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros de depósitos en Firebase."); return; }
+                if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros de depósitos."); return; }
                 mostrarAlertaPro("Historial Depósitos", deps.map(x => `${x.hash} - <b>${x.status}</b>`).join('<br>'));
             } catch(e) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo cargar el historial. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.verHistorialDeps = verHistorialDeps;
@@ -1271,10 +1290,10 @@
                     let data = d.data();
                     if(data.user && data.user.toLowerCase() === currentUser.email.toLowerCase()) wits.push(data);
                 });
-                if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros de retiros en Firebase."); return; }
+                if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros de retiros."); return; }
                 mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
             } catch(e) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo cargar el historial. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.verHistorialWits = verHistorialWits;
@@ -1324,7 +1343,7 @@
                 let docRef = doc(db, "users", mail);
                 let docSnap = await getDoc(docRef);
                 if(!docSnap.exists()) { 
-                    mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
+                    mostrarAlertaPro("Error", "Usuario no encontrado."); 
                     return; 
                 }
                 let target = docSnap.data();
@@ -1336,7 +1355,7 @@
                 mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo procesar la acreditación. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.acreditarSaldoPorCorreo = acreditarSaldoPorCorreo;
@@ -1350,7 +1369,7 @@
                 let docRef = doc(db, "users", mail);
                 let docSnap = await getDoc(docRef);
                 if(!docSnap.exists()) { 
-                    mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
+                    mostrarAlertaPro("Error", "Usuario no encontrado."); 
                     return; 
                 }
                 let target = docSnap.data();
@@ -1362,7 +1381,7 @@
                 mostrarAlertaPro("Éxito", `Desacreditado -$${monto} a ${target.email}`);
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo procesar la desacreditación. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.desacreditarSaldoPorCorreo = desacreditarSaldoPorCorreo;
@@ -1375,15 +1394,15 @@
                 let docRef = doc(db, "users", mail);
                 let docSnap = await getDoc(docRef);
                 if(!docSnap.exists()) { 
-                    mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
+                    mostrarAlertaPro("Error", "Usuario no encontrado."); 
                     return; 
                 }
                 await updateDoc(docRef, { isAdmin: true });
 
                 document.getElementById('novoAdminEmail').value = '';
-                mostrarAlertaPro("Éxito", `Privilegio de Admin otorgado en Firebase a ${mail}`);
+                mostrarAlertaPro("Éxito", `Privilegio de Admin otorgado a ${mail}`);
             } catch(e) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo actualizar el usuario. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         }
         window.hacerAdminCorreo = hacerAdminCorreo;
@@ -1462,7 +1481,7 @@
                 await updateDoc(depDocRef, { status: 'Aprobado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo aprobar el depósito. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         };
 
@@ -1471,7 +1490,7 @@
                 await updateDoc(doc(db, "deposits", id), { status: 'Cancelado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo cancelar el depósito. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         };
 
@@ -1480,7 +1499,7 @@
                 await updateDoc(doc(db, "withdrawals", id), { status: 'Aprobado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo aprobar el retiro. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         };
 
@@ -1502,7 +1521,7 @@
                 await updateDoc(witDocRef, { status: 'Cancelado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaPro("Error de Conexión", "No se pudo cancelar el retiro. Comprueba tu red o VPN.");
+                mostrarAlertaRestriccionRegion();
             }
         };
 
