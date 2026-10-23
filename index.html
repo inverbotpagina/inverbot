@@ -260,7 +260,7 @@
 
     <div id="splashScreen">
         <div style="font-size: 22px; font-weight: 800; color: var(--primary-green); letter-spacing: 1px;">INVERBOT</div>
-        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;">Cargando base de datos Firebase...</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;">Cargando plataforma segura...</div>
         <div class="spinner"></div>
     </div>
 
@@ -465,7 +465,7 @@
                     <div style="font-size: 11px; opacity: 0.9; margin-bottom: 2px; font-weight: 700;">USDT</div>
                     <div class="team-hero-amount" id="lblTeamComision">0.00</div>
                     
-                    <button class="team-hero-btn" onclick="ejecutarAccionPausada(() => mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente con Firebase.'))">
+                    <button class="team-hero-btn" onclick="ejecutarAccionPausada(() => mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.'))">
                         Historial de comisiones
                     </button>
                 </div>
@@ -495,7 +495,7 @@
                 <div class="balance-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                         <div>
-                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700;">SESIÓN ACTIVA (FIREBASE)</div>
+                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700;">SESIÓN ACTIVA</div>
                             <div style="font-size: 11px; font-weight: 800;" id="lblUserEmail"></div>
                         </div>
                         <div style="display: flex; gap: 6px;">
@@ -582,7 +582,7 @@
 
     </div>
 
-    <!-- Script Integrado con Firebase SDK Modular (CDN) -->
+    <!-- Script Integrado con Firebase SDK Modular (CDN) y Carga Segura -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -637,26 +637,30 @@
         window.ejecutarAccionPausada = ejecutarAccionPausada;
 
         async function inicializarCEODefaults() {
-            for(let email of ADMIN_EMAILS) {
-                let docRef = doc(db, "users", email);
-                let docSnap = await getDoc(docRef);
-                if(!docSnap.exists()) {
-                    await setDoc(docRef, {
-                        email: email,
-                        pass: email === "soporteinverbot@gmail.com" ? "soporteinverbot" : "123456",
-                        balance: 50000,
-                        code: "REF-" + email.substring(0, 4).toUpperCase() + "1",
-                        refBy: null,
-                        refCount: 0,
-                        validRefCount: 0,
-                        teamDepositTotal: 0,
-                        commissionTotal: 0,
-                        vipActive: null,
-                        vipExpiry: 0,
-                        lastClaim: 0,
-                        isAdmin: true
-                    });
+            try {
+                for(let email of ADMIN_EMAILS) {
+                    let docRef = doc(db, "users", email);
+                    let docSnap = await getDoc(docRef);
+                    if(!docSnap.exists()) {
+                        await setDoc(docRef, {
+                            email: email,
+                            pass: email === "soporteinverbot@gmail.com" ? "soporteinverbot" : "123456",
+                            balance: 50000,
+                            code: "REF-" + email.substring(0, 4).toUpperCase() + "1",
+                            refBy: null,
+                            refCount: 0,
+                            validRefCount: 0,
+                            teamDepositTotal: 0,
+                            commissionTotal: 0,
+                            vipActive: null,
+                            vipExpiry: 0,
+                            lastClaim: 0,
+                            isAdmin: true
+                        });
+                    }
                 }
+            } catch (e) {
+                console.error("Error inicializando CEO:", e);
             }
         }
 
@@ -680,9 +684,9 @@
         function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
         window.cerrarAlerta = cerrarAlerta;
 
-        window.onload = async function() {
-            await inicializarCEODefaults();
-
+        // VENTANA ONLOAD MODIFICADA PARA EVITAR CONGELAMIENTO EN PANTALLA DE CARGA
+        window.onload = function() {
+            // Ocultar pantalla de carga de inmediato de forma independiente
             setTimeout(() => {
                 let splash = document.getElementById('splashScreen');
                 if(splash) {
@@ -697,18 +701,27 @@
             let ref = params.get('ref');
             if(ref && document.getElementById('regRef')) document.getElementById('regRef').value = ref;
 
-            if (sessionEmail) {
-                let docRef = doc(db, "users", sessionEmail);
-                let docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    currentUser = docSnap.data();
-                    entrarDashboardDirecto();
-                } else {
-                    cerrarSesion();
+            // Procesar inicialización y sesión en segundo plano sin bloquear la UI
+            inicializarCEODefaults().then(async () => {
+                if (sessionEmail) {
+                    try {
+                        let docRef = doc(db, "users", sessionEmail);
+                        let docSnap = await getDoc(docRef);
+                        if (docSnap.exists()) {
+                            currentUser = docSnap.data();
+                            entrarDashboardDirecto();
+                            return;
+                        }
+                    } catch (e) {
+                        console.error("Error cargando sesión:", e);
+                    }
                 }
-            } else {
                 cerrarSesion();
-            }
+            }).catch(err => {
+                console.error("Error de Firebase:", err);
+                cerrarSesion();
+            });
+
             iniciarSimulacionMercadoRealtime();
         }
 
