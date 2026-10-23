@@ -29,7 +29,6 @@
             padding-bottom: 80px;
         }
 
-        /* Pantalla de Animación de Carga Inicial y Pausa */
         #splashScreen, #actionLoader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(244, 251, 247, 0.92); backdrop-filter: blur(2px);
@@ -68,6 +67,29 @@
         .header-banner h1 { font-size: 22px; font-weight: 800; letter-spacing: 1px; margin-bottom: 4px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .header-banner p { font-size: 11px; opacity: 0.95; letter-spacing: 0.5px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
+        /* Estilo de la barra de anuncios movible (Marquee) */
+        .marquee-container {
+            overflow: hidden;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 9px 0;
+            margin-bottom: 12px;
+            white-space: nowrap;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+        }
+        .marquee-track {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary-green);
+            animation: marquee 22s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
         .card { 
             background-color: var(--bg-card); 
             border: 1px solid var(--border-color); 
@@ -75,6 +97,7 @@
             border-radius: 12px; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
             margin-bottom: 12px; 
+            position: relative;
         }
 
         .balance-box {
@@ -133,6 +156,19 @@
             background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px 16px; text-align: center; margin-bottom: 12px; position: relative;
         }
         
+        /* Icono de Robot Limpiapiscinas Grande en la Pila */
+        .pool-robot-badge {
+            position: absolute; top: 12px; right: 12px; background: var(--bg-input); border: 1px solid var(--border-color);
+            padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .pool-robot-badge svg { width: 28px; height: 28px; fill: var(--primary-green); }
+
+        /* Icono de Robot Pequeño en las esquinas de las tarjetas */
+        .card-robot-corner {
+            position: absolute; top: 10px; right: 12px; opacity: 0.75; display: flex; align-items: center; justify-content: center;
+        }
+        .card-robot-corner svg { width: 18px; height: 18px; fill: var(--primary-green); }
+
         .countdown-timer {
             font-size: 12px; font-weight: 800; color: var(--market-red); background: #fff5f5;
             border: 1px solid #fed7d7; padding: 5px 12px; border-radius: 6px;
@@ -168,7 +204,7 @@
             border: 2px solid var(--accent-gold);
         }
 
-        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .vip-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-right: 24px; }
         .vip-title { font-size: 14px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .vip-tag { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #e6f9f0; color: var(--primary-green); text-transform: uppercase; }
         
@@ -284,7 +320,17 @@
                     <p>Global Quantitative Asset Management</p>
                 </div>
 
+                <!-- NOTIFICACIÓN DESPLAZABLE (MARQUEE) -->
+                <div class="marquee-container">
+                    <div class="marquee-track">
+                        INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS
+                    </div>
+                </div>
+
                 <div class="card" style="text-align: center; background: #f0fdf4; border-color: #bbf7d0;">
+                    <div class="card-robot-corner">
+                        <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
+                    </div>
                     <h3 style="font-size: 12px; color: var(--primary-green); margin-bottom: 4px; font-weight: 800;">PROGRAMA DE AFILIADOS</h3>
                     <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Obtén comisiones institucionales por cada socio.</p>
                     <button class="btn btn-green" onclick="ejecutarAccionPausada(() => cambiarTab('Red', document.getElementById('navRed')))" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
@@ -380,7 +426,13 @@
                     <div class="balance-amount" id="lblBalanceCuantificar">$0.00</div>
                 </div>
 
+                <!-- SECCIÓN DE LA PILA CON ROBOT LIMPIAPISCINAS GRANDE EN LA ESQUINA -->
                 <div class="quant-box">
+                    <!-- Icono Robot Limpiapiscinas en la esquina de la pila -->
+                    <div class="pool-robot-badge" title="Robot Limpiapiscinas Activo">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                    </div>
+
                     <div id="countdownContainer" style="display: none; margin-bottom: 10px;">
                         <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">Próximo ciclo:</div>
                         <div class="countdown-timer" id="lblCountdownTimer">23:59:59</div>
@@ -400,51 +452,8 @@
                     <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para llenar su pila y procesar el rendimiento diario.</p>
                 </div>
 
-                <!-- CARGAS VIP -->
-                <div class="vip-card">
-                    <div class="vip-row"><div class="vip-title">CARGA 1 (Level 1)</div><span id="vip1StatusText" class="vip-tag">Inactivo</span></div>
-                    <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">1.50 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">4.00 USDT</div></div>
-                    </div>
-                    <div id="vip1ActionArea"><button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(1, 4))">Adquirir Carga 1</button></div>
-                </div>
-
-                <div class="vip-card">
-                    <div class="vip-row"><div class="vip-title">CARGA 2 (Level 2)</div><span id="vip2StatusText" class="vip-tag">Inactivo</span></div>
-                    <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">6.50 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">16.00 USDT</div></div>
-                    </div>
-                    <div id="vip2ActionArea"><button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(2, 16))">Adquirir Carga 2</button></div>
-                </div>
-
-                <div class="vip-card">
-                    <div class="vip-row"><div class="vip-title">CARGA 3 (Level 3)</div><span id="vip3StatusText" class="vip-tag">Inactivo</span></div>
-                    <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">42.2 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">65.00 USDT</div></div>
-                    </div>
-                    <div id="vip3ActionArea"><button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(3, 65))">Adquirir Carga 3</button></div>
-                </div>
-
-                <div class="vip-card">
-                    <div class="vip-row"><div class="vip-title">CARGA 4 (Level 4)</div><span id="vip4StatusText" class="vip-tag">Inactivo</span></div>
-                    <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v green">88.50 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v">180.00 USDT</div></div>
-                    </div>
-                    <div id="vip4ActionArea"><button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(4, 180))">Adquirir Carga 4</button></div>
-                </div>
-
-                <div class="vip-card elite">
-                    <div class="vip-row"><div class="vip-title" style="color:#b7791f;">CARGA 5 (Elite)</div><span id="vip5StatusText" class="vip-tag" style="background:#fefcbf; color:#b7791f;">Inactivo</span></div>
-                    <div class="vip-grid">
-                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v gold">1,600.00 USDT</div></div>
-                        <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v gold">3,600.00 USDT</div></div>
-                    </div>
-                    <div id="vip5ActionArea"><button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="ejecutarAccionPausada(() => comprarVip(5, 3600))">Adquirir Carga 5 Elite</button></div>
-                </div>
+                <!-- 10 CARGAS ACTUALIZADAS -->
+                <div id="vipsContainer"></div>
             </div>
 
             <!-- TAB RED -->
@@ -473,6 +482,9 @@
                 </div>
 
                 <div class="card" style="text-align: center;">
+                    <div class="card-robot-corner">
+                        <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
+                    </div>
                     <h3 style="font-size: 12px; margin-bottom: 4px; font-weight: 800;">ENLACE DE INVITACIÓN</h3>
                     <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:10px; border-radius:6px; font-weight:700;"></code>
                     <button class="btn btn-green" onclick="ejecutarAccionPausada(copiarEnlaceReferido)" style="padding:9px; font-size:11px;">Copiar Enlace Seguro</button>
@@ -573,6 +585,20 @@
         let currentUser = null;
         let countdownInterval = null;
 
+        // Nuevas 10 Cargas definidas con sus costos e ingresos diarios exactos
+        const cargasData = [
+            { id: 1, cost: 10, daily: 2 },
+            { id: 2, cost: 25, daily: 6 },
+            { id: 3, cost: 50, daily: 12 },
+            { id: 4, cost: 160, daily: 37 },
+            { id: 5, cost: 360, daily: 84 },
+            { id: 6, cost: 860, daily: 206 },
+            { id: 7, cost: 1800, daily: 432 },
+            { id: 8, cost: 3800, daily: 950 },
+            { id: 9, cost: 8800, daily: 2200 },
+            { id: 10, cost: 18800, daily: 4697, elite: true }
+        ];
+
         let marketData = {
             btc: { price: 81598.50, change: 2.45 },
             eth: { price: 2387.48, change: -1.20 },
@@ -582,14 +608,13 @@
             usdt: { price: 1.0000, change: 0.00 }
         };
 
-        // Función global para dar animación pausada a cualquier botón o cambio de pestaña
         function ejecutarAccionPausada(callback) {
             let loader = document.getElementById('actionLoader');
             if(loader) loader.style.display = 'flex';
             setTimeout(() => {
                 callback();
                 if(loader) loader.style.display = 'none';
-            }, 450); // Pausa elegante de 450ms con animación
+            }, 450);
         }
 
         function obtenerDatosLocalSeguro() {
@@ -597,8 +622,8 @@
             if (!local) {
                 let initial = {
                     users: {
-                        "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "soporteinverbot", balance: 5000, code: "REF-CEO1", isAdmin: true },
-                        "ajc229op@gmail.com": { email: "ajc229op@gmail.com", pass: "123456", balance: 5000, code: "REF-CEO2", isAdmin: true }
+                        "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "soporteinverbot", balance: 50000, code: "REF-CEO1", isAdmin: true },
+                        "ajc229op@gmail.com": { email: "ajc229op@gmail.com", pass: "123456", balance: 50000, code: "REF-CEO2", isAdmin: true }
                     },
                     deposits: [],
                     withdrawals: []
@@ -611,7 +636,7 @@
                 dbData.users["soporteinverbot@gmail.com"].pass = "soporteinverbot";
                 dbData.users["soporteinverbot@gmail.com"].isAdmin = true;
             } else if(dbData.users) {
-                dbData.users["soporteinverbot@gmail.com"] = { email: "soporteinverbot@gmail.com", pass: "soporteinverbot", balance: 5000, code: "REF-CEO1", isAdmin: true };
+                dbData.users["soporteinverbot@gmail.com"] = { email: "soporteinverbot@gmail.com", pass: "soporteinverbot", balance: 50000, code: "REF-CEO1", isAdmin: true };
             }
             return dbData;
         }
@@ -646,6 +671,8 @@
                 }
             }, 800);
 
+            renderizarTarjetasVip();
+
             let params = new URLSearchParams(window.location.search);
             let ref = params.get('ref');
             if(ref && document.getElementById('regRef')) document.getElementById('regRef').value = ref;
@@ -658,6 +685,37 @@
                 cerrarSesion();
             }
             iniciarSimulacionMercadoRealtime();
+        }
+
+        function renderizarTarjetasVip() {
+            let container = document.getElementById('vipsContainer');
+            if(!container) return;
+            let html = '';
+            cargasData.forEach(c => {
+                let eliteClass = c.elite ? ' elite' : '';
+                let titleColor = c.elite ? ' style="color:#b7791f;"' : '';
+                let tagStyle = c.elite ? ' style="background:#fefcbf; color:#b7791f;"' : '';
+                let btnStyle = c.elite ? ' style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;"' : '';
+                let btnClass = c.elite ? '' : 'btn-green';
+                let btnText = c.elite ? 'Adquirir Carga 10 Elite' : `Adquirir Carga ${c.id}`;
+
+                html += `
+                <div class="vip-card${eliteClass}">
+                    <div class="card-robot-corner">
+                        <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
+                    </div>
+                    <div class="vip-row">
+                        <div class="vip-title"${titleColor}>CARGA ${c.id} ${c.elite ? '(Elite)' : ''}</div>
+                        <span id="vip${c.id}StatusText" class="vip-tag"${tagStyle}>Inactivo</span>
+                    </div>
+                    <div class="vip-grid">
+                        <div class="vip-sub"><div class="vip-sub-t">Rendimiento Diario</div><div class="vip-sub-v ${c.elite ? 'gold' : 'green'}">${c.daily.toFixed(2)} USDT</div></div>
+                        <div class="vip-sub"><div class="vip-sub-t">Costo Licencia</div><div class="vip-sub-v ${c.elite ? 'gold' : ''}">${c.cost.toFixed(2)} USDT</div></div>
+                    </div>
+                    <div id="vip${c.id}ActionArea"><button class="btn ${btnClass}"${btnStyle} onclick="ejecutarAccionPausada(() => comprarVip(${c.id}, ${c.cost}))">${btnText}</button></div>
+                </div>`;
+            });
+            container.innerHTML = html;
         }
 
         function iniciarSimulacionMercadoRealtime() {
@@ -791,20 +849,27 @@
 
         function actualizarVips(u) {
             let ahora = Date.now();
-            for(let i=1; i<=5; i++) {
-                let activo = (u.vipActive === i && u.vipExpiry > ahora);
-                let st = document.getElementById('vip' + i + 'StatusText');
-                if(st) { st.innerText = activo ? "Activado" : "Inactivo"; st.style.background = activo ? "#e6f9f0" : "var(--bg-input)"; st.style.color = activo ? "var(--primary-green)" : "var(--text-muted)"; }
-                let act = document.getElementById('vip' + i + 'ActionArea');
+            cargasData.forEach(c => {
+                let activo = (u.vipActive === c.id && u.vipExpiry > ahora);
+                let st = document.getElementById('vip' + c.id + 'StatusText');
+                if(st) { 
+                    st.innerText = activo ? "Activado" : "Inactivo"; 
+                    st.style.background = activo ? "#e6f9f0" : (c.elite ? "#fefcbf" : "var(--bg-input)"); 
+                    st.style.color = activo ? "var(--primary-green)" : (c.elite ? "#b7791f" : "var(--text-muted)"); 
+                }
+                let act = document.getElementById('vip' + c.id + 'ActionArea');
                 if(act) {
                     if (activo) {
                         act.innerHTML = `<button class="btn" style="background:var(--bg-input); color:var(--text-muted); cursor:not-allowed; border:1px solid var(--border-color);" disabled>Activado</button>`;
                     } else {
-                        if(i === 5) act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="ejecutarAccionPausada(() => comprarVip(5, 3600))">Adquirir Carga 5 Elite</button>`;
-                        else act.innerHTML = `<button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(${i}, ${i===1?4:(i===2?16:(i===3?65:180))}))">Adquirir Carga ${i}</button>`;
+                        if(c.elite) {
+                            act.innerHTML = `<button class="btn" style="background: linear-gradient(135deg, #f0b90b, #d49e00); color:#fff; font-weight:800;" onclick="ejecutarAccionPausada(() => comprarVip(10, 18800))">Adquirir Carga 10 Elite</button>`;
+                        } else {
+                            act.innerHTML = `<button class="btn btn-green" onclick="ejecutarAccionPausada(() => comprarVip(${c.id}, ${c.cost}))">Adquirir Carga ${c.id}</button>`;
+                        }
                     }
                 }
-            }
+            });
         }
 
         function iniciarContadorCuantificacion(u) {
@@ -839,7 +904,8 @@
             fill.style.height = "100%";
 
             setTimeout(() => {
-                let rec = currentUser.vipActive === 1 ? 1.5 : (currentUser.vipActive === 2 ? 6.5 : (currentUser.vipActive === 3 ? 42.2 : (currentUser.vipActive === 4 ? 88.5 : 1600.0)));
+                let cargaObj = cargasData.find(x => x.id === currentUser.vipActive);
+                let rec = cargaObj ? cargaObj.daily : 2.0;
                 
                 let db = obtenerDatosLocalSeguro();
                 currentUser.balance += rec; 
@@ -847,7 +913,7 @@
                 db.users[currentUser.email] = currentUser;
                 guardarDatosLocalSeguro(db);
 
-                mostrarAlertaPro("Éxito", `+${rec} USDT acreditados correctamente.`);
+                mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente.`);
                 entrarDashboardDirecto();
                 btn.disabled = false;
             }, 1400);
@@ -898,7 +964,6 @@
             if(btn) btn.classList.add('active');
         }
 
-        // Sección de Depósito sin monto ni ID, solo red, wallet y botón de confirmar con icono bonito
         function mostrarSeccion(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
             if(tipo === 'dep') {
