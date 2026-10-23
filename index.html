@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Financial Asset Management | Inverbot</title>
+    <!-- Icono para Favicon y Acceso Directo con el nombre exacto -->
+    <link rel="icon" type="image/jpeg" href="images/IMG-20261023-WA0039.jpg">
+    <link rel="apple-touch-icon" href="images/IMG-20261023-WA0039.jpg">
     <style>
         :root {
             --bg-main: #050806;
@@ -938,7 +941,6 @@
                     return;
                 }
 
-                // Limpiar código de invitación por si pegaron el enlace completo
                 let refCode = refInput;
                 if(refCode.includes('ref=')) {
                     try {
@@ -1607,7 +1609,6 @@
                         lastClaim: uData.lastClaim
                     });
 
-                    // Sistema de referidos automáticos
                     if(uData.refBy) {
                         let referrerRef = doc(db, "users", uData.refBy);
                         let referrerSnap = await getDoc(referrerRef);
@@ -1616,7 +1617,6 @@
                             let newTeamDep = (refData.teamDepositTotal || 0) + dep.monto;
                             let updatePayload = { teamDepositTotal: newTeamDep };
 
-                            // Si el depósito es de 10 USDT o más y este referido no ha otorgado el bono de 1 USDT aún
                             if(dep.monto >= 10 && !uData.refBonusPaid) {
                                 refData.balance = (refData.balance || 0) + 1;
                                 refData.commissionTotal = (refData.commissionTotal || 0) + 1;
