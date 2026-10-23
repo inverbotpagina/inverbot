@@ -260,7 +260,7 @@
 
     <div id="splashScreen">
         <div style="font-size: 22px; font-weight: 800; color: var(--primary-green); letter-spacing: 1px;">INVERBOT</div>
-        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;">Cargando plataforma segura...</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700;">Cargando base de datos Firebase...</div>
         <div class="spinner"></div>
     </div>
 
@@ -285,7 +285,7 @@
                 <div class="input-group"><label>Contraseña</label><input type="password" id="regPass" placeholder="••••••••"></div>
                 <div class="input-group"><label>Confirmar Contraseña</label><input type="password" id="regPassConfirm" placeholder="••••••••"></div>
                 <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
-                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarRegistroLocal)">Registrarse</button>
+                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarRegistroFirebase)">Registrarse</button>
                 <div class="auth-switch"><p>¿Ya posee cuenta? <a onclick="ejecutarAccionPausada(() => cambiarVistaAuth(true))">Iniciar Sesión</a></p></div>
             </div>
 
@@ -293,7 +293,7 @@
             <div id="loginView" style="display: none;">
                 <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" placeholder="trader@gmail.com"></div>
                 <div class="input-group"><label>Contraseña</label><input type="password" id="logPass" placeholder="••••••••"></div>
-                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarLoginLocal)">Iniciar Sesión</button>
+                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarLoginFirebase)">Iniciar Sesión</button>
                 <div class="auth-switch"><p>¿Nuevo socio? <a onclick="ejecutarAccionPausada(() => cambiarVistaAuth(false))">Registrarse</a></p></div>
             </div>
         </div>
@@ -406,7 +406,7 @@
                 </div>
             </div>
 
-            <!-- TAB CUANTIFICAR (SOLO PILA, BOTON E INGRESO DIARIO) -->
+            <!-- TAB CUANTIFICAR -->
             <div id="tabCuantificar" class="tab-content" style="display: none;">
                 <div class="balance-box" style="background: linear-gradient(145deg, #f0fdf4, #e6f9f0);">
                     <div class="balance-title">
@@ -465,7 +465,7 @@
                     <div style="font-size: 11px; opacity: 0.9; margin-bottom: 2px; font-weight: 700;">USDT</div>
                     <div class="team-hero-amount" id="lblTeamComision">0.00</div>
                     
-                    <button class="team-hero-btn" onclick="ejecutarAccionPausada(() => mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.'))">
+                    <button class="team-hero-btn" onclick="ejecutarAccionPausada(() => mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente con Firebase.'))">
                         Historial de comisiones
                     </button>
                 </div>
@@ -490,12 +490,12 @@
                 </div>
             </div>
 
-            <!-- TAB PERFIL (AMI) -->
+            <!-- TAB PERFIL -->
             <div id="tabAmi" class="tab-content" style="display: none;">
                 <div class="balance-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                         <div>
-                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700;">SESIÓN ACTIVA</div>
+                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700;">SESIÓN ACTIVA (FIREBASE)</div>
                             <div style="font-size: 11px; font-weight: 800;" id="lblUserEmail"></div>
                         </div>
                         <div style="display: flex; gap: 6px;">
@@ -561,7 +561,7 @@
             <div id="listaAdminWits" style="max-height: 140px; overflow-y: auto;"></div>
         </div>
 
-        <!-- Navegación Inferior Pausada Sin Spinner -->
+        <!-- Navegación Inferior -->
         <div class="bottom-nav" id="bottomNavBar" style="display: none;">
             <button class="nav-item active" onclick="ejecutarAccionPausada(() => cambiarTab('Hogar', this))" id="navHogar">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Hogar
@@ -582,8 +582,26 @@
 
     </div>
 
-    <!-- Script de la Aplicación -->
-    <script>
+    <!-- Script Integrado con Firebase SDK Modular (CDN) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyBtgCtppNvC4FnyO8AluG1Xwzdt-AbVyqk",
+          authDomain: "inverbot-40dd9.firebaseapp.com",
+          projectId: "inverbot-40dd9",
+          storageBucket: "inverbot-40dd9.firebasestorage.app",
+          messagingSenderId: "364372333431",
+          appId: "1:364372333431:web:3ceda14c06f0ca93418772",
+          measurementId: "G-14GBHW05VD"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
         const ADMIN_EMAILS = ["soporteinverbot@gmail.com", "ajc229op@gmail.com"];
         
         let sessionEmail = sessionStorage.getItem("inverbot_session") || null;
@@ -613,39 +631,33 @@
             usdt: { price: 1.0000, change: 0.00 }
         };
 
-        // Función para dar la sensación pausada/lenta en las acciones SIN animación visual en pantalla
         function ejecutarAccionPausada(callback) {
-            setTimeout(() => {
-                callback();
-            }, 350); // Retraso deliberado y silencioso
+            setTimeout(() => { callback(); }, 350);
         }
+        window.ejecutarAccionPausada = ejecutarAccionPausada;
 
-        function obtenerDatosLocalSeguro() {
-            let local = localStorage.getItem("inverbot_db_local");
-            if (!local) {
-                let initial = {
-                    users: {
-                        "soporteinverbot@gmail.com": { email: "soporteinverbot@gmail.com", pass: "soporteinverbot", balance: 50000, code: "REF-CEO1", isAdmin: true },
-                        "ajc229op@gmail.com": { email: "ajc229op@gmail.com", pass: "123456", balance: 50000, code: "REF-CEO2", isAdmin: true }
-                    },
-                    deposits: [],
-                    withdrawals: []
-                };
-                localStorage.setItem("inverbot_db_local", JSON.stringify(initial));
-                return initial;
+        async function inicializarCEODefaults() {
+            for(let email of ADMIN_EMAILS) {
+                let docRef = doc(db, "users", email);
+                let docSnap = await getDoc(docRef);
+                if(!docSnap.exists()) {
+                    await setDoc(docRef, {
+                        email: email,
+                        pass: email === "soporteinverbot@gmail.com" ? "soporteinverbot" : "123456",
+                        balance: 50000,
+                        code: "REF-" + email.substring(0, 4).toUpperCase() + "1",
+                        refBy: null,
+                        refCount: 0,
+                        validRefCount: 0,
+                        teamDepositTotal: 0,
+                        commissionTotal: 0,
+                        vipActive: null,
+                        vipExpiry: 0,
+                        lastClaim: 0,
+                        isAdmin: true
+                    });
+                }
             }
-            let dbData = JSON.parse(local);
-            if(dbData.users && dbData.users["soporteinverbot@gmail.com"]) {
-                dbData.users["soporteinverbot@gmail.com"].pass = "soporteinverbot";
-                dbData.users["soporteinverbot@gmail.com"].isAdmin = true;
-            } else if(dbData.users) {
-                dbData.users["soporteinverbot@gmail.com"] = { email: "soporteinverbot@gmail.com", pass: "soporteinverbot", balance: 50000, code: "REF-CEO1", isAdmin: true };
-            }
-            return dbData;
-        }
-
-        function guardarDatosLocalSeguro(dbData) {
-            localStorage.setItem("inverbot_db_local", JSON.stringify(dbData));
         }
 
         function mostrarAlertaPro(titulo, mensaje, cb = null) {
@@ -663,9 +675,14 @@
             `;
             if(cb) document.getElementById('modalAceptar').onclick = () => { cerrarAlerta(); cb(); };
         }
-        function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
+        window.mostrarAlertaPro = mostrarAlertaPro;
 
-        window.onload = function() {
+        function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
+        window.cerrarAlerta = cerrarAlerta;
+
+        window.onload = async function() {
+            await inicializarCEODefaults();
+
             setTimeout(() => {
                 let splash = document.getElementById('splashScreen');
                 if(splash) {
@@ -680,10 +697,15 @@
             let ref = params.get('ref');
             if(ref && document.getElementById('regRef')) document.getElementById('regRef').value = ref;
 
-            let db = obtenerDatosLocalSeguro();
-            if (sessionEmail && db.users && db.users[sessionEmail]) {
-                currentUser = db.users[sessionEmail];
-                entrarDashboardDirecto();
+            if (sessionEmail) {
+                let docRef = doc(db, "users", sessionEmail);
+                let docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    currentUser = docSnap.data();
+                    entrarDashboardDirecto();
+                } else {
+                    cerrarSesion();
+                }
             } else {
                 cerrarSesion();
             }
@@ -756,8 +778,9 @@
             document.getElementById('registerView').style.display = isLog ? 'none' : 'block';
             document.getElementById('loginView').style.display = isLog ? 'block' : 'none';
         }
+        window.cambiarVistaAuth = cambiarVistaAuth;
 
-        function ejecutarRegistroLocal() {
+        async function ejecutarRegistroFirebase() {
             let email = document.getElementById('regEmail').value.trim().toLowerCase();
             let pass = document.getElementById('regPass').value.trim();
             let passConfirm = document.getElementById('regPassConfirm').value.trim();
@@ -766,9 +789,10 @@
             if(!email || !pass) { mostrarAlertaPro("Error", "Rellene todos los campos obligatorios."); return; }
             if(pass !== passConfirm) { mostrarAlertaPro("Error", "Las contraseñas no coinciden."); return; }
 
-            let db = obtenerDatosLocalSeguro();
-            if(db.users[email]) {
-                mostrarAlertaPro("Aviso", "Este correo ya está registrado.");
+            let docRef = doc(db, "users", email);
+            let docSnap = await getDoc(docRef);
+            if(docSnap.exists()) {
+                mostrarAlertaPro("Aviso", "Este correo ya está registrado en Firebase.");
                 return;
             }
 
@@ -781,34 +805,37 @@
             };
 
             if(refCode) {
-                let uplineKey = Object.keys(db.users).find(k => db.users[k].code.toUpperCase() === refCode.toUpperCase());
-                if(uplineKey) {
-                    db.users[uplineKey].refCount = (db.users[uplineKey].refCount || 0) + 1;
-                    currentUser.refBy = db.users[uplineKey].email;
-                }
+                let querySnapshot = await getDocs(collection(db, "users"));
+                querySnapshot.forEach(d => {
+                    let uData = d.data();
+                    if(uData.code && uData.code.toUpperCase() === refCode.toUpperCase()) {
+                        currentUser.refBy = uData.email;
+                        updateDoc(doc(db, "users", uData.email), { refCount: (uData.refCount || 0) + 1 });
+                    }
+                });
             }
 
-            db.users[email] = currentUser;
-            guardarDatosLocalSeguro(db);
+            await setDoc(docRef, currentUser);
 
             sessionEmail = email;
             sessionStorage.setItem("inverbot_session", sessionEmail);
-            
             entrarDashboardDirecto();
         }
+        window.ejecutarRegistroFirebase = ejecutarRegistroFirebase;
 
-        function ejecutarLoginLocal() {
+        async function ejecutarLoginFirebase() {
             let email = document.getElementById('logEmail').value.trim().toLowerCase();
             let pass = document.getElementById('logPass').value.trim();
             
             if(!email || !pass) { mostrarAlertaPro("Error", "Ingrese correo y contraseña."); return; }
 
-            let db = obtenerDatosLocalSeguro();
-            if(!db || !db.users || !db.users[email]) {
-                mostrarAlertaPro("Error", "El usuario no existe.");
+            let docRef = doc(db, "users", email);
+            let docSnap = await getDoc(docRef);
+            if(!docSnap.exists()) {
+                mostrarAlertaPro("Error", "El usuario no existe en Firebase.");
                 return;
             }
-            let u = db.users[email];
+            let u = docSnap.data();
             if(u.pass !== pass) {
                 mostrarAlertaPro("Error", "Contraseña incorrecta.");
                 return;
@@ -817,14 +844,14 @@
             currentUser = u;
             sessionEmail = u.email;
             sessionStorage.setItem("inverbot_session", sessionEmail);
-
             entrarDashboardDirecto();
         }
+        window.ejecutarLoginFirebase = ejecutarLoginFirebase;
 
-        function entrarDashboardDirecto() {
+        async function entrarDashboardDirecto() {
             if(!currentUser) return;
-            let db = obtenerDatosLocalSeguro();
-            if(db && db.users && db.users[currentUser.email]) currentUser = db.users[currentUser.email];
+            let docSnap = await getDoc(doc(db, "users", currentUser.email));
+            if(docSnap.exists()) currentUser = docSnap.data();
 
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'none';
@@ -903,7 +930,7 @@
             } else { container.style.display = 'none'; }
         }
 
-        function ejecutarCuantificacionConPila() {
+        async function ejecutarCuantificacionConPila() {
             let ahora = Date.now();
             if(!currentUser.vipActive || currentUser.vipExpiry < ahora) { mostrarAlertaPro("Aviso", "No cuentas con ninguna Carga activa."); return; }
             if(ahora - (currentUser.lastClaim || 0) < 24*3600*1000) { mostrarAlertaPro("Aviso", "Espera a que finalice el contador de ciclo."); return; }
@@ -914,36 +941,44 @@
             btn.disabled = true;
             fill.style.height = "100%";
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 let cargaObj = cargasData.find(x => x.id === currentUser.vipActive);
                 let rec = cargaObj ? cargaObj.daily : 2.0;
                 
-                let db = obtenerDatosLocalSeguro();
                 currentUser.balance += rec; 
                 currentUser.lastClaim = ahora;
-                db.users[currentUser.email] = currentUser;
-                guardarDatosLocalSeguro(db);
+                
+                await updateDoc(doc(db, "users", currentUser.email), {
+                    balance: currentUser.balance,
+                    lastClaim: currentUser.lastClaim
+                });
 
-                mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente.`);
+                mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente en Firebase.`);
                 entrarDashboardDirecto();
                 btn.disabled = false;
             }, 1000);
         }
+        window.ejecutarCuantificacionConPila = ejecutarCuantificacionConPila;
 
-        function comprarVip(nivel, precio) {
-            if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente. Realiza un depósito o selecciona esta carga en tu depósito."); return; }
+        async function comprarVip(nivel, precio) {
+            if(currentUser.balance < precio) { mostrarAlertaPro("Error", "Saldo insuficiente en Firebase. Realiza un depósito."); return; }
             
-            let db = obtenerDatosLocalSeguro();
             currentUser.balance -= precio; 
             currentUser.vipActive = nivel; 
             currentUser.vipExpiry = Date.now() + (35*24*3600*1000); 
             currentUser.lastClaim = 0;
-            db.users[currentUser.email] = currentUser;
-            guardarDatosLocalSeguro(db);
 
-            mostrarAlertaPro("Éxito", `¡Carga ${nivel} activada correctamente!`);
+            await updateDoc(doc(db, "users", currentUser.email), {
+                balance: currentUser.balance,
+                vipActive: currentUser.vipActive,
+                vipExpiry: currentUser.vipExpiry,
+                lastClaim: currentUser.lastClaim
+            });
+
+            mostrarAlertaPro("Éxito", `¡Carga ${nivel} activada correctamente en la nube!`);
             entrarDashboardDirecto();
         }
+        window.comprarVip = comprarVip;
 
         function cerrarSesion() {
             sessionEmail = null; sessionStorage.removeItem("inverbot_session");
@@ -954,26 +989,27 @@
             document.getElementById('authScreen').style.display = 'block';
             cambiarVistaAuth(false);
         }
+        window.cerrarSesion = cerrarSesion;
 
-        function eliminarCuentaPropia() {
+        async function eliminarCuentaPropia() {
             let emailActual = currentUser.email.toLowerCase();
             if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(emailActual) || emailActual === "soporteinverbot@gmail.com") {
                 mostrarAlertaPro("Acción Denegada", "Las cuentas de CEO están protegidas.");
                 return;
             }
-            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente?", () => {
-                let db = obtenerDatosLocalSeguro();
-                delete db.users[currentUser.email];
-                guardarDatosLocalSeguro(db);
+            mostrarAlertaPro("Confirmar", "¿Eliminar cuenta permanentemente de Firebase?", async () => {
+                await deleteDoc(doc(db, "users", currentUser.email));
                 cerrarSesion();
             });
         }
+        window.eliminarCuentaPropia = eliminarCuentaPropia;
 
         function cambiarTab(tab, btn) {
             ['Hogar', 'Cuantificar', 'Cargas', 'Red', 'Ami'].forEach(t => { document.getElementById('tab' + t).style.display = (t === tab) ? 'block' : 'none'; });
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             if(btn) btn.classList.add('active');
         }
+        window.cambiarTab = cambiarTab;
 
         function mostrarSeccion(tipo) {
             let c = document.getElementById('subAccionContainer'); c.style.display = 'block';
@@ -1033,6 +1069,7 @@
                     <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(solicitarRetiro)" style="padding:9px; font-size:11px;">Solicitar Retiro Oficial</button>`;
             }
         }
+        window.mostrarSeccion = mostrarSeccion;
 
         let redActualSeleccionada = '';
         function seleccionarRedDep(red) {
@@ -1076,6 +1113,7 @@
             });
             document.getElementById('listaCargasParaDeposito').innerHTML = cargasHTML;
         }
+        window.seleccionarRedDep = seleccionarRedDep;
 
         function seleccionarCargaParaDeposito(id) {
             selectedChargeForDeposit = id;
@@ -1093,31 +1131,35 @@
             });
             document.getElementById('formularioDepositoExtras').style.display = 'block';
         }
+        window.seleccionarCargaParaDeposito = seleccionarCargaParaDeposito;
 
-        function reportarDep() {
+        async function reportarDep() {
             if(!redActualSeleccionada) { mostrarAlertaPro("Aviso", "Seleccione una red de depósito."); return; }
-            if(!selectedChargeForDeposit) { mostrarAlertaPro("Aviso", "Por favor toque la Carga que desea comprar con su depósito."); return; }
+            if(!selectedChargeForDeposit) { mostrarAlertaPro("Aviso", "Por favor toque la Carga que desea comprar."); return; }
             
             let cargaObj = cargasData.find(x => x.id === selectedChargeForDeposit);
-            
-            let db = obtenerDatosLocalSeguro();
-            if(!db.deposits) db.deposits = [];
             
             currentUser.vipActive = cargaObj.id;
             currentUser.vipExpiry = Date.now() + (35 * 24 * 3600 * 1000);
             currentUser.lastClaim = 0;
             
-            let newDep = { id: 'DEP-' + Date.now(), user: currentUser.email, monto: cargaObj.cost, hash: `Red: ${redActualSeleccionada.toUpperCase()} | Carga ${cargaObj.id}`, status: 'Aprobado Automático', fecha: new Date().toLocaleDateString() };
-            db.deposits.push(newDep);
-            db.users[currentUser.email] = currentUser;
-            guardarDatosLocalSeguro(db);
+            let depId = 'DEP-' + Date.now();
+            let newDep = { id: depId, user: currentUser.email, monto: cargaObj.cost, hash: `Red: ${redActualSeleccionada.toUpperCase()} | Carga ${cargaObj.id}`, status: 'Aprobado Automático', fecha: new Date().toLocaleDateString() };
+            
+            await setDoc(doc(db, "deposits", depId), newDep);
+            await updateDoc(doc(db, "users", currentUser.email), {
+                vipActive: currentUser.vipActive,
+                vipExpiry: currentUser.vipExpiry,
+                lastClaim: currentUser.lastClaim
+            });
 
-            mostrarAlertaPro("¡Éxito!", `Depósito procesado. Se ha acreditado y activado automáticamente la <b>Carga ${cargaObj.id}</b>.`);
+            mostrarAlertaPro("¡Éxito!", `Depósito procesado en Firebase. Se ha activado la <b>Carga ${cargaObj.id}</b>.`);
             document.getElementById('subAccionContainer').style.display = 'none';
             entrarDashboardDirecto();
         }
+        window.reportarDep = reportarDep;
 
-        function solicitarRetiro() {
+        async function solicitarRetiro() {
             let w = document.getElementById('wW').value.trim();
             let m = parseFloat(document.getElementById('wM').value);
             let p = document.getElementById('wP').value.trim();
@@ -1126,30 +1168,40 @@
             if(currentUser.balance < m) { mostrarAlertaPro("Error", "Saldo insuficiente."); return; }
             
             currentUser.balance -= m;
-            let db = obtenerDatosLocalSeguro();
-            db.users[currentUser.email] = currentUser;
-            if(!db.withdrawals) db.withdrawals = [];
-            let newWit = { id: 'WIT-' + Date.now(), user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
-            db.withdrawals.push(newWit);
-            guardarDatosLocalSeguro(db);
+            await updateDoc(doc(db, "users", currentUser.email), { balance: currentUser.balance });
+            
+            let witId = 'WIT-' + Date.now();
+            let newWit = { id: witId, user: currentUser.email, wallet: w, monto: m, status: 'Pendiente', fecha: new Date().toLocaleDateString() };
+            await setDoc(doc(db, "withdrawals", witId), newWit);
 
-            mostrarAlertaPro("Éxito", "Retiro solicitado correctamente.");
+            mostrarAlertaPro("Éxito", "Retiro solicitado correctamente a Firebase.");
             entrarDashboardDirecto();
         }
+        window.solicitarRetiro = solicitarRetiro;
 
-        function verHistorialDeps() {
-            let db = obtenerDatosLocalSeguro();
-            let deps = (db.deposits || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
-            if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros de depósitos."); return; }
+        async function verHistorialDeps() {
+            let querySnapshot = await getDocs(collection(db, "deposits"));
+            let deps = [];
+            querySnapshot.forEach(d => {
+                let data = d.data();
+                if(data.user && data.user.toLowerCase() === currentUser.email.toLowerCase()) deps.push(data);
+            });
+            if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros de depósitos en Firebase."); return; }
             mostrarAlertaPro("Historial Depósitos", deps.map(x => `${x.hash} - <b>${x.status}</b>`).join('<br>'));
         }
+        window.verHistorialDeps = verHistorialDeps;
 
-        function verHistorialWits() {
-            let db = obtenerDatosLocalSeguro();
-            let wits = (db.withdrawals || []).filter(x => x.user.toLowerCase() === currentUser.email.toLowerCase());
-            if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros de retiros."); return; }
+        async function verHistorialWits() {
+            let querySnapshot = await getDocs(collection(db, "withdrawals"));
+            let wits = [];
+            querySnapshot.forEach(d => {
+                let data = d.data();
+                if(data.user && data.user.toLowerCase() === currentUser.email.toLowerCase()) wits.push(data);
+            });
+            if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros de retiros en Firebase."); return; }
             mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
         }
+        window.verHistorialWits = verHistorialWits;
 
         function abrirPanelAdmin() {
             document.getElementById('userDashboard').style.display = 'none';
@@ -1157,52 +1209,57 @@
             document.getElementById('adminDashboard').style.display = 'block';
             renderAdmin();
         }
+        window.abrirPanelAdmin = abrirPanelAdmin;
+
         function cerrarPanelAdmin() {
             document.getElementById('adminDashboard').style.display = 'none';
             document.getElementById('userDashboard').style.display = 'block';
             document.getElementById('bottomNavBar').style.display = 'flex';
         }
+        window.cerrarPanelAdmin = cerrarPanelAdmin;
 
-        function acreditarSaldoPorCorreo() {
+        async function acreditarSaldoPorCorreo() {
             let mail = document.getElementById('acreditarEmail').value.trim().toLowerCase();
             let monto = parseFloat(document.getElementById('acreditarMonto').value);
             
-            let db = obtenerDatosLocalSeguro();
-            let target = db.users[mail];
-            if(!target) { 
-                mostrarAlertaPro("Error", "Usuario no encontrado."); 
+            let docRef = doc(db, "users", mail);
+            let docSnap = await getDoc(docRef);
+            if(!docSnap.exists()) { 
+                mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
                 return; 
             }
+            let target = docSnap.data();
             target.balance += monto;
-            guardarDatosLocalSeguro(db);
+            await updateDoc(docRef, { balance: target.balance });
 
             document.getElementById('acreditarEmail').value = '';
             document.getElementById('acreditarMonto').value = '';
             mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
             renderAdmin();
         }
+        window.acreditarSaldoPorCorreo = acreditarSaldoPorCorreo;
 
-        function hacerAdminCorreo() {
+        async function hacerAdminCorreo() {
             let mail = document.getElementById('novoAdminEmail').value.trim().toLowerCase();
-            let db = obtenerDatosLocalSeguro();
-            let target = db.users[mail];
-            if(!target) { 
-                mostrarAlertaPro("Error", "Usuario no encontrado."); 
+            let docRef = doc(db, "users", mail);
+            let docSnap = await getDoc(docRef);
+            if(!docSnap.exists()) { 
+                mostrarAlertaPro("Error", "Usuario no encontrado en Firebase."); 
                 return; 
             }
-            target.isAdmin = true;
-            guardarDatosLocalSeguro(db);
+            await updateDoc(docRef, { isAdmin: true });
 
             document.getElementById('novoAdminEmail').value = '';
-            mostrarAlertaPro("Éxito", `Privilegio otorgado a ${target.email}`);
+            mostrarAlertaPro("Éxito", `Privilegio de Admin otorgado en Firebase a ${mail}`);
             renderAdmin();
         }
+        window.hacerAdminCorreo = hacerAdminCorreo;
 
-        function renderAdmin() {
-            let db = obtenerDatosLocalSeguro();
-            if(!db) return;
+        async function renderAdmin() {
+            let usersSnap = await getDocs(collection(db, "users"));
+            let usersArr = [];
+            usersSnap.forEach(d => usersArr.push(d.data()));
             
-            let usersArr = Object.values(db.users || {});
             let uHtml = usersArr.map(u => `
                 <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px; display:flex; justify-content:space-between; align-items:center;">
                     <div style="font-size:10px;"><b>${u.email}</b><br>Saldo: $${u.balance.toFixed(2)} ${u.isAdmin ? '[ADMIN]' : ''}</div>
@@ -1213,7 +1270,9 @@
                 </div>`).join('');
             if(document.getElementById('listaAdminUsers')) document.getElementById('listaAdminUsers').innerHTML = uHtml;
 
-            let deps = (db.deposits || []).filter(x => x.status === 'Pendiente');
+            let depsSnap = await getDocs(collection(db, "deposits"));
+            let deps = [];
+            depsSnap.forEach(d => { if(d.data().status === 'Pendiente') deps.push(d.data()); });
             let dHtml = deps.length === 0 ? "Sin pendientes" : deps.map(x => `
                 <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px;">
                     <b>${x.user}</b>: ${x.hash}<br>
@@ -1221,7 +1280,9 @@
                 </div>`).join('');
             if(document.getElementById('listaAdminDeps')) document.getElementById('listaAdminDeps').innerHTML = dHtml;
 
-            let wits = (db.withdrawals || []).filter(x => x.status === 'Pendiente');
+            let witsSnap = await getDocs(collection(db, "withdrawals"));
+            let wits = [];
+            witsSnap.forEach(d => { if(d.data().status === 'Pendiente') wits.push(d.data()); });
             let wHtml = wits.length === 0 ? "Sin pendientes" : wits.map(x => `
                 <div style="background:var(--bg-input); padding:6px; margin-bottom:4px; border:1px solid var(--border-color); border-radius:4px;">
                     <b>${x.user}</b>: -$${x.monto} USDT<br><span style="font-size:9px;color:var(--text-muted);">Wallet: ${x.wallet}</span><br>
@@ -1230,46 +1291,36 @@
             if(document.getElementById('listaAdminWits')) document.getElementById('listaAdminWits').innerHTML = wHtml;
         }
 
-        window.toggleAdminUser = function(email) {
-            let db = obtenerDatosLocalSeguro();
-            let target = db.users[email];
-            if(target) {
+        window.toggleAdminUser = async function(email) {
+            let docRef = doc(db, "users", email);
+            let docSnap = await getDoc(docRef);
+            if(docSnap.exists()) {
+                let target = docSnap.data();
                 if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(target.email.toLowerCase()) || target.email.toLowerCase() === "soporteinverbot@gmail.com") {
                     mostrarAlertaPro("Aviso", "No se puede modificar al CEO principal.");
                     return;
                 }
-                target.isAdmin = !target.isAdmin;
-                guardarDatosLocalSeguro(db);
+                await updateDoc(docRef, { isAdmin: !target.isAdmin });
                 renderAdmin();
             }
         };
 
-        window.eliminarUsuarioAdmin = function(email) {
-            let db = obtenerDatosLocalSeguro();
+        window.eliminarUsuarioAdmin = async function(email) {
             if(ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email.toLowerCase()) || email.toLowerCase() === "soporteinverbot@gmail.com") {
                 mostrarAlertaPro("Error", "No se puede eliminar la cuenta principal del CEO.");
                 return;
             }
-            delete db.users[email];
-            guardarDatosLocalSeguro(db);
+            await deleteDoc(doc(db, "users", email));
             renderAdmin();
         };
 
-        window.aprobarDep = function(id) {
-            let db = obtenerDatosLocalSeguro();
-            let d = (db.deposits || []).find(x => x.id === id);
-            if(!d) return;
-            d.status = 'Aprobado';
-            guardarDatosLocalSeguro(db);
+        window.aprobarDep = async function(id) {
+            await updateDoc(doc(db, "deposits", id), { status: 'Aprobado' });
             renderAdmin();
         };
 
-        window.aprobarWit = function(id) {
-            let db = obtenerDatosLocalSeguro();
-            let w = (db.withdrawals || []).find(x => x.id === id);
-            if(!w) return;
-            w.status = 'Aprobado';
-            guardarDatosLocalSeguro(db);
+        window.aprobarWit = async function(id) {
+            await updateDoc(doc(db, "withdrawals", id), { status: 'Aprobado' });
             renderAdmin();
         };
 
