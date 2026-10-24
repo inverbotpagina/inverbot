@@ -528,7 +528,7 @@
                 </div>
 
                 <div class="quant-box">
-                    <div class="pool-robot-badge" title="Robot Limpiapiscinas Activo">
+                    <div class="pool-robot-badge" title="Robot Activo">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
                     </div>
 
@@ -889,7 +889,7 @@
 
         function cerrarAlerta() { 
             document.getElementById('customModalContainer').innerHTML = ''; 
-            location.reload(); // Recarga para actualizar saldo y cargas automáticamente en pantalla
+            location.reload(); 
         }
         window.cerrarAlerta = cerrarAlerta;
 
@@ -904,7 +904,7 @@
             }
         }
 
-        // Notificaciones para el CEO
+        // Notificaciones que suenan ÚNICAMENTE para ti como Dueño/Admin (CEO)
         function iniciarNotificacionesCEO() {
             if (!("Notification" in window)) return;
             if (Notification.permission !== "granted") { Notification.requestPermission(); }
@@ -919,7 +919,7 @@
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.status === 'Pendiente') {
-                            hablarVozCEO("Solicitud de depósito de Inverbot");
+                            hablarVozCEO("Atención CEO, nuevo depósito pendiente por aprobar");
                             lanzarNotificacionPush("Nuevo Depósito Pendiente", `Socio ${data.user} ha solicitado un depósito de $${data.monto} USDT.`);
                         }
                     }
@@ -933,7 +933,7 @@
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.status === 'Pendiente') {
-                            hablarVozCEO("Solicitud de retiro de Inverbot");
+                            hablarVozCEO("Atención CEO, nueva solicitud de retiro pendiente");
                             lanzarNotificacionPush("Nueva Solicitud de Retiro", `Socio ${data.user} solicita retirar -$${data.monto} USDT.`);
                         }
                     }
@@ -947,7 +947,7 @@
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.email !== currentUser.email) {
-                            hablarVozCEO("Nuevo usuario de Inverbot");
+                            hablarVozCEO("Atención CEO, nuevo socio registrado en la plataforma");
                             lanzarNotificacionPush("Nuevo Socio Registrado", `Se ha unido un nuevo inversor: ${data.email}`);
                         }
                     }
@@ -970,8 +970,8 @@
                         let flagKey = '_depNotified_' + data.id;
                         if (data.status === 'Aprobado' && !window[flagKey]) {
                             window[flagKey] = true;
-                            hablarVozCEO("INVERBOT ACEPTO TU SOLICITUD DE DESPOSITO");
-                            lanzarNotificacionPush("INVERBOT", "INVERBOT ACEPTO TU SOLICITUD DE DESPOSITO");
+                            hablarVozCEO("Su depósito en Inverbot ha sido aprobado con éxito");
+                            lanzarNotificacionPush("INVERBOT", "Su depósito en Inverbot ha sido aprobado con éxito");
                             mostrarAlertaPro("¡Depósito Aprobado!", `Tu solicitud de depósito por $${data.monto} USDT ha sido aprobada. ¡Tu carga ya se encuentra activa!`);
                         }
                     }
@@ -986,8 +986,8 @@
                         let flagKey = '_witNotified_' + data.id;
                         if (data.status === 'Aprobado' && !window[flagKey]) {
                             window[flagKey] = true;
-                            hablarVozCEO("INVERBOT ACEPTO TU SOLICITUD DE RETIRO");
-                            lanzarNotificacionPush("INVERBOT", "INVERBOT ACEPTO TU SOLICITUD DE RETIRO");
+                            hablarVozCEO("Su retiro en Inverbot ha sido aprobado con éxito");
+                            lanzarNotificacionPush("INVERBOT", "Su retiro en Inverbot ha sido aprobado con éxito");
                             mostrarAlertaPro("¡Retiro Aprobado!", `Tu solicitud de retiro por $${data.monto} USDT ha sido aprobada con éxito.`);
                         }
                     }
@@ -1186,6 +1186,7 @@
 
                 sessionEmail = email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
+                hablarVozCEO("BIENVENIDO A INVERBOT ES UNA PLATAFORMA DE INVERTIR Y GANAR MANTENEMOS TUS ACTIVOS CONSTANTEMENTE CRECIENDO");
                 iniciarNotificacionesCEO();
                 iniciarNotificacionesUsuario();
                 entrarDashboardDirecto();
@@ -1218,6 +1219,7 @@
                 currentUser = u;
                 sessionEmail = u.email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
+                hablarVozCEO("BIENVENIDO A INVERBOT ES UNA PLATAFORMA DE INVERTIR Y GANAR MANTENEMOS TUS ACTIVOS CONSTANTEMENTE CRECIENDO");
                 iniciarNotificacionesCEO();
                 iniciarNotificacionesUsuario();
                 entrarDashboardDirecto();
