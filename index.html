@@ -228,7 +228,6 @@
         .vip-sub-v.green { color: var(--primary-green); }
         .vip-sub-v.gold { color: #d69e2e; }
 
-        /* Estilos Neón para Modales / Alertas */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px);
@@ -751,7 +750,7 @@
 
     </div>
 
-    <!-- Script Integrado con Firebase SDK Modular (CDN) y Notificaciones + Voz del CEO -->
+    <!-- Script Integrado con Firebase SDK Modular (CDN) y Notificaciones Independientes con Filtro de Carga -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -891,10 +890,9 @@
         function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
         window.cerrarAlerta = cerrarAlerta;
 
-        // Función de voz sintética profesional (Text-to-Speech)
         function hablarVozCEO(texto) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Detener cualquier audio previo para que suene limpio
+                window.speechSynthesis.cancel();
                 let utterance = new SpeechSynthesisUtterance(texto);
                 utterance.lang = 'es-ES';
                 utterance.rate = 1.0;
@@ -903,18 +901,17 @@
             }
         }
 
-        // Sistema de notificaciones en tiempo real y voz para el CEO
+        // Notificaciones para el CEO con filtros para evitar carga inicial simultánea
         function iniciarNotificacionesCEO() {
             if (!("Notification" in window)) return;
-            if (Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
+            if (Notification.permission !== "granted") { Notification.requestPermission(); }
 
             let esAdmin = currentUser && (currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase()));
             if (!esAdmin) return;
 
-            // Escuchar depósitos
+            let firstDep = true;
             onSnapshot(collection(db, "deposits"), (snapshot) => {
+                if (firstDep) { firstDep = false; return; }
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         let data = change.doc.data();
@@ -926,8 +923,9 @@
                 });
             });
 
-            // Escuchar retiros
+            let firstWit = true;
             onSnapshot(collection(db, "withdrawals"), (snapshot) => {
+                if (firstWit) { firstWit = false; return; }
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         let data = change.doc.data();
@@ -939,14 +937,57 @@
                 });
             });
 
-            // Escuchar nuevos usuarios
+            let firstUser = true;
             onSnapshot(collection(db, "users"), (snapshot) => {
+                if (firstUser) { firstUser = false; return; }
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.email !== currentUser.email) {
                             hablarVozCEO("Nuevo usuario de Inverbot");
                             lanzarNotificacionPush("Nuevo Socio Registrado", `Se ha unido un nuevo inversor: ${data.email}`);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Notificaciones independientes para el usuario cuando le aceptan su depósito o retiro
+        function iniciarNotificacionesUsuario() {
+            if (!currentUser) return;
+            let esAdmin = currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase());
+            if (esAdmin) return;
+
+            if (!("Notification" in window)) return;
+            if (Notification.permission !== "granted") { Notification.requestPermission(); }
+
+            // Escuchar SOLO mis depósitos modificados
+            let qDep = query(collection(db, "deposits"), where("user", "==", currentUser.email));
+            onSnapshot(qDep, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "modified") {
+                        let data = change.doc.data();
+                        let flagKey = '_depNotified_' + data.id;
+                        if (data.status === 'Aprobado' && !window[flagKey]) {
+                            window[flagKey] = true;
+                            hablarVozCEO("INVERBOT ACEPTO TU SOLICITUD DE DESPOSITO");
+                            lanzarNotificacionPush("INVERBOT", "INVERBOT ACEPTO TU SOLICITUD DE DESPOSITO");
+                        }
+                    }
+                });
+            });
+
+            // Escuchar SOLO mis retiros modificados
+            let qWit = query(collection(db, "withdrawals"), where("user", "==", currentUser.email));
+            onSnapshot(qWit, (snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === "modified") {
+                        let data = change.doc.data();
+                        let flagKey = '_witNotified_' + data.id;
+                        if (data.status === 'Aprobado' && !window[flagKey]) {
+                            window[flagKey] = true;
+                            hablarVozCEO("INVERBOT ACEPTO TU SOLICITUD DE RETIRO");
+                            lanzarNotificacionPush("INVERBOT", "INVERBOT ACEPTO TU SOLICITUD DE RETIRO");
                         }
                     }
                 });
@@ -970,7 +1011,6 @@
             }
         }
 
-        // Escuchar mensaje del Service Worker para abrir el panel admin al hacer clic en la notificación
         navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', event => {
             if (event.data && event.data.action === 'abrirAdmin') {
                 if (currentUser && currentUser.isAdmin) {
@@ -1003,8 +1043,8 @@
                             currentUser = docSnap.data();
                             entrarDashboardDirecto();
                             iniciarNotificacionesCEO();
+                            iniciarNotificacionesUsuario();
 
-                            // Si se abrió la página mediante la notificación del navegador, abrir panel admin automáticamente
                             if (params.get('openAdmin') === 'true' && currentUser.isAdmin) {
                                 setTimeout(() => abrirPanelAdmin(), 600);
                             }
@@ -1146,6 +1186,7 @@
                 sessionEmail = email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
                 iniciarNotificacionesCEO();
+                iniciarNotificacionesUsuario();
                 entrarDashboardDirecto();
             } catch (error) {
                 console.error(error);
@@ -1177,6 +1218,7 @@
                 sessionEmail = u.email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
                 iniciarNotificacionesCEO();
+                iniciarNotificacionesUsuario();
                 entrarDashboardDirecto();
             } catch (error) {
                 console.error(error);
