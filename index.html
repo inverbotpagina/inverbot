@@ -758,7 +758,7 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
+                navigator.serviceWorker.register('firebase-messaging-sw.js').catch(err => console.log('SW error:', err));
             });
         }
 
@@ -898,8 +898,8 @@
                 window.speechSynthesis.cancel();
                 let utterance = new SpeechSynthesisUtterance(texto);
                 utterance.lang = 'es-ES';
-                utterance.rate = 0.93; // Velocidad pausada y elegante
-                utterance.pitch = 1.0; // Tono natural y profesional
+                utterance.rate = 0.93; 
+                utterance.pitch = 1.0; 
                 
                 let voces = window.speechSynthesis.getVoices();
                 let vozEspanol = voces.find(v => v.lang.startsWith('es') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Microsoft') || v.name.includes('Spanish')));
@@ -911,7 +911,6 @@
             }
         }
 
-        // Notificaciones que suenan ÚNICAMENTE para ti como Dueño/Admin (CEO)
         function iniciarNotificacionesCEO() {
             if (!("Notification" in window)) return;
             if (Notification.permission !== "granted") { Notification.requestPermission(); }
@@ -962,10 +961,8 @@
             });
         }
 
-        // Notificaciones visuales y de voz para el USUARIO cuando le aprueban su depósito o retiro
         function iniciarNotificacionesUsuario() {
             if (!currentUser) return;
-
             if (!("Notification" in window)) return;
             if (Notification.permission !== "granted") { Notification.requestPermission(); }
 
@@ -1194,7 +1191,7 @@
                 sessionEmail = email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
                 
-                // NUEVA LOCUCIÓN EXACTA AL REGISTRARSE CON TONO PROFESIONAL
+                // LOCUCIÓN EXACTA AL REGISTRARSE
                 hablarVozCEO("BIENVENIDO A UNA DE LAS PLATAFORMAS GLOBALES DE CONFIANZA INTERNACIONAL DE BUENA INVERSIÓN ACA PODRAS INVERTIR Y PODRAS MANTENER TUS ACTIVOS CRECIENDO CADA DIA MAS ESPERO CRESCAN CON NOSOTROS");
                 
                 iniciarNotificacionesCEO();
@@ -1230,8 +1227,6 @@
                 sessionEmail = u.email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
                 
-                // NOTA: Ya NO suena la voz aquí al iniciar sesión, solo al registrarse.
-
                 iniciarNotificacionesCEO();
                 iniciarNotificacionesUsuario();
                 entrarDashboardDirecto();
