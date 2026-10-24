@@ -238,8 +238,15 @@
             padding: 24px; border-radius: 16px; width: 100%; max-width: 320px; text-align: center;
             box-shadow: 0 0 25px rgba(0, 185, 107, 0.4);
         }
+        .modal-card.error-neon {
+            border: 2px solid #e53e3e;
+            box-shadow: 0 0 30px rgba(229, 62, 62, 0.6);
+            background: #110909;
+        }
         .modal-title { font-size: 15px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .modal-card.error-neon .modal-title { color: #e53e3e; }
         .modal-msg { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5; text-align: center; }
+        .modal-card.error-neon .modal-msg { color: #ffffff; font-weight: 700; }
 
         .floating-support {
             position: fixed; bottom: 75px; right: 16px; z-index: 99;
@@ -840,7 +847,7 @@
                     }
                 }
             } catch (e) {
-                console.error("Error de conexión:", e);
+                console.error("Error inicializando CEO:", e);
             }
         }
 
@@ -863,6 +870,23 @@
             if(cb) document.getElementById('modalAceptar').onclick = () => { cerrarAlerta(); cb(); };
         }
         window.mostrarAlertaPro = mostrarAlertaPro;
+
+        // Alerta roja de restricción de región (disponible si se requiere explícitamente)
+        function mostrarAlertaRestriccionRegion() {
+            document.getElementById('customModalContainer').innerHTML = `
+                <div class="modal-overlay">
+                    <div class="modal-card error-neon">
+                        <div style="margin-bottom: 12px; display: flex; justify-content: center;">
+                            <svg style="width:36px; height:36px; fill:#e53e3e; filter: drop-shadow(0 0 8px #e53e3e);" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        </div>
+                        <h3 class="modal-title">ATENCIÓN DEL SISTEMA</h3>
+                        <p class="modal-msg">INVERBOT NO ESTA DISPONIBLE PARA TU REGIÓN, PORFAVOR INTENTE MAS TARDE.</p>
+                        <button onclick="cerrarAlerta()" style="background: #e53e3e; color: #ffffff; border: none; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 0 10px #e53e3e;">ENTENDIDO</button>
+                    </div>
+                </div>
+            `;
+        }
+        window.mostrarAlertaRestriccionRegion = mostrarAlertaRestriccionRegion;
 
         function cerrarAlerta() { 
             document.getElementById('customModalContainer').innerHTML = ''; 
@@ -1163,8 +1187,8 @@
                 iniciarNotificacionesUsuario();
                 entrarDashboardDirecto();
             } catch (error) {
-                console.error(error);
-                mostrarAlertaPro("Error de Conexión", "No se pudo completar el registro. Verifica tu conexión.");
+                console.error("Error en registro:", error);
+                mostrarAlertaPro("Error", "No se pudo completar el registro. Comprueba tu conexión.");
             }
         }
         window.ejecutarRegistroFirebase = ejecutarRegistroFirebase;
@@ -1195,8 +1219,8 @@
                 iniciarNotificacionesUsuario();
                 entrarDashboardDirecto();
             } catch (error) {
-                console.error(error);
-                mostrarAlertaPro("Error de Conexión", "No se pudo iniciar sesión. Verifica tu conexión a internet.");
+                console.error("Error en login:", error);
+                mostrarAlertaPro("Error", "No se pudo iniciar sesión. Comprueba tu conexión a internet.");
             }
         }
         window.ejecutarLoginFirebase = ejecutarLoginFirebase;
