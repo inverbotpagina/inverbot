@@ -750,7 +750,7 @@
 
     </div>
 
-    <!-- Script Integrado con Firebase SDK Modular (CDN) y Notificaciones con Ignorador de Carga Masiva -->
+    <!-- Script Integrado con Firebase SDK Modular (CDN) y Alerta Visual Directa para Usuarios -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -887,7 +887,10 @@
         }
         window.mostrarAlertaRestriccionRegion = mostrarAlertaRestriccionRegion;
 
-        function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
+        function cerrarAlerta() { 
+            document.getElementById('customModalContainer').innerHTML = ''; 
+            location.reload(); // Recarga para actualizar saldo y cargas automáticamente en pantalla
+        }
         window.cerrarAlerta = cerrarAlerta;
 
         function hablarVozCEO(texto) {
@@ -901,7 +904,7 @@
             }
         }
 
-        // Notificaciones para el CEO (ESTRICTAMENTE SOLO PARA ADMINS Y SIN SPAM INICIAL)
+        // Notificaciones para el CEO
         function iniciarNotificacionesCEO() {
             if (!("Notification" in window)) return;
             if (Notification.permission !== "granted") { Notification.requestPermission(); }
@@ -909,7 +912,6 @@
             let esAdmin = currentUser && (currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase()));
             if (!esAdmin) return;
 
-            // Ignorar la primera carga masiva de datos existentes para evitar spam en Chrome
             let firstLoadDep = true;
             onSnapshot(collection(db, "deposits"), (snapshot) => {
                 if (firstLoadDep) { firstLoadDep = false; return; }
@@ -953,11 +955,9 @@
             });
         }
 
-        // Notificaciones independientes para el usuario cuando le aceptan su depósito o retiro
+        // Notificaciones visuales y de voz para el USUARIO cuando le aprueban su depósito o retiro
         function iniciarNotificacionesUsuario() {
             if (!currentUser) return;
-            let esAdmin = currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase());
-            if (esAdmin) return;
 
             if (!("Notification" in window)) return;
             if (Notification.permission !== "granted") { Notification.requestPermission(); }
@@ -972,6 +972,7 @@
                             window[flagKey] = true;
                             hablarVozCEO("INVERBOT ACEPTO TU SOLICITUD DE DESPOSITO");
                             lanzarNotificacionPush("INVERBOT", "INVERBOT ACEPTO TU SOLICITUD DE DESPOSITO");
+                            mostrarAlertaPro("¡Depósito Aprobado!", `Tu solicitud de depósito por $${data.monto} USDT ha sido aprobada. ¡Tu carga ya se encuentra activa!`);
                         }
                     }
                 });
@@ -987,6 +988,7 @@
                             window[flagKey] = true;
                             hablarVozCEO("INVERBOT ACEPTO TU SOLICITUD DE RETIRO");
                             lanzarNotificacionPush("INVERBOT", "INVERBOT ACEPTO TU SOLICITUD DE RETIRO");
+                            mostrarAlertaPro("¡Retiro Aprobado!", `Tu solicitud de retiro por $${data.monto} USDT ha sido aprobada con éxito.`);
                         }
                     }
                 });
