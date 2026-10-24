@@ -750,7 +750,7 @@
 
     </div>
 
-    <!-- Script Integrado con Firebase SDK Modular (CDN) y Notificaciones Independientes con Filtro de Carga -->
+    <!-- Script Integrado con Firebase SDK Modular (CDN) y Notificaciones con Ignorador de Carga Masiva -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -901,7 +901,7 @@
             }
         }
 
-        // Notificaciones para el CEO con filtros para evitar carga inicial simultánea
+        // Notificaciones para el CEO (ESTRICTAMENTE SOLO PARA ADMINS Y SIN SPAM INICIAL)
         function iniciarNotificacionesCEO() {
             if (!("Notification" in window)) return;
             if (Notification.permission !== "granted") { Notification.requestPermission(); }
@@ -909,9 +909,10 @@
             let esAdmin = currentUser && (currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase()));
             if (!esAdmin) return;
 
-            let firstDep = true;
+            // Ignorar la primera carga masiva de datos existentes para evitar spam en Chrome
+            let firstLoadDep = true;
             onSnapshot(collection(db, "deposits"), (snapshot) => {
-                if (firstDep) { firstDep = false; return; }
+                if (firstLoadDep) { firstLoadDep = false; return; }
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         let data = change.doc.data();
@@ -923,9 +924,9 @@
                 });
             });
 
-            let firstWit = true;
+            let firstLoadWit = true;
             onSnapshot(collection(db, "withdrawals"), (snapshot) => {
-                if (firstWit) { firstWit = false; return; }
+                if (firstLoadWit) { firstLoadWit = false; return; }
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         let data = change.doc.data();
@@ -937,9 +938,9 @@
                 });
             });
 
-            let firstUser = true;
+            let firstLoadUser = true;
             onSnapshot(collection(db, "users"), (snapshot) => {
-                if (firstUser) { firstUser = false; return; }
+                if (firstLoadUser) { firstLoadUser = false; return; }
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         let data = change.doc.data();
@@ -961,7 +962,6 @@
             if (!("Notification" in window)) return;
             if (Notification.permission !== "granted") { Notification.requestPermission(); }
 
-            // Escuchar SOLO mis depósitos modificados
             let qDep = query(collection(db, "deposits"), where("user", "==", currentUser.email));
             onSnapshot(qDep, (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
@@ -977,7 +977,6 @@
                 });
             });
 
-            // Escuchar SOLO mis retiros modificados
             let qWit = query(collection(db, "withdrawals"), where("user", "==", currentUser.email));
             onSnapshot(qWit, (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
