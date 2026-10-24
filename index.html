@@ -871,25 +871,8 @@
         }
         window.mostrarAlertaPro = mostrarAlertaPro;
 
-        function mostrarAlertaRestriccionRegion() {
-            document.getElementById('customModalContainer').innerHTML = `
-                <div class="modal-overlay">
-                    <div class="modal-card error-neon">
-                        <div style="margin-bottom: 12px; display: flex; justify-content: center;">
-                            <svg style="width:36px; height:36px; fill:#e53e3e; filter: drop-shadow(0 0 8px #e53e3e);" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                        </div>
-                        <h3 class="modal-title">ATENCIÓN DEL SISTEMA</h3>
-                        <p class="modal-msg">INVERBOT NO ESTA DISPONIBLE PARA TU REGIÓN, PORFAVOR INTENTE MAS TARDE.</p>
-                        <button onclick="cerrarAlerta()" style="background: #e53e3e; color: #ffffff; border: none; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 0 10px #e53e3e;">ENTENDIDO</button>
-                    </div>
-                </div>
-            `;
-        }
-        window.mostrarAlertaRestriccionRegion = mostrarAlertaRestriccionRegion;
-
         function cerrarAlerta() { 
             document.getElementById('customModalContainer').innerHTML = ''; 
-            location.reload(); 
         }
         window.cerrarAlerta = cerrarAlerta;
 
@@ -1192,7 +1175,7 @@
                 entrarDashboardDirecto();
             } catch (error) {
                 console.error(error);
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", error.message || "No se pudo completar el registro.");
             }
         }
         window.ejecutarRegistroFirebase = ejecutarRegistroFirebase;
@@ -1225,7 +1208,7 @@
                 entrarDashboardDirecto();
             } catch (error) {
                 console.error(error);
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", error.message || "No se pudo iniciar sesión.");
             }
         }
         window.ejecutarLoginFirebase = ejecutarLoginFirebase;
@@ -1343,7 +1326,7 @@
                     mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente.`);
                     entrarDashboardDirecto();
                 } catch (error) {
-                    mostrarAlertaRestriccionRegion();
+                    mostrarAlertaPro("Error", error.message || "No se pudo procesar la cuantificación.");
                 }
                 btn.disabled = false;
             }, 1000);
@@ -1369,7 +1352,7 @@
                 mostrarAlertaPro("Éxito", `¡Carga ${nivel} activada correctamente!`);
                 entrarDashboardDirecto();
             } catch (error) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", error.message || "No se pudo activar la carga.");
             }
         }
         window.comprarVip = comprarVip;
@@ -1396,7 +1379,7 @@
                     await deleteDoc(doc(db, "users", currentUser.email));
                     cerrarSesion();
                 } catch(e) {
-                    mostrarAlertaRestriccionRegion();
+                    mostrarAlertaPro("Error", e.message || "No se pudo eliminar la cuenta.");
                 }
             });
         }
@@ -1563,7 +1546,7 @@
                 document.getElementById('subAccionContainer').style.display = 'none';
                 entrarDashboardDirecto();
             } catch (error) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", error.message || "No se pudo reportar el depósito.");
             }
         }
         window.reportarDep = reportarDep;
@@ -1588,7 +1571,7 @@
                 mostrarAlertaPro("Éxito", "Retiro solicitado correctamente.");
                 entrarDashboardDirecto();
             } catch (error) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", error.message || "No se pudo solicitar el retiro.");
             }
         }
         window.solicitarRetiro = solicitarRetiro;
@@ -1604,7 +1587,7 @@
                 if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros de depósitos."); return; }
                 mostrarAlertaPro("Historial Depósitos", deps.map(x => `${x.hash} - <b>${x.status}</b>`).join('<br>'));
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo cargar el historial.");
             }
         }
         window.verHistorialDeps = verHistorialDeps;
@@ -1620,7 +1603,7 @@
                 if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros de retiros."); return; }
                 mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo cargar el historial.");
             }
         }
         window.verHistorialWits = verHistorialWits;
@@ -1682,7 +1665,7 @@
                 mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo acreditar el saldo.");
             }
         }
         window.acreditarSaldoPorCorreo = acreditarSaldoPorCorreo;
@@ -1708,7 +1691,7 @@
                 mostrarAlertaPro("Éxito", `Desacreditado -$${monto} a ${target.email}`);
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo desacreditar el saldo.");
             }
         }
         window.desacreditarSaldoPorCorreo = desacreditarSaldoPorCorreo;
@@ -1734,7 +1717,7 @@
                 mostrarAlertaPro("Éxito", `Usuario ${mail} eliminado permanentemente.`);
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo eliminar el usuario.");
             }
         }
         window.eliminarUsuarioPorCorreoAdmin = eliminarUsuarioPorCorreoAdmin;
@@ -1755,7 +1738,7 @@
                 document.getElementById('novoAdminEmail').value = '';
                 mostrarAlertaPro("Éxito", `Privilegio de Admin otorgado a ${mail}`);
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo otorgar el privilegio.");
             }
         }
         window.hacerAdminCorreo = hacerAdminCorreo;
@@ -1861,7 +1844,7 @@
                 renderAdmin();
             } catch(e) {
                 console.error(e);
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo aprobar el depósito.");
             }
         };
 
@@ -1870,7 +1853,7 @@
                 await updateDoc(doc(db, "deposits", id), { status: 'Cancelado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo cancelar el depósito.");
             }
         };
 
@@ -1879,7 +1862,7 @@
                 await updateDoc(doc(db, "withdrawals", id), { status: 'Aprobado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo aprobar el retiro.");
             }
         };
 
@@ -1901,7 +1884,7 @@
                 await updateDoc(witDocRef, { status: 'Cancelado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", e.message || "No se pudo cancelar el retiro.");
             }
         };
 
