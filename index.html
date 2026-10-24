@@ -751,7 +751,7 @@
 
     </div>
 
-    <!-- Script Integrado con Firebase SDK Modular (CDN) y Notificaciones de CEO -->
+    <!-- Script Integrado con Firebase SDK Modular (CDN) y Notificaciones + Voz del CEO -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -852,7 +852,6 @@
             }
         }
 
-        // Sistema de Alertas Pro con Estilo Neón y Iconos SVG
         function mostrarAlertaPro(titulo, mensaje, cb = null) {
             document.getElementById('customModalContainer').innerHTML = `
                 <div class="modal-overlay">
@@ -892,7 +891,19 @@
         function cerrarAlerta() { document.getElementById('customModalContainer').innerHTML = ''; }
         window.cerrarAlerta = cerrarAlerta;
 
-        // Activar notificaciones push locales en segundo plano para el Administrador CEO
+        // Función de voz sintética profesional (Text-to-Speech)
+        function hablarVozCEO(texto) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Detener cualquier audio previo para que suene limpio
+                let utterance = new SpeechSynthesisUtterance(texto);
+                utterance.lang = 'es-ES';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.05;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Sistema de notificaciones en tiempo real y voz para el CEO
         function iniciarNotificacionesCEO() {
             if (!("Notification" in window)) return;
             if (Notification.permission !== "granted") {
@@ -902,36 +913,39 @@
             let esAdmin = currentUser && (currentUser.isAdmin || ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(currentUser.email.toLowerCase()));
             if (!esAdmin) return;
 
-            // Escuchar nuevos depósitos en tiempo real
+            // Escuchar depósitos
             onSnapshot(collection(db, "deposits"), (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.status === 'Pendiente') {
+                            hablarVozCEO("Solicitud de depósito de Inverbot");
                             lanzarNotificacionPush("Nuevo Depósito Pendiente", `Socio ${data.user} ha solicitado un depósito de $${data.monto} USDT.`);
                         }
                     }
                 });
             });
 
-            // Escuchar nuevos retiros en tiempo real
+            // Escuchar retiros
             onSnapshot(collection(db, "withdrawals"), (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.status === 'Pendiente') {
+                            hablarVozCEO("Solicitud de retiro de Inverbot");
                             lanzarNotificacionPush("Nueva Solicitud de Retiro", `Socio ${data.user} solicita retirar -$${data.monto} USDT.`);
                         }
                     }
                 });
             });
 
-            // Escuchar nuevos usuarios registrados en tiempo real
+            // Escuchar nuevos usuarios
             onSnapshot(collection(db, "users"), (snapshot) => {
                 snapshot.docChanges().forEach((change) => {
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.email !== currentUser.email) {
+                            hablarVozCEO("Nuevo usuario de Inverbot");
                             lanzarNotificacionPush("Nuevo Socio Registrado", `Se ha unido un nuevo inversor: ${data.email}`);
                         }
                     }
@@ -955,6 +969,15 @@
                 }
             }
         }
+
+        // Escuchar mensaje del Service Worker para abrir el panel admin al hacer clic en la notificación
+        navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data && event.data.action === 'abrirAdmin') {
+                if (currentUser && currentUser.isAdmin) {
+                    abrirPanelAdmin();
+                }
+            }
+        });
 
         window.onload = function() {
             setTimeout(() => {
@@ -980,6 +1003,11 @@
                             currentUser = docSnap.data();
                             entrarDashboardDirecto();
                             iniciarNotificacionesCEO();
+
+                            // Si se abrió la página mediante la notificación del navegador, abrir panel admin automáticamente
+                            if (params.get('openAdmin') === 'true' && currentUser.isAdmin) {
+                                setTimeout(() => abrirPanelAdmin(), 600);
+                            }
                             return;
                         }
                     } catch (e) {
