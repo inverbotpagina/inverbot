@@ -61,6 +61,14 @@
             position: relative; 
             padding: 12px; 
         }
+
+        .lang-bar {
+            display: flex; justify-content: flex-end; margin-bottom: 8px;
+        }
+        .lang-select {
+            background: var(--bg-card); color: var(--primary-green); border: 1px solid var(--border-color);
+            padding: 4px 8px; border-radius: 8px; font-size: 10px; font-weight: 800; outline: none; cursor: pointer;
+        }
         
         .header-banner {
             background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/1792708281435.jpg');
@@ -346,8 +354,19 @@
 
     <div class="app-container">
         
+        <!-- Selector de Idioma -->
+        <div class="lang-bar">
+            <select id="langSelector" class="lang-select" onchange="cambiarIdiomaPagina(this.value)">
+                <option value="es">🇪🇸 Español</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="pt">🇧🇷 Português</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="ru">🇷🇺 Русский</option>
+            </select>
+        </div>
+
         <!-- Pantalla de Autenticación -->
-        <div id="authScreen" class="card" style="margin-top: 30px; display: none;">
+        <div id="authScreen" class="card" style="margin-top: 10px; display: none;">
             <div class="header-banner" style="margin-bottom: 16px;">
                 <h1>INVERBOT</h1>
                 <p>Global Quantitative Asset Management</p>
@@ -357,22 +376,22 @@
             <div id="registerView">
                 <div style="font-size: 14px; font-weight: 800; color: var(--primary-green); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                     <svg style="width:18px;height:18px;fill:var(--primary-green);" viewBox="0 0 24 24"><path d="M15 14c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm-9-4V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"/></svg>
-                    Registro de Socio
+                    <span data-i18n="regTitle">Registro de Socio</span>
                 </div>
-                <div class="input-group"><label>Correo Electrónico</label><input type="email" id="regEmail" placeholder="trader@gmail.com"></div>
+                <div class="input-group"><label data-i18n="emailLabel">Correo Electrónico</label><input type="email" id="regEmail" placeholder="trader@gmail.com"></div>
                 
                 <div class="input-group">
-                    <label>Contraseña</label>
+                    <label data-i18n="passLabel">Contraseña</label>
                     <div class="password-wrapper">
                         <input type="password" id="regPass" placeholder="••••••••">
                         <button type="button" class="toggle-password" onclick="togglePasswordVisibility('regPass', this)">
-                            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3 z"/></svg>
                         </button>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label>Confirmar Contraseña</label>
+                    <label data-i18n="confirmPassLabel">Confirmar Contraseña</label>
                     <div class="password-wrapper">
                         <input type="password" id="regPassConfirm" placeholder="••••••••">
                         <button type="button" class="toggle-password" onclick="togglePasswordVisibility('regPassConfirm', this)">
@@ -381,21 +400,21 @@
                     </div>
                 </div>
 
-                <div class="input-group"><label>Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
-                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarRegistroFirebase)">Registrarse</button>
-                <div class="auth-switch"><p>¿Ya posee cuenta? <a onclick="ejecutarAccionPausada(() => cambiarVistaAuth(true))">Iniciar Sesión</a></p></div>
+                <div class="input-group"><label data-i18n="refLabel">Código de Invitación</label><input type="text" id="regRef" placeholder="REF-XXXXXX"></div>
+                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarRegistroFirebase)" data-i18n="btnRegister">Registrarse</button>
+                <div class="auth-switch"><p><span data-i18n="haveAccount">¿Ya posee cuenta?</span> <a onclick="ejecutarAccionPausada(() => cambiarVistaAuth(true))" data-i18n="loginLink">Iniciar Sesión</a></p></div>
             </div>
 
             <!-- VISTA LOGIN -->
             <div id="loginView" style="display: none;">
                 <div style="font-size: 14px; font-weight: 800; color: var(--primary-green); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                     <svg style="width:18px;height:18px;fill:var(--primary-green);" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                    Iniciar Sesión
+                    <span data-i18n="loginTitle">Iniciar Sesión</span>
                 </div>
-                <div class="input-group"><label>Correo Electrónico</label><input type="email" id="logEmail" placeholder="trader@gmail.com"></div>
+                <div class="input-group"><label data-i18n="emailLabel">Correo Electrónico</label><input type="email" id="logEmail" placeholder="trader@gmail.com"></div>
                 
                 <div class="input-group">
-                    <label>Contraseña</label>
+                    <label data-i18n="passLabel">Contraseña</label>
                     <div class="password-wrapper">
                         <input type="password" id="logPass" placeholder="••••••••">
                         <button type="button" class="toggle-password" onclick="togglePasswordVisibility('logPass', this)">
@@ -404,8 +423,8 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarLoginFirebase)">Iniciar Sesión</button>
-                <div class="auth-switch"><p>¿Nuevo socio? <a onclick="ejecutarAccionPausada(() => cambiarVistaAuth(false))">Registrarse</a></p></div>
+                <button type="button" class="btn btn-green" onclick="ejecutarAccionPausada(ejecutarLoginFirebase)" data-i18n="btnLogin">Iniciar Sesión</button>
+                <div class="auth-switch"><p><span data-i18n="newPartner">¿Nuevo socio?</span> <a onclick="ejecutarAccionPausada(() => cambiarVistaAuth(false))" data-i18n="registerLink">Registrarse</a></p></div>
             </div>
         </div>
 
@@ -420,8 +439,8 @@
                 </div>
 
                 <div class="marquee-container">
-                    <div class="marquee-track">
-                        INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS
+                    <div class="marquee-track" data-i18n="marqueeText">
+                        INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS &nbsp;&nbsp;&nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;&nbsp; INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS
                     </div>
                 </div>
 
@@ -429,16 +448,16 @@
                     <div class="card-robot-corner">
                         <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
                     </div>
-                    <h3 style="font-size: 12px; color: var(--primary-green); margin-bottom: 4px; font-weight: 800;">PROGRAMA DE AFILIADOS</h3>
-                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Obtén comisiones institucionales por cada socio.</p>
-                    <button class="btn btn-green" onclick="ejecutarAccionPausada(() => cambiarTab('Red', document.getElementById('navRed')))" style="padding: 8px; font-size: 11px;">Ver Mi Red de Socios</button>
+                    <h3 style="font-size: 12px; color: var(--primary-green); margin-bottom: 4px; font-weight: 800;" data-i18n="affProgram">PROGRAMA DE AFILIADOS</h3>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;" data-i18n="affSub">Obtén comisiones institucionales por cada socio.</p>
+                    <button class="btn btn-green" onclick="ejecutarAccionPausada(() => cambiarTab('Red', document.getElementById('navRed')))" style="padding: 8px; font-size: 11px;" data-i18n="btnViewTeam">Ver Mi Red de Socios</button>
                 </div>
 
                 <!-- MERCADOS FINANCIEROS -->
                 <div class="card">
                     <div style="font-size: 11px; font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;">
-                        <span>Mercados Globales (USDT)</span>
-                        <span style="font-size: 9px; color: var(--market-green); background: #16221c; padding: 2px 6px; border-radius: 4px; font-weight: 700; border: 1px solid var(--border-color);">EN VIVO</span>
+                        <span data-i18n="globalMarkets">Mercados Globales (USDT)</span>
+                        <span style="font-size: 9px; color: var(--market-green); background: #16221c; padding: 2px 6px; border-radius: 4px; font-weight: 700; border: 1px solid var(--border-color);" data-i18n="liveBadge">EN VIVO</span>
                     </div>
 
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
@@ -509,10 +528,10 @@
                 </div>
 
                 <div class="card" style="background: rgba(22, 34, 28, 0.9);">
-                    <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">Métricas del Sistema</div>
+                    <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;" data-i18n="sysMetrics">Métricas del Sistema</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center;">
-                        <div style="background:var(--bg-card); padding:10px; border-radius:10px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-green);">$4,289,150</div></div>
-                        <div style="background:var(--bg-card); padding:10px; border-radius:10px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;">Modos Operativos</div><div style="font-size:12px; font-weight:800; color:var(--text-main);">1,428</div></div>
+                        <div style="background:var(--bg-card); padding:10px; border-radius:10px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;" data-i18n="vol24">Volumen 24h</div><div style="font-size:12px; font-weight:800; color:var(--primary-green);">$4,289,150</div></div>
+                        <div style="background:var(--bg-card); padding:10px; border-radius:10px; border:1px solid var(--border-color);"><div style="font-size:9px; color:var(--text-muted); font-weight:700;" data-i18n="opModes">Modos Operativos</div><div style="font-size:12px; font-weight:800; color:var(--text-main);">1,428</div></div>
                     </div>
                 </div>
             </div>
@@ -522,18 +541,18 @@
                 <div class="balance-box">
                     <div class="balance-title">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
-                        Ingreso Diario
+                        <span data-i18n="dailyIncome">Ingreso Diario</span>
                     </div>
                     <div class="balance-amount" id="lblIngresoDiario">$0.00 USDT</div>
                 </div>
 
                 <div class="quant-box">
-                    <div class="pool-robot-badge" title="Robot Limpiapiscinas Activo">
+                    <div class="pool-robot-badge" title="Robot Activo">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
                     </div>
 
                     <div id="countdownContainer" style="display: none; margin-bottom: 10px;">
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase;">Próximo ciclo:</div>
+                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase;" data-i18n="nextCycle">Próximo ciclo:</div>
                         <div class="countdown-timer" id="lblCountdownTimer">23:59:59</div>
                     </div>
 
@@ -546,9 +565,9 @@
 
                     <button class="btn btn-green" id="btnCuantificarAccion" onclick="ejecutarAccionPausada(ejecutarCuantificacionConPila)" style="padding: 13px; font-size: 13px; font-weight: 800;">
                         <svg style="width:16px; height:16px; fill:#000;" viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.88 0-.33-.75-.27-.78C8.73 10.37 14.5 3 14.5 3h1l-1 7h3.53c.88 0 .42.81.24.9-3.3 4.96-7.27 10.1-7.27 10.1z"/></svg>
-                        CARGAR AHORA
+                        <span data-i18n="btnLoadNow">CARGAR AHORA</span>
                     </button>
-                    <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;">Pulse para llenar su pila y procesar el rendimiento diario.</p>
+                    <p style="font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 10px;" data-i18n="loadSub">Pulse para llenar su pila y procesar el rendimiento diario.</p>
                 </div>
             </div>
 
@@ -557,12 +576,12 @@
                 <div class="balance-box">
                     <div class="balance-title">
                         <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-                        Activo
+                        <span data-i18n="activeLabel">Activo</span>
                     </div>
                     <div class="balance-amount" id="lblBalanceCargas">$0.00</div>
                 </div>
 
-                <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;">Selecciona o adquiere tu Carga:</div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase;" data-i18n="selectChargeTitle">Selecciona o adquiere tu Carga:</div>
                 <div id="vipsContainer"></div>
             </div>
 
@@ -570,24 +589,24 @@
             <div id="tabRed" class="tab-content" style="display: none;">
                 <div class="team-hero">
                     <div class="team-hero-top">
-                        <div class="team-hero-title">COMISIÓN DE RED</div>
-                        <div class="team-hero-sub">Balance acumulado</div>
+                        <div class="team-hero-title" data-i18n="teamCommTitle">COMISIÓN DE RED</div>
+                        <div class="team-hero-sub" data-i18n="accumBalance">Balance acumulado</div>
                     </div>
                     <div style="font-size: 11px; opacity: 0.9; margin-bottom: 2px; font-weight: 700;">USDT</div>
                     <div class="team-hero-amount" id="lblTeamComision">0.00</div>
                     
-                    <button class="team-hero-btn" onclick="ejecutarAccionPausada(() => mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.'))">
+                    <button class="team-hero-btn" onclick="ejecutarAccionPausada(() => mostrarAlertaPro('Historial de Red', 'Sincronizado correctamente.'))" data-i18n="btnCommHistory">
                         Historial de comisiones
                     </button>
                 </div>
 
                 <div class="team-grid-2">
-                    <div class="team-stat-card"><div class="team-stat-label">Socios Totales</div><div class="team-stat-value" id="lblTeamTotalRef">0</div></div>
-                    <div class="team-stat-card"><div class="team-stat-label">Válidos</div><div class="team-stat-value" id="lblTeamValidRef" style="color: var(--primary-green);">0</div></div>
+                    <div class="team-stat-card"><div class="team-stat-label" data-i18n="totalPartners">Socios Totales</div><div class="team-stat-value" id="lblTeamTotalRef">0</div></div>
+                    <div class="team-stat-card"><div class="team-stat-label" data-i18n="validPartners">Válidos</div><div class="team-stat-value" id="lblTeamValidRef" style="color: var(--primary-green);">0</div></div>
                 </div>
 
                 <div class="team-stat-card" style="margin-bottom: 12px;">
-                    <div class="team-stat-label">Volumen de Depósito del Equipo</div>
+                    <div class="team-stat-label" data-i18n="teamDepVolume">Volumen de Depósito del Equipo</div>
                     <div class="team-stat-value" id="lblTeamDepEquipo">0.00</div>
                 </div>
 
@@ -595,9 +614,9 @@
                     <div class="card-robot-corner">
                         <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a4 4 0 0 1 4 4v3h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1H5a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h1v-3a4 4 0 0 1 4-4h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/></svg>
                     </div>
-                    <h3 style="font-size: 12px; margin-bottom: 4px; font-weight: 800;">ENLACE DE INVITACIÓN</h3>
+                    <h3 style="font-size: 12px; margin-bottom: 4px; font-weight: 800;" data-i18n="inviteLinkTitle">ENLACE DE INVITACIÓN</h3>
                     <code id="lblMyRefLink" style="display:block; font-size:10px; color:var(--primary-green); margin: 6px 0; word-break: break-all; background:var(--bg-input); padding:10px; border-radius:8px; font-weight:700; border:1px solid var(--border-color);"></code>
-                    <button class="btn btn-green" onclick="ejecutarAccionPausada(copiarEnlaceReferido)" style="padding:9px; font-size:11px;">Copiar Enlace Seguro</button>
+                    <button class="btn btn-green" onclick="ejecutarAccionPausada(copiarEnlaceReferido)" style="padding:9px; font-size:11px;" data-i18n="btnCopyLink">Copiar Enlace Seguro</button>
                 </div>
             </div>
 
@@ -606,36 +625,36 @@
                 <div class="balance-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                         <div>
-                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700;">SESIÓN ACTIVA</div>
+                            <div style="font-size: 9px; color: var(--text-muted); font-weight: 700;" data-i18n="activeSession">SESIÓN ACTIVA</div>
                             <div style="font-size: 11px; font-weight: 800;" id="lblUserEmail"></div>
                         </div>
                         <div style="display: flex; gap: 6px;">
-                            <button onclick="ejecutarAccionPausada(eliminarCuentaPropia)" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Eliminar</button>
-                            <button onclick="ejecutarAccionPausada(cerrarSesion)" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;">Salir</button>
+                            <button onclick="ejecutarAccionPausada(eliminarCuentaPropia)" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;" data-i18n="btnDeleteAcc">Eliminar</button>
+                            <button onclick="ejecutarAccionPausada(cerrarSesion)" class="btn btn-red" style="width: auto; padding: 4px 8px; font-size: 9px; margin:0;" data-i18n="btnLogout">Salir</button>
                         </div>
                     </div>
 
                     <div class="balance-title">
                         <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-                        Balance Disponible
+                        <span data-i18n="availBalance">Balance Disponible</span>
                     </div>
                     <div class="balance-amount" id="lblBalanceAmi">$0.00</div>
 
                     <div class="action-grid">
-                        <button class="btn-action-dep" onclick="ejecutarAccionPausada(() => mostrarSeccion('dep'))">Depositar</button>
-                        <button class="btn-action-wit" onclick="ejecutarAccionPausada(() => mostrarSeccion('wit'))">Retirar</button>
+                        <button class="btn-action-dep" onclick="ejecutarAccionPausada(() => mostrarSeccion('dep'))" data-i18n="btnDeposit">Depositar</button>
+                        <button class="btn-action-wit" onclick="ejecutarAccionPausada(() => mostrarSeccion('wit'))" data-i18n="btnWithdraw">Retirar</button>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <button class="btn-action-history" onclick="ejecutarAccionPausada(verHistorialDeps)">Historial Depósitos</button>
-                        <button class="btn-action-history" onclick="ejecutarAccionPausada(verHistorialWits)">Historial Retiros</button>
+                        <button class="btn-action-history" onclick="ejecutarAccionPausada(verHistorialDeps)" data-i18n="btnDepHistory">Historial Depósitos</button>
+                        <button class="btn-action-history" onclick="ejecutarAccionPausada(verHistorialWits)" data-i18n="btnWitHistory">Historial Retiros</button>
                     </div>
 
                     <div id="subAccionContainer" style="display: none; margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;"></div>
 
                     <div id="adminPanelTrigger" style="display: none; background: #13221b; border: 1px solid var(--primary-green); padding: 12px; border-radius: 10px; margin-top: 14px;">
-                        <p style="color: var(--primary-green); font-weight: 800; font-size: 10px; margin-bottom: 8px; text-transform: uppercase;">PANEL EJECUTIVO CEO</p>
-                        <button class="btn btn-green" onclick="ejecutarAccionPausada(abrirPanelAdmin)" style="margin:0; font-size: 11px; padding: 9px;">Administrar Modos y Finanzas</button>
+                        <p style="color: var(--primary-green); font-weight: 800; font-size: 10px; margin-bottom: 8px; text-transform: uppercase;" data-i18n="ceoPanelTitle">PANEL EJECUTIVO CEO</p>
+                        <button class="btn btn-green" onclick="ejecutarAccionPausada(abrirPanelAdmin)" style="margin:0; font-size: 11px; padding: 9px;" data-i18n="btnOpenCeo">Administrar Modos y Finanzas</button>
                     </div>
                 </div>
             </div>
@@ -645,86 +664,86 @@
         <!-- Panel de Administración -->
         <div id="adminDashboard" class="card" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);">CONTROL EJECUTIVO CEO</h3>
-                <button onclick="ejecutarAccionPausada(cerrarPanelAdmin)" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;">Volver</button>
+                <h3 style="font-size: 13px; font-weight: 800; color: var(--primary-green);" data-i18n="ceoControl">CONTROL EJECUTIVO CEO</h3>
+                <button onclick="ejecutarAccionPausada(cerrarPanelAdmin)" class="btn btn-green" style="width: auto; padding: 4px 10px; font-size: 9px; margin:0;" data-i18n="btnBack">Volver</button>
             </div>
             
             <div class="admin-grid-btns">
                 <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDep'))">
                     <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    Depósitos
+                    <span data-i18n="adminDep">Depósitos</span>
                 </button>
                 <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secWit'))">
                     <svg viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z"/></svg>
-                    Retiros
+                    <span data-i18n="adminWit">Retiros</span>
                 </button>
                 <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secAdmin'))">
                     <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-                    Dar Admin
+                    <span data-i18n="adminGrant">Dar Admin</span>
                 </button>
                 <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secAcreditar'))">
                     <svg viewBox="0 0 24 24"><path d="M11 15h2v-2h2v-2h-2V9h-2v2H9v2h2v2zm9-6h-4.18C14.4 7.84 13.3 7 12 7c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2zm-7-4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/></svg>
-                    Acreditar
+                    <span data-i18n="adminCredit">Acreditar</span>
                 </button>
                 <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secDesacreditar'))">
                     <svg viewBox="0 0 24 24"><path d="M9 11h6v2H9v-2zm11-2v9c0 1.1-.9 2-2 2H6c-1.1 0-2-.9-2-2V9c0-1.1.9-2 2-2h3.18C9.6 5.84 10.7 5 12 5s2.4.84 2.82 2H18c1.1 0 2 .9 2 2zm-8-4c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"/></svg>
-                    Desacreditar
+                    <span data-i18n="adminDebit">Desacreditar</span>
                 </button>
                 <button class="admin-btn-compact danger" onclick="ejecutarAccionPausada(() => toggleAdminSection('secEliminarUser'))">
                     <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                    Eliminar User
+                    <span data-i18n="adminDel">Eliminar User</span>
                 </button>
                 <button class="admin-btn-compact" onclick="ejecutarAccionPausada(() => toggleAdminSection('secUsers'))" style="grid-column: span 2;">
                     <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    Usuarios de la Web
+                    <span data-i18n="adminUsersList">Usuarios de la Web</span>
                 </button>
             </div>
 
             <!-- SECCIÓN 1: SOLICITUD DE DEPÓSITO -->
             <div id="secDep" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Solicitudes de Depósito</div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;" data-i18n="reqDepTitle">Solicitudes de Depósito</div>
                 <div id="listaAdminDeps" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
 
             <!-- SECCIÓN 2: SOLICITUD DE RETIRO -->
             <div id="secWit" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;">Solicitudes de Retiro</div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;" data-i18n="reqWitTitle">Solicitudes de Retiro</div>
                 <div id="listaAdminWits" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
 
             <!-- SECCIÓN 3: DAR ADMIN -->
             <div id="secAdmin" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Dar Privilegio de Admin</div>
-                <div class="input-group" style="margin-bottom:8px;"><label>Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(hacerAdminCorreo)" style="padding:9px; font-size:11px; margin:0;">Otorgar Admin</button>
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;" data-i18n="grantAdminTitle">Dar Privilegio de Admin</div>
+                <div class="input-group" style="margin-bottom:8px;"><label data-i18n="partnerEmail">Correo del Socio</label><input type="email" id="novoAdminEmail" placeholder="socio@gmail.com"></div>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(hacerAdminCorreo)" style="padding:9px; font-size:11px; margin:0;" data-i18n="btnGrantAdmin">Otorgar Admin</button>
             </div>
 
             <!-- SECCIÓN 4: ACREDITAR USUARIO -->
             <div id="secAcreditar" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Acreditar Saldo a Usuario</div>
-                <div class="input-group" style="margin-bottom:8px;"><label>Correo del Usuario</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
-                <div class="input-group" style="margin-bottom:8px;"><label>Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
-                <button class="btn btn-green" onclick="ejecutarAccionPausada(acreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;">Acreditar Saldo</button>
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;" data-i18n="creditTitle">Acreditar Saldo a Usuario</div>
+                <div class="input-group" style="margin-bottom:8px;"><label data-i18n="userEmail">Correo del Usuario</label><input type="email" id="acreditarEmail" placeholder="socio@gmail.com"></div>
+                <div class="input-group" style="margin-bottom:8px;"><label data-i18n="amountUsdt">Monto (USDT)</label><input type="number" id="acreditarMonto" step="0.01" placeholder="100.00"></div>
+                <button class="btn btn-green" onclick="ejecutarAccionPausada(acreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;" data-i18n="btnCredit">Acreditar Saldo</button>
             </div>
 
             <!-- SECCIÓN 5: DESACREDITAR USUARIO -->
             <div id="secDesacreditar" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;">Desacreditar Saldo a Usuario</div>
-                <div class="input-group" style="margin-bottom:8px;"><label>Correo del Usuario</label><input type="email" id="desacreditarEmail" placeholder="socio@gmail.com"></div>
-                <div class="input-group" style="margin-bottom:8px;"><label>Monto a Quitar (USDT)</label><input type="number" id="desacreditarMonto" step="0.01" placeholder="50.00"></div>
-                <button class="btn btn-red" onclick="ejecutarAccionPausada(desacreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;">Desacreditar Saldo</button>
+                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;" data-i18n="debitTitle">Desacreditar Saldo a Usuario</div>
+                <div class="input-group" style="margin-bottom:8px;"><label data-i18n="userEmail">Correo del Usuario</label><input type="email" id="desacreditarEmail" placeholder="socio@gmail.com"></div>
+                <div class="input-group" style="margin-bottom:8px;"><label data-i18n="amountRemove">Monto a Quitar (USDT)</label><input type="number" id="desacreditarMonto" step="0.01" placeholder="50.00"></div>
+                <button class="btn btn-red" onclick="ejecutarAccionPausada(desacreditarSaldoPorCorreo)" style="padding:9px; font-size:11px; margin:0;" data-i18n="btnDebit">Desacreditar Saldo</button>
             </div>
 
             <!-- SECCIÓN: ELIMINAR USUARIO POR CORREO -->
             <div id="secEliminarUser" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;">Eliminar Usuario por Correo</div>
-                <div class="input-group" style="margin-bottom:8px;"><label>Correo del Usuario</label><input type="email" id="eliminarUserEmail" placeholder="socio@gmail.com"></div>
-                <button class="btn btn-red" onclick="ejecutarAccionPausada(eliminarUsuarioPorCorreoAdmin)" style="padding:9px; font-size:11px; margin:0;">Eliminar Permanentemente</button>
+                <div style="font-size: 11px; font-weight: 800; color: var(--market-red); margin-bottom: 8px; text-transform: uppercase;" data-i18n="delUserTitle">Eliminar Usuario por Correo</div>
+                <div class="input-group" style="margin-bottom:8px;"><label data-i18n="userEmail">Correo del Usuario</label><input type="email" id="eliminarUserEmail" placeholder="socio@gmail.com"></div>
+                <button class="btn btn-red" onclick="ejecutarAccionPausada(eliminarUsuarioPorCorreoAdmin)" style="padding:9px; font-size:11px; margin:0;" data-i18n="btnDelUserPerm">Eliminar Permanentemente</button>
             </div>
 
             <!-- SECCIÓN 6: USUARIOS DE LA WEB -->
             <div id="secUsers" style="display: none; background: var(--bg-input); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;">Usuarios Registrados en la Web</div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary-green); margin-bottom: 8px; text-transform: uppercase;" data-i18n="registeredUsersTitle">Usuarios Registrados en la Web</div>
                 <div id="listaAdminUsers" style="max-height: 200px; overflow-y: auto;"></div>
             </div>
         </div>
@@ -732,25 +751,25 @@
         <!-- Navegación Inferior -->
         <div class="bottom-nav" id="bottomNavBar" style="display: none;">
             <button class="nav-item active" onclick="ejecutarAccionPausada(() => cambiarTab('Hogar', this))" id="navHogar">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Hogar
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span data-i18n="navHome">Hogar</span>
             </button>
             <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Cuantificar', this))" id="navCuantificar">
-                <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>Cuantificar
+                <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg><span data-i18n="navQuantify">Cuantificar</span>
             </button>
             <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Cargas', this))" id="navCargas">
-                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>Cargas
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg><span data-i18n="navCharges">Cargas</span>
             </button>
             <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Red', this))" id="navRed">
-                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Equipo
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span data-i18n="navTeam">Equipo</span>
             </button>
             <button class="nav-item" onclick="ejecutarAccionPausada(() => cambiarTab('Ami', this))" id="navAmi">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Perfil
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg><span data-i18n="navProfile">Perfil</span>
             </button>
         </div>
 
     </div>
 
-    <!-- Script Integrado con Firebase SDK Modular (CDN) y Alerta Visual Directa para Usuarios -->
+    <!-- Script Integrado con Firebase SDK Modular (CDN) y Selector de Idiomas con Traducción de Voz -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
@@ -782,28 +801,421 @@
         let currentUser = null;
         let countdownInterval = null;
         let selectedChargeForDeposit = null;
+        let currentLang = localStorage.getItem("inverbot_lang") || "es";
 
-        const cargasData = [
-            { id: 1, cost: 10, daily: 2 },
-            { id: 2, cost: 25, daily: 6 },
-            { id: 3, cost: 50, daily: 12 },
-            { id: 4, cost: 160, daily: 37 },
-            { id: 5, cost: 360, daily: 84 },
-            { id: 6, cost: 860, daily: 206 },
-            { id: 7, cost: 1800, daily: 432 },
-            { id: 8, cost: 3800, daily: 950 },
-            { id: 9, cost: 8800, daily: 2200 },
-            { id: 10, cost: 18800, daily: 4697, elite: true }
-        ];
-
-        let marketData = {
-            btc: { price: 81598.50, change: 2.45 },
-            eth: { price: 2387.48, change: -1.20 },
-            sol: { price: 194.20, change: 4.80 },
-            bnb: { price: 642.15, change: 0.95 },
-            xrp: { price: 1.8842, change: -0.45 },
-            usdt: { price: 1.0000, change: 0.00 }
+        // Diccionario de Traducciones Multi-idioma
+        const i18n = {
+            es: {
+                regTitle: "Registro de Socio",
+                emailLabel: "Correo Electrónico",
+                passLabel: "Contraseña",
+                confirmPassLabel: "Confirmar Contraseña",
+                refLabel: "Código de Invitación",
+                btnRegister: "Registrarse",
+                haveAccount: "¿Ya posee cuenta?",
+                loginLink: "Iniciar Sesión",
+                loginTitle: "Iniciar Sesión",
+                btnLogin: "Iniciar Sesión",
+                newPartner: "¿Nuevo socio?",
+                registerLink: "Registrarse",
+                marqueeText: "INVIERTES Y GANAS MANTEN TUS ACTIVOS CRECIENDO CON NOSOTROS LO LOGRARAS",
+                affProgram: "PROGRAMA DE AFILIADOS",
+                affSub: "Obtén comisiones institucionales por cada socio.",
+                btnViewTeam: "Ver Mi Red de Socios",
+                globalMarkets: "Mercados Globales (USDT)",
+                liveBadge: "EN VIVO",
+                sysMetrics: "Métricas del Sistema",
+                vol24: "Volumen 24h",
+                opModes: "Modos Operativos",
+                dailyIncome: "Ingreso Diario",
+                nextCycle: "Próximo ciclo:",
+                btnLoadNow: "CARGAR AHORA",
+                loadSub: "Pulse para llenar su pila y procesar el rendimiento diario.",
+                activeLabel: "Activo",
+                selectChargeTitle: "Selecciona o adquiere tu Carga:",
+                teamCommTitle: "COMISIÓN DE RED",
+                accumBalance: "Balance acumulado",
+                btnCommHistory: "Historial de comisiones",
+                totalPartners: "Socios Totales",
+                validPartners: "Válidos",
+                teamDepVolume: "Volumen de Depósito del Equipo",
+                inviteLinkTitle: "ENLACE DE INVITACIÓN",
+                btnCopyLink: "Copiar Enlace Seguro",
+                activeSession: "SESIÓN ACTIVA",
+                btnDeleteAcc: "Eliminar",
+                btnLogout: "Salir",
+                availBalance: "Balance Disponible",
+                btnDeposit: "Depositar",
+                btnWithdraw: "Retirar",
+                btnDepHistory: "Historial Depósitos",
+                btnWitHistory: "Historial Retiros",
+                ceoPanelTitle: "PANEL EJECUTIVO CEO",
+                btnOpenCeo: "Administrar Modos y Finanzas",
+                ceoControl: "CONTROL EJECUTIVO CEO",
+                btnBack: "Volver",
+                adminDep: "Depósitos",
+                adminWit: "Retiros",
+                adminGrant: "Dar Admin",
+                adminCredit: "Acreditar",
+                adminDebit: "Desacreditar",
+                adminDel: "Eliminar User",
+                adminUsersList: "Usuarios de la Web",
+                reqDepTitle: "Solicitudes de Depósito",
+                reqWitTitle: "Solicitudes de Retiro",
+                grantAdminTitle: "Dar Privilegio de Admin",
+                partnerEmail: "Correo del Socio",
+                btnGrantAdmin: "Otorgar Admin",
+                creditTitle: "Acreditar Saldo a Usuario",
+                userEmail: "Correo del Usuario",
+                amountUsdt: "Monto (USDT)",
+                btnCredit: "Acreditar Saldo",
+                debitTitle: "Desacreditar Saldo a Usuario",
+                amountRemove: "Monto a Quitar (USDT)",
+                btnDebit: "Desacreditar Saldo",
+                delUserTitle: "Eliminar Usuario por Correo",
+                btnDelUserPerm: "Eliminar Permanentemente",
+                registeredUsersTitle: "Usuarios Registrados en la Web",
+                navHome: "Hogar",
+                navQuantify: "Cuantificar",
+                navCharges: "Cargas",
+                navTeam: "Equipo",
+                navProfile: "Perfil",
+                welcomeVoice: "BIENVENIDO A INVERBOT ES UNA PLATAFORMA DE INVERTIR Y GANAR MANTENEMOS TUS ACTIVOS CONSTANTEMENTE CRECIENDO",
+                depAcceptedVoice: "DEPÓSITO DE INVERBOT ACEPTADO",
+                witAcceptedVoice: "RETIRO DE INVERBOT ACEPTADO"
+            },
+            en: {
+                regTitle: "Partner Registration",
+                emailLabel: "Email Address",
+                passLabel: "Password",
+                confirmPassLabel: "Confirm Password",
+                refLabel: "Invitation Code",
+                btnRegister: "Register",
+                haveAccount: "Already have an account?",
+                loginLink: "Sign In",
+                loginTitle: "Sign In",
+                btnLogin: "Sign In",
+                newPartner: "New partner?",
+                registerLink: "Register",
+                marqueeText: "INVEST AND EARN KEEP YOUR ASSETS GROWING WITH US YOU WILL ACHIEVE IT",
+                affProgram: "AFFILIATE PROGRAM",
+                affSub: "Get institutional commissions for each partner.",
+                btnViewTeam: "View My Partner Network",
+                globalMarkets: "Global Markets (USDT)",
+                liveBadge: "LIVE",
+                sysMetrics: "System Metrics",
+                vol24: "24h Volume",
+                opModes: "Operating Modes",
+                dailyIncome: "Daily Income",
+                nextCycle: "Next cycle:",
+                btnLoadNow: "LOAD NOW",
+                loadSub: "Tap to fill your battery and process daily yield.",
+                activeLabel: "Active",
+                selectChargeTitle: "Select or acquire your Charge:",
+                teamCommTitle: "NETWORK COMMISSION",
+                accumBalance: "Accumulated balance",
+                btnCommHistory: "Commission history",
+                totalPartners: "Total Partners",
+                validPartners: "Valid",
+                teamDepVolume: "Team Deposit Volume",
+                inviteLinkTitle: "INVITATION LINK",
+                btnCopyLink: "Copy Secure Link",
+                activeSession: "ACTIVE SESSION",
+                btnDeleteAcc: "Delete",
+                btnLogout: "Logout",
+                availBalance: "Available Balance",
+                btnDeposit: "Deposit",
+                btnWithdraw: "Withdraw",
+                btnDepHistory: "Deposit History",
+                btnWitHistory: "Withdrawal History",
+                ceoPanelTitle: "CEO EXECUTIVE PANEL",
+                btnOpenCeo: "Manage Modes & Finances",
+                ceoControl: "CEO EXECUTIVE CONTROL",
+                btnBack: "Back",
+                adminDep: "Deposits",
+                adminWit: "Withdrawals",
+                adminGrant: "Grant Admin",
+                adminCredit: "Credit",
+                adminDebit: "Debit",
+                adminDel: "Delete User",
+                adminUsersList: "Web Users",
+                reqDepTitle: "Deposit Requests",
+                reqWitTitle: "Withdrawal Requests",
+                grantAdminTitle: "Grant Admin Privilege",
+                partnerEmail: "Partner Email",
+                btnGrantAdmin: "Grant Admin",
+                creditTitle: "Credit Balance to User",
+                userEmail: "User Email",
+                amountUsdt: "Amount (USDT)",
+                btnCredit: "Credit Balance",
+                debitTitle: "Debit Balance from User",
+                amountRemove: "Amount to Remove (USDT)",
+                btnDebit: "Debit Balance",
+                delUserTitle: "Delete User by Email",
+                btnDelUserPerm: "Delete Permanently",
+                registeredUsersTitle: "Registered Web Users",
+                navHome: "Home",
+                navQuantify: "Quantify",
+                navCharges: "Charges",
+                navTeam: "Team",
+                navProfile: "Profile",
+                welcomeVoice: "WELCOME TO INVERBOT, A PLATFORM TO INVEST AND EARN. WE KEEP YOUR ASSETS CONSTANTLY GROWING",
+                depAcceptedVoice: "INVERBOT DEPOSIT ACCEPTED",
+                witAcceptedVoice: "INVERBOT WITHDRAWAL ACCEPTED"
+            },
+            pt: {
+                regTitle: "Registro de Sócio",
+                emailLabel: "E-mail",
+                passLabel: "Senha",
+                confirmPassLabel: "Confirmar Senha",
+                refLabel: "Código de Convite",
+                btnRegister: "Registrar",
+                haveAccount: "Já possui conta?",
+                loginLink: "Entrar",
+                loginTitle: "Entrar",
+                btnLogin: "Entrar",
+                newPartner: "Novo sócio?",
+                registerLink: "Registrar",
+                marqueeText: "INVISTA E GANHE MANTENHA SEUS ATIVOS CRESCENDO CONOSCO",
+                affProgram: "PROGRAMA DE AFILIADOS",
+                affSub: "Obtenha comissões institucionais por cada sócio.",
+                btnViewTeam: "Ver Minha Rede",
+                globalMarkets: "Mercados Globais (USDT)",
+                liveBadge: "AO VIVO",
+                sysMetrics: "Métricas do Sistema",
+                vol24: "Volume 24h",
+                opModes: "Modos Operacionais",
+                dailyIncome: "Renda Diária",
+                nextCycle: "Próximo ciclo:",
+                btnLoadNow: "CARREGAR AGORA",
+                loadSub: "Toque para encher sua bateria e processar o rendimento diário.",
+                activeLabel: "Ativo",
+                selectChargeTitle: "Selecione ou adquira sua Carga:",
+                teamCommTitle: "COMISSÃO DE REDE",
+                accumBalance: "Saldo acumulado",
+                btnCommHistory: "Histórico de comissões",
+                totalPartners: "Sócios Totais",
+                validPartners: "Válidos",
+                teamDepVolume: "Volume de Depósito da Equipe",
+                inviteLinkTitle: "LINK DE CONVITE",
+                btnCopyLink: "Copiar Link Seguro",
+                activeSession: "SESSÃO ATIVA",
+                btnDeleteAcc: "Excluir",
+                btnLogout: "Sair",
+                availBalance: "Saldo Disponível",
+                btnDeposit: "Depositar",
+                btnWithdraw: "Sacar",
+                btnDepHistory: "Histórico de Depósitos",
+                btnWitHistory: "Histórico de Saques",
+                ceoPanelTitle: "PAINEL EXECUTIVO CEO",
+                btnOpenCeo: "Gerenciar Modos e Finanças",
+                ceoControl: "CONTROLE EXECUTIVO CEO",
+                btnBack: "Voltar",
+                adminDep: "Depósitos",
+                adminWit: "Saques",
+                adminGrant: "Dar Admin",
+                adminCredit: "Creditar",
+                adminDebit: "Desacreditar",
+                adminDel: "Excluir User",
+                adminUsersList: "Usuários da Web",
+                reqDepTitle: "Solicitações de Depósito",
+                reqWitTitle: "Solicitações de Saque",
+                grantAdminTitle: "Conceder Privilégio de Admin",
+                partnerEmail: "E-mail do Sócio",
+                btnGrantAdmin: "Conceder Admin",
+                creditTitle: "Creditar Saldo ao Usuário",
+                userEmail: "E-mail do Usuário",
+                amountUsdt: "Valor (USDT)",
+                btnCredit: "Creditar Saldo",
+                debitTitle: "Desacreditar Saldo do Usuário",
+                amountRemove: "Valor a Remover (USDT)",
+                btnDebit: "Desacreditar Saldo",
+                delUserTitle: "Excluir Usuário por E-mail",
+                btnDelUserPerm: "Excluir Permanentemente",
+                registeredUsersTitle: "Usuários Registrados na Web",
+                navHome: "Início",
+                navQuantify: "Quantificar",
+                navCharges: "Cargas",
+                navTeam: "Equipe",
+                navProfile: "Perfil",
+                welcomeVoice: "BEM-VINDO AO INVERBOT, UMA PLATAFORMA PARA INVESTIR E GANHAR. MANTEMOS SEUS ATIVOS CRESCENDO CONSTANTEMENTE",
+                depAcceptedVoice: "DEPÓSITO DO INVERBOT ACEITO",
+                witAcceptedVoice: "RETIRADA DO INVERBOT ACEITA"
+            },
+            fr: {
+                regTitle: "Inscription Partenaire",
+                emailLabel: "Adresse Email",
+                passLabel: "Mot de passe",
+                confirmPassLabel: "Confirmer le mot de passe",
+                refLabel: "Code d'invitation",
+                btnRegister: "S'inscrire",
+                haveAccount: "Déjà un compte ?",
+                loginLink: "Se connecter",
+                loginTitle: "Connexion",
+                btnLogin: "Se connecter",
+                newPartner: "Nouveau partenaire ?",
+                registerLink: "S'inscrire",
+                marqueeText: "INVESTISSEZ ET GAGNEZ, FAITES CROÎTRE VOS ACTIFS AVEC NOUS",
+                affProgram: "PROGRAMME D'AFFILIATION",
+                affSub: "Obtenez des commissions institutionnelles pour chaque partenaire.",
+                btnViewTeam: "Voir mon réseau",
+                globalMarkets: "Marchés Mondiaux (USDT)",
+                liveBadge: "EN DIRECT",
+                sysMetrics: "Métriques du Système",
+                vol24: "Volume 24h",
+                opModes: "Modes Opérationnels",
+                dailyIncome: "Revenu Quotidien",
+                nextCycle: "Prochain cycle :",
+                btnLoadNow: "CHARGER MAINTENANT",
+                loadSub: "Appuyez pour remplir votre batterie et traiter le rendement quotidien.",
+                activeLabel: "Actif",
+                selectChargeTitle: "Sélectionnez ou acquérez votre Charge :",
+                teamCommTitle: "COMMISSION DE RÉSEAU",
+                accumBalance: "Solde accumulé",
+                btnCommHistory: "Historique des commissions",
+                totalPartners: "Partenaires Totaux",
+                validPartners: "Valides",
+                teamDepVolume: "Volume de Dépôt de l'Équipe",
+                inviteLinkTitle: "LIEN D'INVITATION",
+                btnCopyLink: "Copier le Lien Sécurisé",
+                activeSession: "SESSION ACTIVE",
+                btnDeleteAcc: "Supprimer",
+                btnLogout: "Quitter",
+                availBalance: "Solde Disponible",
+                btnDeposit: "Déposer",
+                btnWithdraw: "Retirer",
+                btnDepHistory: "Historique des Dépôts",
+                btnWitHistory: "Historique des Retraits",
+                ceoPanelTitle: "PANNEAU EXÉCUTIF CEO",
+                btnOpenCeo: "Gérer les Modes et Finances",
+                ceoControl: "CONTRÔLE EXÉCUTIF CEO",
+                btnBack: "Retour",
+                adminDep: "Dépôts",
+                adminWit: "Retraits",
+                adminGrant: "Donner Admin",
+                adminCredit: "Créditer",
+                adminDebit: "Débiter",
+                adminDel: "Suppr. User",
+                adminUsersList: "Utilisateurs du Web",
+                reqDepTitle: "Demandes de Dépôt",
+                reqWitTitle: "Demandes de Retrait",
+                grantAdminTitle: "Donner le Privilège Admin",
+                partnerEmail: "Email du Partenaire",
+                btnGrantAdmin: "Accorder Admin",
+                creditTitle: "Créditer le Solde à l'Utilisateur",
+                userEmail: "Email de l'Utilisateur",
+                amountUsdt: "Montant (USDT)",
+                btnCredit: "Créditer le Solde",
+                debitTitle: "Débiter le Solde de l'Utilisateur",
+                amountRemove: "Montant à Retirer (USDT)",
+                btnDebit: "Débiter le Solde",
+                delUserTitle: "Supprimer l'Utilisateur par Email",
+                btnDelUserPerm: "Supprimer Définitivement",
+                registeredUsersTitle: "Utilisateurs Enregistrés",
+                navHome: "Accueil",
+                navQuantify: "Quantifier",
+                navCharges: "Charges",
+                navTeam: "Équipe",
+                navProfile: "Profil",
+                welcomeVoice: "BIENVENUE SUR INVERBOT, UNE PLATEFORME POUR INVESTIR ET GAGNER. NOUS MAINTENONS VOS ACTIFS EN CROISSANCE CONSTANTE",
+                depAcceptedVoice: "DÉPÔT INVERBOT ACCEPTÉ",
+                witAcceptedVoice: "RETRAIT INVERBOT ACCEPTÉ"
+            },
+            ru: {
+                regTitle: "Регистрация партнера",
+                emailLabel: "Электронная почта",
+                passLabel: "Пароль",
+                confirmPassLabel: "Подтвердите пароль",
+                refLabel: "Код приглашения",
+                btnRegister: "Зарегистрироваться",
+                haveAccount: "Уже есть аккаунт?",
+                loginLink: "Войти",
+                loginTitle: "Вход",
+                btnLogin: "Войти",
+                newPartner: "Новый партнер?",
+                registerLink: "Регистрация",
+                marqueeText: "ИНВЕСТИРУЙТЕ И ЗАРАБАТЫВАЙТЕ, ПОДДЕРЖИВАЙТЕ РОСТ ВАШИХ АКТИВОВ",
+                affProgram: "ПАРТНЕРСКАЯ ПРОГРАММА",
+                affSub: "Получайте институциональные комиссии за каждого партнера.",
+                btnViewTeam: "Моя сеть партнеров",
+                globalMarkets: "Мировые рынки (USDT)",
+                liveBadge: "В ЭФИРЕ",
+                sysMetrics: "Системные метрики",
+                vol24: "Объем 24ч",
+                opModes: "Режимы работы",
+                dailyIncome: "Ежедневный доход",
+                nextCycle: "Следующий цикл:",
+                btnLoadNow: "ЗАГРУЗИТЬ СЕЙЧАС",
+                loadSub: "Нажмите, чтобы заполнить батарею и получить ежедневный доход.",
+                activeLabel: "Активный",
+                selectChargeTitle: "Выберите или приобретите нагрузку:",
+                teamCommTitle: "СЕТЕВАЯ КОМИССИЯ",
+                accumBalance: "Накопленный баланс",
+                btnCommHistory: "История комиссий",
+                totalPartners: "Всего партнеров",
+                validPartners: "Действительные",
+                teamDepVolume: "Объем депозитов команды",
+                inviteLinkTitle: "ССЫЛКА ДЛЯ ПРИГЛАШЕНИЯ",
+                btnCopyLink: "Копировать ссылку",
+                activeSession: "АКТИВНАЯ СЕССИЯ",
+                btnDeleteAcc: "Удалить",
+                btnLogout: "Выйти",
+                availBalance: "Доступный баланс",
+                btnDeposit: "Депозит",
+                btnWithdraw: "Вывод",
+                btnDepHistory: "История депозитов",
+                btnWitHistory: "История выводов",
+                ceoPanelTitle: "ПАНЕЛЬ УПРАВЛЕНИЯ CEO",
+                btnOpenCeo: "Управление финансами",
+                ceoControl: "УПРАВЛЕНИЕ CEO",
+                btnBack: "Назад",
+                adminDep: "Депозиты",
+                adminWit: "Выводы",
+                adminGrant: "Дать Админа",
+                adminCredit: "Начислить",
+                adminDebit: "Списать",
+                adminDel: "Удалить юзера",
+                adminUsersList: "Пользователи веб",
+                reqDepTitle: "Запросы на депозит",
+                reqWitTitle: "Запросы на вывод",
+                grantAdminTitle: "Выдать права администратора",
+                partnerEmail: "Email партнера",
+                btnGrantAdmin: "Назначить админом",
+                creditTitle: "Начислить баланс пользователю",
+                userEmail: "Email пользователя",
+                amountUsdt: "Сумма (USDT)",
+                btnCredit: "Начислить баланс",
+                debitTitle: "Списать баланс у пользователя",
+                amountRemove: "Сумма для списания (USDT)",
+                btnDebit: "Списать баланс",
+                delUserTitle: "Удалить пользователя по email",
+                btnDelUserPerm: "Удалить навсегда",
+                registeredUsersTitle: "Зарегистрированные пользователи",
+                navHome: "Главная",
+                navQuantify: "Квантовать",
+                navCharges: "Загрузки",
+                navTeam: "Команда",
+                navProfile: "Профиль",
+                welcomeVoice: "ДОБРО ПОЖАЛОВАТЬ В INVERBOT, ПЛАТФОРМУ ДЛЯ ИНВЕСТИЦИЙ И ЗАРАБОТКА. МЫ ПОДДЕРЖИВАЕМ ПОСТОЯННЫЙ РОСТ ВАШИХ АКТИВОВ",
+                depAcceptedVoice: "ДЕПОЗИТ INVERBOT ПРИНЯТ",
+                witAcceptedVoice: "ВЫВОД INVERBOT ПРИНЯТ"
+            }
         };
+
+        function cambiarIdiomaPagina(lang) {
+            currentLang = lang;
+            localStorage.setItem("inverbot_lang", lang);
+            let dict = i18n[lang] || i18n["es"];
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                let key = el.getAttribute("data-i18n");
+                if (dict[key]) {
+                    el.innerText = dict[key];
+                }
+            });
+            let sel = document.getElementById("langSelector");
+            if(sel) sel.value = lang;
+        }
+        window.cambiarIdiomaPagina = cambiarIdiomaPagina;
 
         function ejecutarAccionPausada(callback) {
             setTimeout(() => { callback(); }, 350);
@@ -818,7 +1230,7 @@
                 btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
             } else {
                 input.type = "password";
-                btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2z"/></svg>`;
+                btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`;
             }
         }
         window.togglePasswordVisibility = togglePasswordVisibility;
@@ -889,22 +1301,36 @@
 
         function cerrarAlerta() { 
             document.getElementById('customModalContainer').innerHTML = ''; 
-            location.reload(); // Recarga para actualizar saldo y cargas automáticamente en pantalla
+            location.reload(); 
         }
         window.cerrarAlerta = cerrarAlerta;
 
-        function hablarVozCEO(texto) {
+        // Voz profesional adaptada al idioma actual seleccionado
+        function hablarVoz(textoPersonalizado = null) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
+                let dict = i18n[currentLang] || i18n["es"];
+                let texto = textoPersonalizado || dict.welcomeVoice;
+                
                 let utterance = new SpeechSynthesisUtterance(texto);
-                utterance.lang = 'es-ES';
-                utterance.rate = 1.0;
-                utterance.pitch = 1.05;
+                
+                let langMap = {
+                    'es': 'es-ES',
+                    'en': 'en-US',
+                    'pt': 'pt-BR',
+                    'fr': 'fr-FR',
+                    'ru': 'ru-RU'
+                };
+                utterance.lang = langMap[currentLang] || 'es-ES';
+                utterance.rate = 0.95; // Tono más profesional y pausado
+                utterance.pitch = 1.0;
+                
                 window.speechSynthesis.speak(utterance);
             }
         }
+        window.hablarVoz = hablarVoz;
 
-        // Notificaciones para el CEO
+        // Notificaciones exclusivamente para el CEO (depósitos y retiros solicitados, nuevos registros)
         function iniciarNotificacionesCEO() {
             if (!("Notification" in window)) return;
             if (Notification.permission !== "granted") { Notification.requestPermission(); }
@@ -919,7 +1345,7 @@
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.status === 'Pendiente') {
-                            hablarVozCEO("Solicitud de depósito de Inverbot");
+                            hablarVoz("Solicitud de depósito de Inverbot");
                             lanzarNotificacionPush("Nuevo Depósito Pendiente", `Socio ${data.user} ha solicitado un depósito de $${data.monto} USDT.`);
                         }
                     }
@@ -933,7 +1359,7 @@
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.status === 'Pendiente') {
-                            hablarVozCEO("Solicitud de retiro de Inverbot");
+                            hablarVoz("Solicitud de retiro de Inverbot");
                             lanzarNotificacionPush("Nueva Solicitud de Retiro", `Socio ${data.user} solicita retirar -$${data.monto} USDT.`);
                         }
                     }
@@ -947,7 +1373,7 @@
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.email !== currentUser.email) {
-                            hablarVozCEO("Nuevo usuario de Inverbot");
+                            hablarVoz("Nuevo usuario de Inverbot");
                             lanzarNotificacionPush("Nuevo Socio Registrado", `Se ha unido un nuevo inversor: ${data.email}`);
                         }
                     }
@@ -955,7 +1381,7 @@
             });
         }
 
-        // Notificaciones visuales y de voz para el USUARIO cuando le aprueban su depósito o retiro
+        // Notificaciones limpias y sin IDs para el usuario cuando le aprueban su depósito o retiro
         function iniciarNotificacionesUsuario() {
             if (!currentUser) return;
 
@@ -970,8 +1396,9 @@
                         let flagKey = '_depNotified_' + data.id;
                         if (data.status === 'Aprobado' && !window[flagKey]) {
                             window[flagKey] = true;
-                            hablarVozCEO("INVERBOT ACEPTO TU SOLICITUD DE DESPOSITO");
-                            lanzarNotificacionPush("INVERBOT", "INVERBOT ACEPTO TU SOLICITUD DE DESPOSITO");
+                            let dict = i18n[currentLang] || i18n["es"];
+                            hablarVoz(dict.depAcceptedVoice);
+                            lanzarNotificacionPush("INVERBOT", dict.depAcceptedVoice);
                             mostrarAlertaPro("¡Depósito Aprobado!", `Tu solicitud de depósito por $${data.monto} USDT ha sido aprobada. ¡Tu carga ya se encuentra activa!`);
                         }
                     }
@@ -986,8 +1413,9 @@
                         let flagKey = '_witNotified_' + data.id;
                         if (data.status === 'Aprobado' && !window[flagKey]) {
                             window[flagKey] = true;
-                            hablarVozCEO("INVERBOT ACEPTO TU SOLICITUD DE RETIRO");
-                            lanzarNotificacionPush("INVERBOT", "INVERBOT ACEPTO TU SOLICITUD DE RETIRO");
+                            let dict = i18n[currentLang] || i18n["es"];
+                            hablarVoz(dict.witAcceptedVoice);
+                            lanzarNotificacionPush("INVERBOT", dict.witAcceptedVoice);
                             mostrarAlertaPro("¡Retiro Aprobado!", `Tu solicitud de retiro por $${data.monto} USDT ha sido aprobada con éxito.`);
                         }
                     }
@@ -1012,15 +1440,9 @@
             }
         }
 
-        navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', event => {
-            if (event.data && event.data.action === 'abrirAdmin') {
-                if (currentUser && currentUser.isAdmin) {
-                    abrirPanelAdmin();
-                }
-            }
-        });
-
         window.onload = function() {
+            cambiarIdiomaPagina(currentLang);
+
             setTimeout(() => {
                 let splash = document.getElementById('splashScreen');
                 if(splash) {
@@ -1186,6 +1608,10 @@
 
                 sessionEmail = email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
+                
+                // Reproducir voz de bienvenida personalizada al registrarse
+                hablarVoz();
+
                 iniciarNotificacionesCEO();
                 iniciarNotificacionesUsuario();
                 entrarDashboardDirecto();
