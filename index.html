@@ -871,28 +871,12 @@
         }
         window.mostrarAlertaPro = mostrarAlertaPro;
 
-        function mostrarAlertaRestriccionRegion() {
-            document.getElementById('customModalContainer').innerHTML = `
-                <div class="modal-overlay">
-                    <div class="modal-card error-neon">
-                        <div style="margin-bottom: 12px; display: flex; justify-content: center;">
-                            <svg style="width:36px; height:36px; fill:#e53e3e; filter: drop-shadow(0 0 8px #e53e3e);" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                        </div>
-                        <h3 class="modal-title">ATENCIÓN DEL SISTEMA</h3>
-                        <p class="modal-msg">INVERBOT No está disponible para tu país o región , porfavor intenté denuevo o más tarde.</p>
-                        <button onclick="cerrarAlerta()" style="background: #e53e3e; color: #ffffff; border: none; padding: 10px; border-radius: 8px; font-size: 11px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 0 10px #e53e3e;">ENTENDIDO</button>
-                    </div>
-                </div>
-            `;
-        }
-        window.mostrarAlertaRestriccionRegion = mostrarAlertaRestriccionRegion;
-
         function cerrarAlerta() { 
             document.getElementById('customModalContainer').innerHTML = ''; 
         }
         window.cerrarAlerta = cerrarAlerta;
 
-        // Locución profesional y natural
+        // Locución profesional, corregida y optimizada para evitar deletreos
         function hablarVozCEO(texto) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -925,7 +909,7 @@
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.status === 'Pendiente') {
-                            hablarVozCEO("Atención CEO, nuevo depósito pendiente por aprobar");
+                            hablarVozCEO("Atención C.E.O., nuevo depósito pendiente por aprobar.");
                             lanzarNotificacionPush("Nuevo Depósito Pendiente", `Socio ${data.user} ha solicitado un depósito de $${data.monto} USDT.`);
                         }
                     }
@@ -939,7 +923,7 @@
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.status === 'Pendiente') {
-                            hablarVozCEO("Atención CEO, nueva solicitud de retiro pendiente");
+                            hablarVozCEO("Atención C.E.O., nueva solicitud de retiro pendiente.");
                             lanzarNotificacionPush("Nueva Solicitud de Retiro", `Socio ${data.user} solicita retirar -$${data.monto} USDT.`);
                         }
                     }
@@ -953,7 +937,7 @@
                     if (change.type === "added") {
                         let data = change.doc.data();
                         if (data.email !== currentUser.email) {
-                            hablarVozCEO("Atención CEO, nuevo socio registrado en la plataforma");
+                            hablarVozCEO("Atención C.E.O., nuevo socio registrado en la plataforma.");
                             lanzarNotificacionPush("Nuevo Socio Registrado", `Se ha unido un nuevo inversor: ${data.email}`);
                         }
                     }
@@ -974,7 +958,7 @@
                         let flagKey = '_depNotified_' + data.id;
                         if (data.status === 'Aprobado' && !window[flagKey]) {
                             window[flagKey] = true;
-                            hablarVozCEO("Su depósito en Inverbot ha sido aprobado con éxito");
+                            hablarVozCEO("Su depósito en Inverbot ha sido aprobado con éxito.");
                             lanzarNotificacionPush("INVERBOT", "Su depósito en Inverbot ha sido aprobado con éxito");
                             mostrarAlertaPro("¡Depósito Aprobado!", `Tu solicitud de depósito por $${data.monto} USDT ha sido aprobada. ¡Tu carga ya se encuentra activa!`);
                         }
@@ -990,7 +974,7 @@
                         let flagKey = '_witNotified_' + data.id;
                         if (data.status === 'Aprobado' && !window[flagKey]) {
                             window[flagKey] = true;
-                            hablarVozCEO("Su retiro en Inverbot ha sido aprobado con éxito");
+                            hablarVozCEO("Su retiro en Inverbot ha sido aprobado con éxito.");
                             lanzarNotificacionPush("INVERBOT", "Su retiro en Inverbot ha sido aprobado con éxito");
                             mostrarAlertaPro("¡Retiro Aprobado!", `Tu solicitud de retiro por $${data.monto} USDT ha sido aprobada con éxito.`);
                         }
@@ -1191,15 +1175,15 @@
                 sessionEmail = email;
                 sessionStorage.setItem("inverbot_session", sessionEmail);
                 
-                // LOCUCIÓN EXACTA AL REGISTRARSE
-                hablarVozCEO("BIENVENIDO A UNA DE LAS PLATAFORMAS GLOBALES DE CONFIANZA INTERNACIONAL DE BUENA INVERSIÓN ACA PODRAS INVERTIR Y PODRAS MANTENER TUS ACTIVOS CRECIENDO CADA DIA MAS ESPERO CRESCAN CON NOSOTROS");
+                // LOCUCIÓN DE REGISTRO CORRECTA Y ORTOGRAFICAMENTE PERFECTA
+                hablarVozCEO("BIENVENIDO A UNA DE LAS PLATAFORMAS GLOBALES DE CONFIANZA INTERNACIONAL DE BUENA INVERSIÓN. ACÁ PODRÁS INVERTIR Y PODRÁS MANTENER TUS ACTIVOS CRECIENDO CADA DÍA MÁS. ESPERO QUE CREZCAN CON NOSOTROS.");
                 
                 iniciarNotificacionesCEO();
                 iniciarNotificacionesUsuario();
                 entrarDashboardDirecto();
             } catch (error) {
                 console.error(error);
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo completar el registro. Verifique su conexión.");
             }
         }
         window.ejecutarRegistroFirebase = ejecutarRegistroFirebase;
@@ -1232,7 +1216,7 @@
                 entrarDashboardDirecto();
             } catch (error) {
                 console.error(error);
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo iniciar sesión. Verifique su conexión.");
             }
         }
         window.ejecutarLoginFirebase = ejecutarLoginFirebase;
@@ -1350,7 +1334,7 @@
                     mostrarAlertaPro("Éxito", `+${rec.toFixed(2)} USDT acreditados correctamente.`);
                     entrarDashboardDirecto();
                 } catch (error) {
-                    mostrarAlertaRestriccionRegion();
+                    mostrarAlertaPro("Error", "No se pudo procesar la cuantificación.");
                 }
                 btn.disabled = false;
             }, 1000);
@@ -1376,7 +1360,7 @@
                 mostrarAlertaPro("Éxito", `¡Carga ${nivel} activada correctamente!`);
                 entrarDashboardDirecto();
             } catch (error) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo activar la carga.");
             }
         }
         window.comprarVip = comprarVip;
@@ -1403,7 +1387,7 @@
                     await deleteDoc(doc(db, "users", currentUser.email));
                     cerrarSesion();
                 } catch(e) {
-                    mostrarAlertaRestriccionRegion();
+                    mostrarAlertaPro("Error", "No se pudo eliminar la cuenta.");
                 }
             });
         }
@@ -1570,7 +1554,7 @@
                 document.getElementById('subAccionContainer').style.display = 'none';
                 entrarDashboardDirecto();
             } catch (error) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo reportar el depósito.");
             }
         }
         window.reportarDep = reportarDep;
@@ -1595,7 +1579,7 @@
                 mostrarAlertaPro("Éxito", "Retiro solicitado correctamente.");
                 entrarDashboardDirecto();
             } catch (error) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo solicitar el retiro.");
             }
         }
         window.solicitarRetiro = solicitarRetiro;
@@ -1611,7 +1595,7 @@
                 if(deps.length === 0) { mostrarAlertaPro("Historial", "Sin registros de depósitos."); return; }
                 mostrarAlertaPro("Historial Depósitos", deps.map(x => `${x.hash} - <b>${x.status}</b>`).join('<br>'));
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo cargar el historial.");
             }
         }
         window.verHistorialDeps = verHistorialDeps;
@@ -1627,7 +1611,7 @@
                 if(wits.length === 0) { mostrarAlertaPro("Historial", "Sin registros de retiros."); return; }
                 mostrarAlertaPro("Historial Retiros", wits.map(x => `-${x.monto} USDT - <b>${x.status}</b>`).join('<br>'));
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo cargar el historial.");
             }
         }
         window.verHistorialWits = verHistorialWits;
@@ -1689,7 +1673,7 @@
                 mostrarAlertaPro("Éxito", `Acreditado +$${monto} a ${target.email}`);
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo acreditar el saldo.");
             }
         }
         window.acreditarSaldoPorCorreo = acreditarSaldoPorCorreo;
@@ -1715,7 +1699,7 @@
                 mostrarAlertaPro("Éxito", `Desacreditado -$${monto} a ${target.email}`);
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo desacreditar el saldo.");
             }
         }
         window.desacreditarSaldoPorCorreo = desacreditarSaldoPorCorreo;
@@ -1741,7 +1725,7 @@
                 mostrarAlertaPro("Éxito", `Usuario ${mail} eliminado permanentemente.`);
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo eliminar el usuario.");
             }
         }
         window.eliminarUsuarioPorCorreoAdmin = eliminarUsuarioPorCorreoAdmin;
@@ -1762,7 +1746,7 @@
                 document.getElementById('novoAdminEmail').value = '';
                 mostrarAlertaPro("Éxito", `Privilegio de Admin otorgado a ${mail}`);
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo otorgar el privilegio.");
             }
         }
         window.hacerAdminCorreo = hacerAdminCorreo;
@@ -1868,7 +1852,7 @@
                 renderAdmin();
             } catch(e) {
                 console.error(e);
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo aprobar el depósito.");
             }
         };
 
@@ -1877,7 +1861,7 @@
                 await updateDoc(doc(db, "deposits", id), { status: 'Cancelado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo cancelar el depósito.");
             }
         };
 
@@ -1886,7 +1870,7 @@
                 await updateDoc(doc(db, "withdrawals", id), { status: 'Aprobado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo aprobar el retiro.");
             }
         };
 
@@ -1908,7 +1892,7 @@
                 await updateDoc(witDocRef, { status: 'Cancelado' });
                 renderAdmin();
             } catch(e) {
-                mostrarAlertaRestriccionRegion();
+                mostrarAlertaPro("Error", "No se pudo cancelar el retiro.");
             }
         };
 
